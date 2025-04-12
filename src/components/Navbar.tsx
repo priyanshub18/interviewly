@@ -46,7 +46,7 @@ export default function GlassmorphicNavbar() {
           isScrolled
             ? "bg-background/60 dark:bg-background/30 backdrop-blur-lg shadow-lg border-b border-border/40"
             : "bg-background/20 dark:bg-background/10 backdrop-blur-sm"
-        }`}
+        } py-1`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -134,7 +134,10 @@ export default function GlassmorphicNavbar() {
                     style={{ borderColor: primaryPurple }}
                   >
                     {user?.imageUrl ? (
-                      <AvatarImage src={user?.imageUrl} alt={user?.fullName ||"hola"} />
+                      <AvatarImage
+                        src={user?.imageUrl}
+                        alt={user?.fullName || "hola"}
+                      />
                     ) : (
                       <AvatarFallback className="bg-gradient-to-br">
                         <UserCircle className="text-white" size={20} />

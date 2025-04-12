@@ -1,18 +1,11 @@
+import GlassmorphicNavbar from "@/components/Navbar";
+import ConvexClerkProvider from "@/components/providers/ConvexClerkProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
-import GlassmorphicNavbar from "@/components/Navbar";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import InterviewAppLanding from "@/components/LandingPage";
-import ConvexClerkProvider from "@/components/providers/ConvexClerkProvider";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -35,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ConvexClerkProvider >
+    <ConvexClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -46,12 +39,13 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="min-h-screen ">
+            <div className="fixed top-0 left-0 right-0 z-50">
               <GlassmorphicNavbar />
             </div>
-            <InterviewAppLanding />
-            <main className="px-4 sm:px-6 lg:px-8">{children}</main>
+
+            <main>{children}</main>
           </ThemeProvider>
+          <Toaster />
         </body>
       </html>
     </ConvexClerkProvider>
