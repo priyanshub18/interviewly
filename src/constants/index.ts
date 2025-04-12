@@ -89,6 +89,13 @@ export const CODING_QUESTIONS: CodeQuestion[] = [
         
     }
 }`,
+      cpp: `#include <vector>
+using namespace std;
+
+vector<int> twoSum(vector<int>& nums, int target) {
+    // Write your solution here
+    
+}`,
     },
     constraints: [
       "2 ≤ nums.length ≤ 104",
@@ -126,6 +133,13 @@ export const CODING_QUESTIONS: CodeQuestion[] = [
         
     }
 }`,
+      cpp: `#include <vector>
+using namespace std;
+
+void reverseString(vector<char>& s) {
+    // Write your solution here
+    
+}`,
     },
   },
   {
@@ -137,7 +151,8 @@ export const CODING_QUESTIONS: CodeQuestion[] = [
       {
         input: "x = 121",
         output: "true",
-        explanation: "121 reads as 121 from left to right and from right to left.",
+        explanation:
+          "121 reads as 121 from left to right and from right to left.",
       },
       {
         input: "x = -121",
@@ -160,11 +175,16 @@ export const CODING_QUESTIONS: CodeQuestion[] = [
         
     }
 }`,
+      cpp: `bool isPalindrome(int x) {
+    // Write your solution here
+    
+}`,
     },
   },
 ];
 
 export const LANGUAGES = [
+  { id: "cpp", name: "C++", icon: "/cpp.png" },
   { id: "javascript", name: "JavaScript", icon: "/javascript.png" },
   { id: "python", name: "Python", icon: "/python.png" },
   { id: "java", name: "Java", icon: "/java.png" },
@@ -183,6 +203,7 @@ export interface CodeQuestion {
     javascript: string;
     python: string;
     java: string;
+    cpp: string;
   };
   constraints?: string[];
 }

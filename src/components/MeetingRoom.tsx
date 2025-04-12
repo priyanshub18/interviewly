@@ -23,6 +23,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import EndCallButton from "./EndCallButton";
+import CodeEditor from "./CodeEditor";
 // import CodeEditor from "./CodeEditor";
 
 function MeetingRoom() {
@@ -180,19 +181,7 @@ function MeetingRoom() {
             minSize={25}
             className="bg-background"
           >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="p-6"
-            >
-              <div className="text-xl font-medium mb-4 text-purple-600">
-                Collaboration Panel
-              </div>
-              <div className="rounded-lg border border-purple-200/20 p-6 bg-purple-50/5">
-                <p>Welcome to your collaborative workspace!</p>
-              </div>
-            </motion.div>
+            <CodeEditor />
           </ResizablePanel>
         </ResizablePanelGroup>
       </motion.div>
