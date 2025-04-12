@@ -6,7 +6,7 @@ import { CallRecording } from "@stream-io/video-react-sdk";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VideoIcon } from "lucide-react";
 import LoaderUI from "@/components/LoaderUI";
-import RecordingCard from "../../../components/RecordingCard";
+import RecordingCard from "./_components/RecordingCard";
 import useGetCalls from "../../../hooks/useGetCalls";
 
 function RecordingsPage() {

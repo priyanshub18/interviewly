@@ -2,7 +2,7 @@ import { useUser } from "@clerk/nextjs";
 import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import toast from "react-hot-toast";
 import {
   Dialog,
@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import UserInfo from "../components/UserInfo";
+import UserInfo from "../../../../components/UserInfo";
 import { Calendar } from "@/components/ui/calendar";
 import { Loader2Icon, CalendarIcon, XIcon, PlusCircleIcon } from "lucide-react";
 import { TIME_SLOTS } from "@/constants";

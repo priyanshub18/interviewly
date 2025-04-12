@@ -5,7 +5,7 @@ import {
 } from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card } from "./ui/card";
+import { Card } from "@/components/ui/card";
 import {
   CameraIcon,
   MicIcon,
@@ -18,8 +18,8 @@ import {
   Smile,
   MessageCircle,
 } from "lucide-react";
-import { Switch } from "./ui/switch";
-import { Button } from "./ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
   const [isCameraDisabled, setIsCameraDisabled] = useState(true);

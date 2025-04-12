@@ -1,8 +1,8 @@
 "use client";
 
 import LoaderUI from "@/components/LoaderUI";
-import MeetingRoom from "@/components/MeetingRoom";
-import MeetingSetup from "@/components/MeetingSetup";
+import MeetingRoom from "../_components/MeetingRoom";
+import MeetingSetup from "../_components/MeetingSetup";
 import useGetCallById from "../../../../hooks/useGetCallById";
 import { useUser } from "@clerk/nextjs";
 import { StreamCall, StreamTheme } from "@stream-io/video-react-sdk";
@@ -15,7 +15,6 @@ function MeetingPage() {
   const { call, isCallLoading } = useGetCallById(id);
 
   const [isSetupComplete, setIsSetupComplete] = useState(false);
-  
 
   if (!isLoaded || isCallLoading) return <LoaderUI />;
 
@@ -33,8 +32,8 @@ function MeetingPage() {
         {!isSetupComplete ? (
           <MeetingSetup onSetupComplete={() => setIsSetupComplete(true)} />
         ) : (
-        //   <div>Hel</div>
-            <MeetingRoom />
+          //   <div>Hel</div>
+          <MeetingRoom />
         )}
       </StreamTheme>
     </StreamCall>

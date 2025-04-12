@@ -14,16 +14,17 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "./ui/resizable";
+} from "@/components/ui/resizable";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import EndCallButton from "./EndCallButton";
-import CodeEditor from "./CodeEditor";
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import EndCallButton from "../_components/EndCallButton";
+import CodeEditor from "../_components/CodeEditor";
+
 // import CodeEditor from "./CodeEditor";
 
 function MeetingRoom() {

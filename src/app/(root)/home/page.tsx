@@ -1,6 +1,6 @@
 "use client";
 
-import ActionCard from "@/components/ActionCard";
+import ActionCard from "@/app/(root)/_components/ActionCard";
 import { QUICK_ACTIONS } from "@/constants";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import React, { useState } from "react";
@@ -10,7 +10,7 @@ import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import MeetingModal from "@/components/MeetingModal";
+import MeetingModal from "@/app/(root)/meeting/_components/MeetingModal";
 import MeetingCard from "@/components/MeetingCard";
 
 const Home = () => {

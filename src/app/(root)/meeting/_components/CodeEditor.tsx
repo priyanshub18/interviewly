@@ -4,16 +4,16 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "./ui/resizable";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+} from "@/components/ui/resizable";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertCircleIcon,
   BookIcon,
@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import Editor from "@monaco-editor/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Badge } from "./ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
 

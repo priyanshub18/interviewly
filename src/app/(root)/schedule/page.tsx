@@ -3,7 +3,7 @@
 import LoaderUI from "@/components/LoaderUI";
 import { useUserRoles } from "../../../hooks/useUserRoles";
 import { useRouter } from "next/navigation";
-import InterviewScheduleUI from "../../../components/InterviewScheduleUI";
+import InterviewScheduleUI from "../meeting/_components/InterviewScheduleUI";
 
 function SchedulePage() {
   const router = useRouter();

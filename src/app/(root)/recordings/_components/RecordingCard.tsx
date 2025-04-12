@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { calculateRecordingDuration } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../../../../components/ui/card";
 import {
   CalendarIcon,
   ClockIcon,
@@ -11,7 +11,7 @@ import {
   PlayIcon,
   VideoIcon,
 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../../../../components/ui/button";
 
 function RecordingCard({ recording }: { recording: CallRecording }) {
   const handleCopyLink = async () => {

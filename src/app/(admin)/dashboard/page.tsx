@@ -26,7 +26,7 @@ import {
   PlusCircleIcon,
 } from "lucide-react";
 import { format } from "date-fns";
-import CommentDialog from "../../../components/CommentDialog";
+import CommentDialog from "../_components/CommentDialog";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 
