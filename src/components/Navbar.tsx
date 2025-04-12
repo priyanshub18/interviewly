@@ -24,8 +24,8 @@ export default function GlassmorphicNavbar() {
   const { isInterviewer, isCandidate, isLoading } = useUserRoles();
   const { user } = useUser();
   const router = useRouter();
-  const primaryPurple = "#8b5cf6"; // Your primary purple
-  const accentPurple = "#a855f7"; // Your accent purple
+  const primaryindigo = "#4f46e5"; // Tailwind's indigo-600
+  const accentindigo = "#6366f1"; // Tailwind's indigo-500
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +60,7 @@ export default function GlassmorphicNavbar() {
                 <div className="font-bold text-xl flex items-center gap-2">
                   <div
                     className="rounded-lg p-1"
-                    style={{ backgroundColor: accentPurple }}
+                    style={{ backgroundColor: accentindigo }}
                   >
                     <img
                       src="logo-2.png"
@@ -70,7 +70,7 @@ export default function GlassmorphicNavbar() {
                   </div>
                   <span
                     className="bg-clip-text"
-                    style={{ color: primaryPurple }}
+                    style={{ color: primaryindigo }}
                   >
                     Interviewly
                   </span>
@@ -83,27 +83,27 @@ export default function GlassmorphicNavbar() {
                   <NavLink
                     text="Home"
                     active={true}
-                    primaryColor={primaryPurple}
+                    primaryColor={primaryindigo}
                     link="/home"
                   />
                   <NavLink
                     text="Products"
-                    primaryColor={primaryPurple}
+                    primaryColor={primaryindigo}
                     link="/#hero"
                   />
                   <NavLink
                     text="Services"
-                    primaryColor={primaryPurple}
+                    primaryColor={primaryindigo}
                     link="/#features"
                   />
                   <NavLink
                     text="About"
-                    primaryColor={primaryPurple}
+                    primaryColor={primaryindigo}
                     link="/#about"
                   />
                   <NavLink
                     text="Contact"
-                    primaryColor={primaryPurple}
+                    primaryColor={primaryindigo}
                     link="/#contact"
                   />
                 </div>
@@ -143,7 +143,7 @@ export default function GlassmorphicNavbar() {
                   <Button
                     variant="ghost"
                     className="hover:opacity-90 transition-all duration-300"
-                    style={{ backgroundColor: primaryPurple, color: "white" }}
+                    style={{ backgroundColor: primaryindigo, color: "white" }}
                     onClick={() => router.push("/dashboard")}
                   >
                     Dashboard
@@ -153,7 +153,7 @@ export default function GlassmorphicNavbar() {
                 <UserButton>
                   <Avatar
                     className="w-8 h-8 border-2 ml-6"
-                    style={{ borderColor: primaryPurple }}
+                    style={{ borderColor: primaryindigo }}
                   >
                     {user?.imageUrl ? (
                       <AvatarImage

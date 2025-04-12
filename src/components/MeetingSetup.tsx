@@ -98,7 +98,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div
-          className="absolute -right-64 -top-64 w-96 h-96 rounded-full bg-purple-600/5 dark:bg-purple-500/10 blur-3xl"
+          className="absolute -right-64 -top-64 w-96 h-96 rounded-full bg-indigo-600/5 dark:bg-indigo-500/10 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.5, 0.7, 0.5],
@@ -106,7 +106,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
           transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
         />
         <motion.div
-          className="absolute -left-32 -bottom-32 w-96 h-96 rounded-full bg-purple-500/5 dark:bg-purple-600/10 blur-3xl"
+          className="absolute -left-32 -bottom-32 w-96 h-96 rounded-full bg-indigo-500/5 dark:bg-indigo-600/10 blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.5, 0.7, 0.5],
@@ -128,7 +128,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
             className="md:hidden col-span-1 mb-2"
           >
             <motion.h1
-              className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent inline-block"
+              className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-600 bg-clip-text text-transparent inline-block"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
@@ -141,7 +141,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              <Shield size={14} className="text-purple-500" />
+              <Shield size={14} className="text-indigo-500" />
               <p className="text-xs text-muted-foreground">
                 Secure connection established
               </p>
@@ -150,10 +150,10 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
 
           {/* VIDEO PREVIEW CONTAINER - Now with a flex layout to match height */}
           <motion.div variants={itemVariants} className="h-full">
-            <Card className="md:col-span-1 p-6 border-purple-100 dark:border-purple-900/50 shadow-lg relative overflow-hidden h-full flex flex-col">
+            <Card className="md:col-span-1 p-6 border-indigo-100 dark:border-indigo-900/50 shadow-lg relative overflow-hidden h-full flex flex-col">
               {/* Top accent bar */}
               <motion.div
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-700"
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-700"
                 initial={{ scaleX: 0, originX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 1, ease: "easeOut" }}
@@ -168,7 +168,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                       transition={{ delay: 0.2 }}
                       className="text-xl font-semibold mb-1 flex items-center gap-2"
                     >
-                      <VideoIcon size={18} className="text-purple-600" />
+                      <VideoIcon size={18} className="text-indigo-600" />
                       Camera Preview
                     </motion.h1>
                     <motion.p
@@ -181,18 +181,18 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                     </motion.p>
                   </div>
 
-                  {/* Enhanced status indicator with brighter purple when camera is on */}
+                  {/* Enhanced status indicator with brighter indigo when camera is on */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5, type: "spring" }}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-full ${!isCameraDisabled ? "bg-purple-500/20 dark:bg-purple-400/30" : "bg-purple-100 dark:bg-purple-900/30"}`}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-full ${!isCameraDisabled ? "bg-indigo-500/20 dark:bg-indigo-400/30" : "bg-indigo-100 dark:bg-indigo-900/30"}`}
                   >
                     <span
                       className={`h-2 w-2 rounded-full animate-pulse ${isCameraDisabled ? "bg-red-500" : "bg-green-500"}`}
                     ></span>
                     <span
-                      className={`text-xs font-medium ${!isCameraDisabled ? "text-purple-700 dark:text-purple-300" : ""}`}
+                      className={`text-xs font-medium ${!isCameraDisabled ? "text-indigo-700 dark:text-indigo-300" : ""}`}
                     >
                       {isCameraDisabled ? "Camera Off" : "Live Preview"}
                     </span>
@@ -204,7 +204,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
-                  className="flex-1 min-h-[320px] rounded-xl overflow-hidden bg-muted/30 border border-purple-100 dark:border-purple-900/50 relative shadow-inner"
+                  className="flex-1 min-h-[320px] rounded-xl overflow-hidden bg-muted/30 border border-indigo-100 dark:border-indigo-900/50 relative shadow-inner"
                 >
                   <div className="absolute inset-0">
                     <VideoPreview className="h-full w-full object-cover" />
@@ -227,9 +227,9 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                               stiffness: 200,
                               damping: 20,
                             }}
-                            className="h-20 w-20 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-4"
+                            className="h-20 w-20 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mb-4"
                           >
-                            <CameraIcon className="h-10 w-10 text-purple-600 dark:text-purple-400" />
+                            <CameraIcon className="h-10 w-10 text-indigo-600 dark:text-indigo-400" />
                           </motion.div>
                           <motion.p
                             initial={{ opacity: 0, y: 10 }}
@@ -263,7 +263,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                   transition={{ delay: 0.8 }}
                   className="mt-4"
                 >
-                  <h3 className="text-sm font-semibold mb-2 text-purple-700 dark:text-purple-400">
+                  <h3 className="text-sm font-semibold mb-2 text-indigo-700 dark:text-indigo-400">
                     Tips to Ace Your Interview
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
@@ -273,9 +273,9 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.9 + index * 0.1 }}
-                        className="flex items-start gap-2 p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg"
+                        className="flex items-start gap-2 p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg"
                       >
-                        <span className="mt-0.5 text-purple-600 dark:text-purple-400">
+                        <span className="mt-0.5 text-indigo-600 dark:text-indigo-400">
                           {tip.icon}
                         </span>
                         <span className="text-xs">{tip.text}</span>
@@ -289,10 +289,10 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
 
           {/* CARD CONTROLS */}
           <motion.div variants={itemVariants} className="h-full">
-            <Card className="md:col-span-1 p-6 border-purple-100 dark:border-purple-900/50 shadow-lg relative h-full">
+            <Card className="md:col-span-1 p-6 border-indigo-100 dark:border-indigo-900/50 shadow-lg relative h-full">
               {/* Top accent bar */}
               <motion.div
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-700 via-purple-600 to-purple-500"
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-500"
                 initial={{ scaleX: 0, originX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
@@ -308,7 +308,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                   <div className="flex items-start justify-between">
                     <div>
                       <h2 className="text-xl font-semibold mb-1 flex items-center gap-2">
-                        <Users size={18} className="text-purple-600" />
+                        <Users size={18} className="text-indigo-600" />
                         Meeting Details
                       </h2>
                       <p className="text-sm text-muted-foreground">
@@ -319,7 +319,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="bg-purple-100 dark:bg-purple-900/30 px-3 py-1 rounded-full flex items-center gap-1"
+                      className="bg-indigo-100 dark:bg-indigo-900/30 px-3 py-1 rounded-full flex items-center gap-1"
                     >
                       <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
                       <span className="text-xs font-medium">Ready</span>
@@ -330,7 +330,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     transition={{ delay: 0.5 }}
-                    className="mt-2 bg-muted/30 rounded-lg p-3 border border-purple-100 dark:border-purple-900/30"
+                    className="mt-2 bg-muted/30 rounded-lg p-3 border border-indigo-100 dark:border-indigo-900/30"
                   >
                     <p className="text-xs font-medium text-muted-foreground">
                       Meeting ID
@@ -352,7 +352,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.7 }}
-                      className="text-sm text-muted-foreground bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg border border-purple-100 dark:border-purple-900/30 mb-6"
+                      className="text-sm text-muted-foreground bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg border border-indigo-100 dark:border-indigo-900/30 mb-6"
                     >
                       <span className="font-medium text-foreground">Tip:</span>{" "}
                       For the best experience, use a quiet room and good
@@ -368,10 +368,10 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`h-10 w-10 rounded-full ${!isCameraDisabled ? "bg-purple-500 dark:bg-purple-600" : "bg-muted"} flex items-center justify-center`}
+                          className={`h-10 w-10 rounded-full ${!isCameraDisabled ? "bg-indigo-500 dark:bg-indigo-600" : "bg-muted"} flex items-center justify-center`}
                         >
                           <CameraIcon
-                            className={`h-5 w-5 ${!isCameraDisabled ? "text-white dark:text-purple-100" : "text-muted-foreground"}`}
+                            className={`h-5 w-5 ${!isCameraDisabled ? "text-white dark:text-indigo-100" : "text-muted-foreground"}`}
                           />
                         </div>
                         <div>
@@ -398,10 +398,10 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`h-10 w-10 rounded-full ${!isMicDisabled ? "bg-purple-500 dark:bg-purple-600" : "bg-muted"} flex items-center justify-center`}
+                          className={`h-10 w-10 rounded-full ${!isMicDisabled ? "bg-indigo-500 dark:bg-indigo-600" : "bg-muted"} flex items-center justify-center`}
                         >
                           <MicIcon
-                            className={`h-5 w-5 ${!isMicDisabled ? "text-white dark:text-purple-100" : "text-muted-foreground"}`}
+                            className={`h-5 w-5 ${!isMicDisabled ? "text-white dark:text-indigo-100" : "text-muted-foreground"}`}
                           />
                         </div>
                         <div>
@@ -427,8 +427,8 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                       whileHover={{ x: 5 }}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-purple-200 dark:bg-purple-600/50 flex items-center justify-center">
-                          <SettingsIcon className="h-5 w-5 text-purple-700 dark:text-purple-300" />
+                        <div className="h-10 w-10 rounded-full bg-indigo-200 dark:bg-indigo-600/50 flex items-center justify-center">
+                          <SettingsIcon className="h-5 w-5 text-indigo-700 dark:text-indigo-300" />
                         </div>
                         <div>
                           <p className="font-medium">Settings</p>
@@ -453,7 +453,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                       whileTap={{ scale: 0.97 }}
                     >
                       <Button
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                         size="lg"
                         onClick={handleJoin}
                         disabled={isJoining}
@@ -520,7 +520,7 @@ function MeetingSetup({ onSetupComplete }: { onSetupComplete: () => void }) {
                       className="text-xs text-center text-muted-foreground"
                     >
                       Do not worry, our team is super friendly! We want you to
-                      succeed. <span className="text-purple-500">🎉</span>
+                      succeed. <span className="text-indigo-500">🎉</span>
                     </motion.p>
                   </motion.div>
                 </div>

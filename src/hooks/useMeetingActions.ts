@@ -6,14 +6,14 @@ const useMeetingActions = () => {
   const router = useRouter();
   const client = useStreamVideoClient();
 
-  // Base toast options with purple accent elements
+  // Base toast options with indigo accent elements
   const baseToastOptions = {
     duration: 800,
     style: {
       borderRadius: "8px",
       padding: "8px",
-      boxShadow: "0 4px 12px rgba(124, 58, 237, 0.3)", // Purple shadow
-      borderLeft: "4px solid #7c3aed", // Purple accent border
+      boxShadow: "0 4px 12px rgba(124, 58, 237, 0.3)", // indigo shadow
+      borderLeft: "4px solid #7c3aed", // indigo accent border
     },
   };
 
@@ -26,7 +26,7 @@ const useMeetingActions = () => {
       color: "#fff", // White text
     },
     iconTheme: {
-      primary: "#7c3aed", // Purple icon
+      primary: "#7c3aed", // indigo icon
       secondary: "#fff",
     },
   };
@@ -40,7 +40,7 @@ const useMeetingActions = () => {
       color: "#fff", // White text
     },
     iconTheme: {
-      primary: "#7c3aed", // Purple icon
+      primary: "#7c3aed", // indigo icon
       secondary: "#fff",
     },
   };

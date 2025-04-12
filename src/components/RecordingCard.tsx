@@ -38,7 +38,7 @@ function RecordingCard({ recording }: { recording: CallRecording }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="bg-black border border-zinc-800 text-white hover:border-purple-500 transition-all duration-300">
+      <Card className="bg-black border border-zinc-800 text-white hover:border-indigo-500 transition-all duration-300">
         <CardHeader className="p-4 space-y-2">
           <div className="text-sm text-zinc-400 flex items-center gap-2">
             <CalendarIcon className="w-4 h-4" />
@@ -59,14 +59,14 @@ function RecordingCard({ recording }: { recording: CallRecording }) {
           >
             <div className="absolute inset-0 bg-zinc-800/20 hover:bg-zinc-700/20 transition-colors"></div>
             <div className="relative z-10">
-              <PlayIcon className="w-10 h-10 text-purple-500 hover:text-purple-400 transition-colors" />
+              <PlayIcon className="w-10 h-10 text-indigo-500 hover:text-indigo-400 transition-colors" />
             </div>
           </motion.div>
         </CardContent>
 
         <CardFooter className="p-4 flex gap-2">
           <Button
-            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white transition-all"
+            className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white transition-all"
             onClick={() => window.open(recording.url, "_blank")}
           >
             <PlayIcon className="w-4 h-4 mr-2" />
@@ -75,7 +75,7 @@ function RecordingCard({ recording }: { recording: CallRecording }) {
           <Button
             variant="secondary"
             onClick={handleCopyLink}
-            className="border border-purple-600 text-purple-400 hover:text-purple-200 hover:bg-zinc-800"
+            className="border border-indigo-600 text-indigo-400 hover:text-indigo-200 hover:bg-zinc-800"
           >
             <CopyIcon className="w-4 h-4" />
           </Button>

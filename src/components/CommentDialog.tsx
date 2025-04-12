@@ -120,7 +120,7 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
         >
           <Button
             variant="secondary"
-            className="w-full bg-gradient-to-r from-indigo-500/80 to-purple-500/80 hover:from-indigo-600/80 hover:to-purple-600/80 text-white border-none"
+            className="w-full bg-gradient-to-r from-indigo-500/80 to-indigo-500/80 hover:from-indigo-600/80 hover:to-indigo-600/80 text-white border-none"
           >
             <MessageSquareIcon className="h-4 w-4 mr-2" />
             Comments & Feedback
@@ -298,7 +298,7 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
           >
             <Button
               onClick={handleSubmit}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+              className="bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700"
             >
               <SendIcon className="h-4 w-4 mr-2" />
               Submit Feedback

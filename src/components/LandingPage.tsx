@@ -37,7 +37,7 @@ export default function InterviewAppLanding() {
   const numberOfDots = 20;
   const tagline = "Unlock Your Interview Potential";
   const appName = "Interviewly";
-  const primaryPurple = "#8b5cf6"; // Tailwind purple-500
+  const primaryindigo = "#8b5cf6"; // Tailwind indigo-500
 
   const taglineVariants = {
     initial: { x: -50, opacity: 0 },
@@ -81,12 +81,12 @@ export default function InterviewAppLanding() {
           </motion.h2>
           <motion.h1
             className="text-4xl md:text-5xl lg:text-6xl font-extrabold"
-            // style={cu{ color: primaryPurple }}
+            // style={cu{ color: primaryindigo }}
             initial="initial"
             animate="animate"
             variants={appNameVariants}
             whileHover="hover"
-            style={{ cursor: "default", color: primaryPurple }}
+            style={{ cursor: "default", color: primaryindigo }}
           >
             {appName}
           </motion.h1>
@@ -133,7 +133,7 @@ export default function InterviewAppLanding() {
             }}
           >
             <div className="bg-white dark:bg-gray-800 rounded-full p-3 shadow-md">
-              <Camera size={commonIconSize} className="text-purple-400" />
+              <Camera size={commonIconSize} className="text-indigo-400" />
             </div>
           </motion.div>
 
@@ -238,7 +238,7 @@ export default function InterviewAppLanding() {
 
           {/* Background gradient circles remain for subtle background texture */}
           <div className="absolute top-1/4 left-1/8 w-48 h-48 rounded-full bg-primary-400/10 blur-2xl" />
-          <div className="absolute top-1/3 right-1/8 w-64 h-64 rounded-full bg-purple-400/10 blur-2xl" />
+          <div className="absolute top-1/3 right-1/8 w-64 h-64 rounded-full bg-indigo-400/10 blur-2xl" />
           <div className="absolute bottom-1/3 left-1/4 w-56 h-56 rounded-full bg-blue-400/10 blur-2xl" />
 
           {/* Subtle grid pattern */}
@@ -270,7 +270,7 @@ export default function InterviewAppLanding() {
             if (i % 3 === 0)
               backgroundColor = "#6366f1"; // indigo-500
             else if (i % 3 === 1)
-              backgroundColor = "#a855f7"; // purple-500
+              backgroundColor = "#a855f7"; // indigo-500
             else backgroundColor = "#3b82f6"; // blue-500
 
             return (
@@ -346,7 +346,7 @@ export default function InterviewAppLanding() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">
                   Seamless
                 </span>{" "}
                 Technical Interviews, Reimagined
@@ -391,7 +391,7 @@ export default function InterviewAppLanding() {
               <div className="relative">
                 {/* 3D Effect for App Screenshot */}
                 <motion.div
-                  className="bg-gradient-to-tr from-primary/20 to-purple-500/20 rounded-2xl p-2 shadow-xl"
+                  className="bg-gradient-to-tr from-primary/20 to-indigo-500/20 rounded-2xl p-2 shadow-xl"
                   initial={{ rotateY: 15, rotateX: -10 }}
                   animate={{ rotateY: 0, rotateX: 0 }}
                   transition={{
@@ -500,7 +500,7 @@ export default function InterviewAppLanding() {
                     delay: 1,
                   }}
                 >
-                  <Camera size={24} className="text-purple-500" />
+                  <Camera size={24} className="text-indigo-500" />
                 </motion.div>
               </div>
             </motion.div>
@@ -684,10 +684,10 @@ export default function InterviewAppLanding() {
         </div>
       </section>
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/10 via-purple-500/10 to-primary/5">
+      <section className="py-20 bg-gradient-to-br from-primary/10 via-indigo-500/10 to-primary/5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="bg-gradient-to-br from-primary to-purple-600 rounded-3xl p-1 shadow-xl"
+            className="bg-gradient-to-br from-primary to-indigo-600 rounded-3xl p-1 shadow-xl"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -840,7 +840,7 @@ function StepItem({
         transition={{ duration: 0.5, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <div className="bg-primary text-purple-500 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold shadow-lg">
+        <div className="bg-primary text-indigo-500 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold shadow-lg">
           {number}
         </div>
       </motion.div>

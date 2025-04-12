@@ -37,10 +37,10 @@ function MeetingModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] overflow-hidden border-purple-200 dark:border-purple-900 shadow-lg">
+      <DialogContent className="sm:max-w-[425px] overflow-hidden border-indigo-200 dark:border-indigo-900 shadow-lg">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
-            className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-purple-200/50 dark:bg-purple-900/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-40"
+            className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-indigo-200/50 dark:bg-indigo-900/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-40"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{
               scale: [0.8, 1, 0.8],
@@ -53,7 +53,7 @@ function MeetingModal({
             }}
           />
           <motion.div
-            className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-purple-300/50 dark:bg-purple-800/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-40"
+            className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-indigo-300/50 dark:bg-indigo-600/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-40"
             initial={{ scale: 1, opacity: 0 }}
             animate={{
               scale: [1, 1.2, 1],
@@ -69,7 +69,7 @@ function MeetingModal({
         </div>
 
         <motion.div
-          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-700"
+          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-700"
           initial={{ scaleX: 0, originX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -82,7 +82,7 @@ function MeetingModal({
             transition={{ delay: 0.2, duration: 0.5 }}
             className="flex items-center gap-3"
           >
-            <div className="bg-gradient-to-br from-purple-600 to-purple-700 p-2 rounded-md shadow-md">
+            <div className="bg-gradient-to-br from-indigo-600 to-indigo-700 p-2 rounded-md shadow-md">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -109,7 +109,7 @@ function MeetingModal({
               </svg>
             </div>
             <DialogTitle className="text-xl font-bold">
-              <span className="bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">
                 {title}
               </span>
             </DialogTitle>
@@ -144,13 +144,13 @@ function MeetingModal({
                   placeholder="Paste meeting link here..."
                   value={meetingUrl}
                   onChange={(e) => setMeetingUrl(e.target.value)}
-                  className="border-purple-200 dark:border-purple-900 focus-visible:ring-purple-500"
+                  className="border-indigo-200 dark:border-indigo-900 focus-visible:ring-indigo-500"
                 />
                 {meetingUrl.trim() && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
-                    className="text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1"
+                    className="text-xs text-indigo-600 dark:text-indigo-400 flex items-center gap-1"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +182,7 @@ function MeetingModal({
               <Button
                 variant="outline"
                 onClick={onClose}
-                className="border-purple-200 dark:border-purple-900"
+                className="border-indigo-200 dark:border-indigo-900"
               >
                 Cancel
               </Button>
@@ -191,7 +191,7 @@ function MeetingModal({
               <Button
                 onClick={handleStart}
                 disabled={(isJoinMeeting && !meetingUrl.trim()) || isLoading}
-                className="bg-purple-600 hover:bg-purple-700 text-white"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white"
               >
                 {isLoading ? (
                   <motion.div

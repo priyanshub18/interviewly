@@ -7,7 +7,7 @@ function FeatureCard({ icon, title, description }:{
     title: string;
     description: string;
 }) {
-  const primaryColor = "#a855f7"; // A nice purple
+  const primaryColor = "#a855f7"; // A nice indigo
   const backgroundColor = "bg-black/80"; // Dark background
   const borderColor = "border-gray-800"; // Dark border
   const textColor = "text-gray-200"; // Light text
@@ -34,7 +34,7 @@ function FeatureCard({ icon, title, description }:{
     >
       <div className="flex items-center mb-2">
         <motion.div
-          className="bg-purple-800 p-2 rounded-md mr-2 text-purple-300 flex items-center justify-center w-8 h-8" // Darker purple background for icon
+          className="bg-indigo-600 p-2 rounded-md mr-2 text-indigo-300 flex items-center justify-center w-8 h-8" // Darker indigo background for icon
           variants={iconVariants}
           whileHover="hover"
         >
