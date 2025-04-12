@@ -65,23 +65,17 @@ export const CODING_QUESTIONS: CodeQuestion[] = [
     description:
       "Given a string `s` containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\nAn input string is valid if:\n1. Open brackets must be closed by the same type of brackets.\n2. Open brackets must be closed in the correct order.",
     examples: [
-      {
-        input: `s = "()"`,
-        output: "true",
-      },
-      {
-        input: `s = "()[]{}"`,
-        output: "true",
-      },
-      {
-        input: `s = "(]"`,
-        output: "false",
-      },
+      { input: `s = "()"`, output: "true" },
+      { input: `s = "()[]{}"`, output: "true" },
+      { input: `s = "(]"`, output: "false" },
+    ],
+    constraints: [
+      "1 <= s.length <= 10^4",
+      "s consists only of parentheses '()[]{}'",
     ],
     starterCode: {
       javascript: `function isValid(s) {
   // Write your solution here
-
 }`,
       python: `def is_valid(s):
     # Write your solution here
@@ -89,7 +83,6 @@ export const CODING_QUESTIONS: CodeQuestion[] = [
       java: `class Solution {
     public boolean isValid(String s) {
         // Write your solution here
-        
     }
 }`,
       cpp: `#include <stack>
@@ -98,7 +91,6 @@ using namespace std;
 
 bool isValid(string s) {
     // Write your solution here
-    
 }`,
     },
   },
@@ -108,23 +100,18 @@ bool isValid(string s) {
     description:
       "You are given the heads of two sorted linked lists `list1` and `list2`.\nMerge the two lists into one **sorted** list. The list should be made by splicing together the nodes of the first two lists.",
     examples: [
-      {
-        input: "list1 = [1,2,4], list2 = [1,3,4]",
-        output: "[1,1,2,3,4,4]",
-      },
-      {
-        input: "list1 = [], list2 = []",
-        output: "[]",
-      },
-      {
-        input: "list1 = [], list2 = [0]",
-        output: "[0]",
-      },
+      { input: "list1 = [1,2,4], list2 = [1,3,4]", output: "[1,1,2,3,4,4]" },
+      { input: "list1 = [], list2 = []", output: "[]" },
+      { input: "list1 = [], list2 = [0]", output: "[0]" },
+    ],
+    constraints: [
+      "The number of nodes in both lists is in the range [0, 50]",
+      "-100 <= Node.val <= 100",
+      "Both list1 and list2 are sorted in non-decreasing order.",
     ],
     starterCode: {
       javascript: `function mergeTwoLists(list1, list2) {
   // Write your solution here
-  
 }`,
       python: `def merge_two_lists(list1, list2):
     # Write your solution here
@@ -132,12 +119,10 @@ bool isValid(string s) {
       java: `class Solution {
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
         // Write your solution here
-        
     }
 }`,
       cpp: `ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
     // Write your solution here
-    
 }`,
     },
   },
@@ -159,10 +144,10 @@ bool isValid(string s) {
         explanation: "No profitable transaction possible.",
       },
     ],
+    constraints: ["1 <= prices.length <= 10^5", "0 <= prices[i] <= 10^4"],
     starterCode: {
       javascript: `function maxProfit(prices) {
   // Write your solution here
-  
 }`,
       python: `def max_profit(prices):
     # Write your solution here
@@ -170,7 +155,6 @@ bool isValid(string s) {
       java: `class Solution {
     public int maxProfit(int[] prices) {
         // Write your solution here
-        
     }
 }`,
       cpp: `#include <vector>
@@ -178,12 +162,83 @@ using namespace std;
 
 int maxProfit(vector<int>& prices) {
     // Write your solution here
-    
+}`,
+    },
+  },
+
+  // New Problems Added Below
+
+  {
+    id: "two-sum",
+    title: "Two Sum",
+    description:
+      "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\nYou may assume that each input would have **exactly one solution**, and you may not use the same element twice.",
+    examples: [
+      { input: "nums = [2,7,11,15], target = 9", output: "[0,1]" },
+      { input: "nums = [3,2,4], target = 6", output: "[1,2]" },
+    ],
+    constraints: [
+      "2 <= nums.length <= 10^4",
+      "-10^9 <= nums[i] <= 10^9",
+      "-10^9 <= target <= 10^9",
+      "Only one valid answer exists.",
+    ],
+    starterCode: {
+      javascript: `function twoSum(nums, target) {
+  // Write your solution here
+}`,
+      python: `def two_sum(nums, target):
+    # Write your solution here
+    pass`,
+      java: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your solution here
+    }
+}`,
+      cpp: `#include <vector>
+using namespace std;
+
+vector<int> twoSum(vector<int>& nums, int target) {
+    // Write your solution here
+}`,
+    },
+  },
+
+  {
+    id: "maximum-subarray",
+    title: "Maximum Subarray",
+    description:
+      "Given an integer array `nums`, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.",
+    examples: [
+      {
+        input: "nums = [-2,1,-3,4,-1,2,1,-5,4]",
+        output: "6",
+        explanation: "Subarray [4,-1,2,1] has the largest sum = 6.",
+      },
+      { input: "nums = [1]", output: "1" },
+    ],
+    constraints: ["1 <= nums.length <= 10^5", "-10^4 <= nums[i] <= 10^4"],
+    starterCode: {
+      javascript: `function maxSubArray(nums) {
+  // Write your solution here
+}`,
+      python: `def max_sub_array(nums):
+    # Write your solution here
+    pass`,
+      java: `class Solution {
+    public int maxSubArray(int[] nums) {
+        // Write your solution here
+    }
+}`,
+      cpp: `#include <vector>
+using namespace std;
+
+int maxSubArray(vector<int>& nums) {
+    // Write your solution here
 }`,
     },
   },
 ];
-
 export const LANGUAGES = [
   { id: "cpp", name: "C++", icon: "/cpp.png" },
   { id: "javascript", name: "JavaScript", icon: "/javascript.png" },
