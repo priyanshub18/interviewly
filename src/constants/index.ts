@@ -60,122 +60,123 @@ export const QUICK_ACTIONS = [
 
 export const CODING_QUESTIONS: CodeQuestion[] = [
   {
-    id: "two-sum",
-    title: "Two Sum",
+    id: "valid-parentheses",
+    title: "Valid Parentheses",
     description:
-      "Given an array of integers `nums` and an integer `target`, return indices of the two numbers in the array such that they add up to `target`.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.",
+      "Given a string `s` containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\nAn input string is valid if:\n1. Open brackets must be closed by the same type of brackets.\n2. Open brackets must be closed in the correct order.",
     examples: [
       {
-        input: "nums = [2,7,11,15], target = 9",
-        output: "[0,1]",
-        explanation: "Because nums[0] + nums[1] == 9, we return [0, 1]",
-      },
-      {
-        input: "nums = [3,2,4], target = 6",
-        output: "[1,2]",
-      },
-    ],
-    starterCode: {
-      javascript: `function twoSum(nums, target) {
-  // Write your solution here
-  
-}`,
-      python: `def two_sum(nums, target):
-    # Write your solution here
-    pass`,
-      java: `class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        // Write your solution here
-        
-    }
-}`,
-      cpp: `#include <vector>
-using namespace std;
-
-vector<int> twoSum(vector<int>& nums, int target) {
-    // Write your solution here
-    
-}`,
-    },
-    constraints: [
-      "2 ≤ nums.length ≤ 104",
-      "-109 ≤ nums[i] ≤ 109",
-      "-109 ≤ target ≤ 109",
-      "Only one valid answer exists.",
-    ],
-  },
-  {
-    id: "reverse-string",
-    title: "Reverse String",
-    description:
-      "Write a function that reverses a string. The input string is given as an array of characters `s`.\n\nYou must do this by modifying the input array in-place with O(1) extra memory.",
-    examples: [
-      {
-        input: 's = ["h","e","l","l","o"]',
-        output: '["o","l","l","e","h"]',
-      },
-      {
-        input: 's = ["H","a","n","n","a","h"]',
-        output: '["h","a","n","n","a","H"]',
-      },
-    ],
-    starterCode: {
-      javascript: `function reverseString(s) {
-  // Write your solution here
-  
-}`,
-      python: `def reverse_string(s):
-    # Write your solution here
-    pass`,
-      java: `class Solution {
-    public void reverseString(char[] s) {
-        // Write your solution here
-        
-    }
-}`,
-      cpp: `#include <vector>
-using namespace std;
-
-void reverseString(vector<char>& s) {
-    // Write your solution here
-    
-}`,
-    },
-  },
-  {
-    id: "palindrome-number",
-    title: "Palindrome Number",
-    description:
-      "Given an integer `x`, return `true` if `x` is a palindrome, and `false` otherwise.\n\nAn integer is a palindrome when it reads the same forward and backward.",
-    examples: [
-      {
-        input: "x = 121",
+        input: `s = "()"`,
         output: "true",
-        explanation:
-          "121 reads as 121 from left to right and from right to left.",
       },
       {
-        input: "x = -121",
+        input: `s = "()[]{}"`,
+        output: "true",
+      },
+      {
+        input: `s = "(]"`,
         output: "false",
-        explanation:
-          "From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.",
       },
     ],
     starterCode: {
-      javascript: `function isPalindrome(x) {
+      javascript: `function isValid(s) {
   // Write your solution here
-  
+
 }`,
-      python: `def is_palindrome(x):
+      python: `def is_valid(s):
     # Write your solution here
     pass`,
       java: `class Solution {
-    public boolean isPalindrome(int x) {
+    public boolean isValid(String s) {
         // Write your solution here
         
     }
 }`,
-      cpp: `bool isPalindrome(int x) {
+      cpp: `#include <stack>
+#include <string>
+using namespace std;
+
+bool isValid(string s) {
+    // Write your solution here
+    
+}`,
+    },
+  },
+  {
+    id: "merge-two-sorted-lists",
+    title: "Merge Two Sorted Lists",
+    description:
+      "You are given the heads of two sorted linked lists `list1` and `list2`.\nMerge the two lists into one **sorted** list. The list should be made by splicing together the nodes of the first two lists.",
+    examples: [
+      {
+        input: "list1 = [1,2,4], list2 = [1,3,4]",
+        output: "[1,1,2,3,4,4]",
+      },
+      {
+        input: "list1 = [], list2 = []",
+        output: "[]",
+      },
+      {
+        input: "list1 = [], list2 = [0]",
+        output: "[0]",
+      },
+    ],
+    starterCode: {
+      javascript: `function mergeTwoLists(list1, list2) {
+  // Write your solution here
+  
+}`,
+      python: `def merge_two_lists(list1, list2):
+    # Write your solution here
+    pass`,
+      java: `class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        // Write your solution here
+        
+    }
+}`,
+      cpp: `ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+    // Write your solution here
+    
+}`,
+    },
+  },
+  {
+    id: "best-time-to-buy-and-sell-stock",
+    title: "Best Time to Buy and Sell Stock",
+    description:
+      "You are given an array `prices` where `prices[i]` is the price of a given stock on the `i`-th day.\n\nYou want to maximize your profit by choosing a **single day** to buy one stock and choosing a **different day in the future** to sell that stock.\n\nReturn the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return `0`.",
+    examples: [
+      {
+        input: "prices = [7,1,5,3,6,4]",
+        output: "5",
+        explanation:
+          "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5.",
+      },
+      {
+        input: "prices = [7,6,4,3,1]",
+        output: "0",
+        explanation: "No profitable transaction possible.",
+      },
+    ],
+    starterCode: {
+      javascript: `function maxProfit(prices) {
+  // Write your solution here
+  
+}`,
+      python: `def max_profit(prices):
+    # Write your solution here
+    pass`,
+      java: `class Solution {
+    public int maxProfit(int[] prices) {
+        // Write your solution here
+        
+    }
+}`,
+      cpp: `#include <vector>
+using namespace std;
+
+int maxProfit(vector<int>& prices) {
     // Write your solution here
     
 }`,
