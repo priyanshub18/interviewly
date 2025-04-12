@@ -19,10 +19,9 @@ type Interview = Doc<"interviews">;
 function MeetingCard({ interview }: { interview: Interview }) {
   const { joinMeeting } = useMeetingActions();
   const status = getMeetingStatus(interview);
-  const formattedDate = format(
-    new Date(interview.startTime),
-    "EEEE, MMMM d · h:mm a",
-  );
+  const formattedDate = interview?.startTime
+    ? format(new Date(interview.startTime), "EEEE, MMMM d · h:mm a")
+    : "Date not set";
 
   const statusVariants = {
     live: {
@@ -45,6 +44,8 @@ function MeetingCard({ interview }: { interview: Interview }) {
   };
 
   const currentStatus = statusVariants[status as keyof typeof statusVariants];
+
+  if (!interview || !interview.title) return null;
 
   return (
     <motion.div
@@ -87,8 +88,9 @@ function MeetingCard({ interview }: { interview: Interview }) {
           <div className="flex items-center text-sm text-muted-foreground mb-4">
             <Users className="h-4 w-4 mr-2 text-purple-500" />
             <span>
-              {interview.interviewerIds.length} interviewer
-              {interview.interviewerIds.length !== 1 ? "s" : ""} • 1 candidate
+              {interview.interviewerIds?.length || 0} interviewer
+              {(interview.interviewerIds?.length || 0) !== 1 ? "s" : ""} • 1
+              candidate
             </span>
           </div>
 

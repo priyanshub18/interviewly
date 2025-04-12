@@ -14,7 +14,7 @@ type UserInfoProps = {
 
 function UserInfo({
   user,
-  showRole = false,
+
   avatarSize = "sm",
   className,
 }: UserInfoProps) {
@@ -33,37 +33,6 @@ function UserInfo({
   };
 
   // Get role display text and color
-  const getRoleStyles = () => {
-    if (!showRole) return {};
-
-    const roleConfig = {
-      interviewer: {
-        text: "Interviewer",
-        bgColor: "bg-blue-100 dark:bg-blue-900/30",
-        textColor: "text-blue-700 dark:text-blue-300",
-      },
-      candidate: {
-        text: "Candidate",
-        bgColor: "bg-green-100 dark:bg-green-900/30",
-        textColor: "text-green-700 dark:text-green-300",
-      },
-      admin: {
-        text: "Admin",
-        bgColor: "bg-amber-100 dark:bg-amber-900/30",
-        textColor: "text-amber-700 dark:text-amber-300",
-      },
-    };
-
-    const defaultRole = {
-      text: user.role || "User",
-      bgColor: "bg-gray-100 dark:bg-gray-800",
-      textColor: "text-gray-700 dark:text-gray-300",
-    };
-
-    return roleConfig[user.role as keyof typeof roleConfig] || defaultRole;
-  };
-
-  const roleStyles = getRoleStyles();
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
@@ -80,18 +49,6 @@ function UserInfo({
 
       <div className="flex flex-col">
         <span className="text-sm font-medium leading-none">{user.name}</span>
-
-        {showRole && (
-          <span
-            className={cn(
-              "text-xs px-1.5 py-0.5 rounded-full mt-1 inline-block",
-              roleStyles.bgColor,
-              roleStyles.textColor,
-            )}
-          >
-            {roleStyles.text}
-          </span>
-        )}
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import {
 } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/server";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { useRouter } from "next/navigation";
 
 export default function GlassmorphicNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,7 +23,7 @@ export default function GlassmorphicNavbar() {
   const { theme, setTheme } = useTheme();
   const { isInterviewer, isCandidate, isLoading } = useUserRoles();
   const { user } = useUser();
-
+  const router = useRouter();
   const primaryPurple = "#8b5cf6"; // Your primary purple
   const accentPurple = "#a855f7"; // Your accent purple
 
@@ -52,7 +53,10 @@ export default function GlassmorphicNavbar() {
           <div className="flex items-center justify-between h-16">
             {/* Logo and brand */}
             <div className="flex items-center">
-              <div className="flex-shrink-0">
+              <button
+                className="flex-shrink-0"
+                onClick={() => router.push("/")}
+              >
                 <div className="font-bold text-xl flex items-center gap-2">
                   <div
                     className="rounded-lg p-1"
@@ -71,7 +75,7 @@ export default function GlassmorphicNavbar() {
                     Interviewly
                   </span>
                 </div>
-              </div>
+              </button>
 
               {/* Desktop navigation */}
               <div className="hidden md:block ml-10">
@@ -80,18 +84,35 @@ export default function GlassmorphicNavbar() {
                     text="Home"
                     active={true}
                     primaryColor={primaryPurple}
+                    link="/home"
                   />
-                  <NavLink text="Products" primaryColor={primaryPurple} />
-                  <NavLink text="Services" primaryColor={primaryPurple} />
-                  <NavLink text="About" primaryColor={primaryPurple} />
-                  <NavLink text="Contact" primaryColor={primaryPurple} />
+                  <NavLink
+                    text="Products"
+                    primaryColor={primaryPurple}
+                    link="/#hero"
+                  />
+                  <NavLink
+                    text="Services"
+                    primaryColor={primaryPurple}
+                    link="/#features"
+                  />
+                  <NavLink
+                    text="About"
+                    primaryColor={primaryPurple}
+                    link="/#about"
+                  />
+                  <NavLink
+                    text="Contact"
+                    primaryColor={primaryPurple}
+                    link="/#contact"
+                  />
                 </div>
               </div>
             </div>
 
             {/* Right side - Dashboard & User Profile */}
             <div className="flex items-center space-x-2">
-              <div className="hidden md:flex items-center">
+              <div className=" md:flex items-center">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -123,6 +144,7 @@ export default function GlassmorphicNavbar() {
                     variant="ghost"
                     className="hover:opacity-90 transition-all duration-300"
                     style={{ backgroundColor: primaryPurple, color: "white" }}
+                    onClick={() => router.push("/dashboard")}
                   >
                     Dashboard
                   </Button>
@@ -157,42 +179,9 @@ export default function GlassmorphicNavbar() {
                   </Button>
                 </SignInButton>
               </SignedOut>
-
-              {/* Mobile menu button */}
-              {/* <div className="md:hidden">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                  {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                </Button>
-              </div> */}
             </div>
           </div>
         </div>
-
-        {/* Mobile menu, show/hide based on menu state */}
-        {/* {isMobileMenuOpen && (
-          <div className="md:hidden bg-background/80 dark:bg-background/90 backdrop-blur-lg">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <Button
-                className="w-full mt-2 hover:opacity-90 transition-all duration-300"
-                style={{ backgroundColor: primaryPurple, color: "white" }}
-              >
-                Dashboard
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full mt-4"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                style={{ borderColor: primaryPurple, color: primaryPurple }}
-              >
-                {theme === "dark" ? "Light Mode" : "Dark Mode"}
-              </Button>
-            </div>
-          </div>
-        )} */}
       </div>
     </>
   );
@@ -203,14 +192,16 @@ function NavLink({
   text,
   active = false,
   primaryColor,
+  link,
 }: {
   text: string;
   active?: boolean;
   primaryColor: string;
+  link?: string;
 }) {
   return (
     <a
-      href="#"
+      href={link == "" ? "/" : link}
       className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-300 ${
         active
           ? "text-white bg-opacity-80 backdrop-blur-md hover:bg-opacity-90"

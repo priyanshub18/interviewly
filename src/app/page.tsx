@@ -444,7 +444,7 @@ export default function Home() {
                         <div className="w-3 h-3 rounded-full bg-green-500"></div>
                       </div>
                       <div className="text-white text-xs">
-                        Senior Developer Interview - InterviewPro
+                        Senior Developer Interview - InterViewly
                       </div>
                       <div></div>
                     </div>
@@ -585,7 +585,13 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: false, amount: 0.3 }}
+          >
             <FeatureCard
               icon={<Camera />}
               title="Crystal-Clear Video"
@@ -616,11 +622,11 @@ export default function Home() {
               title="Interview Recordings"
               description="Automatically record, transcribe and index interviews for easy reference and team collaboration."
             />
-          </div>
+          </motion.div>
         </div>
       </section>
       {/* How It Works */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800/50">
+      <section className="py-20 bg-gray-50 dark:bg-gray-800/50" id="about">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-16"
@@ -630,7 +636,7 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              How InterviewPro Works
+              How InterViewly Works
             </h2>
             <p className="text-foreground/70 text-lg max-w-3xl mx-auto">
               Our streamlined process makes technical interviews efficient and
@@ -695,7 +701,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <TestimonialCard
-              quote="InterviewPro has cut our hiring time in half. The coding environment is flawless and candidates love the experience."
+              quote="InterViewly has cut our hiring time in half. The coding environment is flawless and candidates love the experience."
               author="Sarah Chen"
               role="CTO, TechVision"
             />
@@ -705,34 +711,58 @@ export default function Home() {
               role="Engineering Manager, DataSync"
             />
             <TestimonialCard
-              quote="We've increased our technical hire quality by 40% since switching to InterviewPro. The insights are invaluable."
+              quote="We've increased our technical hire quality by 40% since switching to InterViewly. The insights are invaluable."
               author="Aisha Johnson"
               role="HR Director, CloudNative"
             />
           </div>
         </div>
       </section>
+
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/10 via-purple-500/10 to-primary/5">
+      <section
+        className="py-20 bg-gradient-to-br from-primary/10 via-purple-500/10 to-primary/5"
+        id="about"
+      >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="bg-gradient-to-br from-primary to-purple-600 rounded-3xl p-1 shadow-xl"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: "-100px" }}
           >
             <div className="bg-background rounded-3xl p-8 md:p-12">
               <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                <motion.h2
+                  className="text-3xl md:text-4xl font-bold mb-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  viewport={{ once: true }}
+                >
                   Ready to Transform Your Technical Interviews?
-                </h2>
-                <p className="text-lg text-foreground/70 mb-8 max-w-3xl mx-auto">
+                </motion.h2>
+
+                <motion.p
+                  className="text-lg text-foreground/70 mb-8 max-w-3xl mx-auto"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  viewport={{ once: true }}
+                >
                   Join thousands of companies that have streamlined their hiring
                   process, improved candidate experience, and made better
-                  technical hires with InterviewPro.
-                </p>
-                <div className="flex flex-wrap justify-center gap-4">
+                  technical hires with InterViewly.
+                </motion.p>
+
+                <motion.div
+                  className="flex flex-wrap justify-center gap-4"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                  viewport={{ once: true }}
+                >
                   <Button size="lg" className="rounded-full px-8">
                     Start Your Free 14-Day Trial
                   </Button>
@@ -743,23 +773,34 @@ export default function Home() {
                   >
                     Request Demo
                   </Button>
-                </div>
-                <p className="text-sm text-foreground/50 mt-4">
+                </motion.div>
+
+                <motion.p
+                  className="text-sm text-foreground/50 mt-4"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  viewport={{ once: true }}
+                >
                   No credit card required. Cancel anytime.
-                </p>
+                </motion.p>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
       {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pt-16 pb-8">
+
+      <footer
+        className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pt-16 pb-8"
+        id="contact"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-1">
               <div className="font-medium text-lg flex items-center gap-2 mb-4">
                 <Camera size={24} className="text-primary" />
-                <span className="text-foreground font-bold">InterviewPro</span>
+                <span className="text-foreground font-bold">InterViewly</span>
               </div>
               <p className="text-foreground/70 mb-4">
                 Transforming the technical interview experience for companies
@@ -815,7 +856,7 @@ export default function Home() {
 
           <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-foreground/50 text-sm">
-              © 2025 InterviewPro By Priyanshu Bhardwaj. All Rights Reserved.
+              © 2025 InterViewly By Priyanshu Bhardwaj. All Rights Reserved.
             </p>
             <div className="flex items-center gap-2 mt-4 md:mt-0">
               <Button variant="ghost" size="sm" className="text-xs">

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import MeetingModal from "@/components/MeetingModal";
+import MeetingCard from "@/components/MeetingCard";
 
 const Home = () => {
   const router = useRouter();
@@ -72,37 +73,6 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/60 pb-12 my-6">
       <div className="container max-w-7xl mx-auto pt-16 px-4 sm:px-6">
-        {/* WELCOME SECTION */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="rounded-xl bg-card border border-border/40 shadow-lg mb-12 overflow-hidden"
-        >
-          <div className="h-2 bg-gradient-to-r from-purple-600 to-blue-500"></div>
-          <div className="p-8">
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent"
-            >
-              Welcome back!
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-muted-foreground mt-3 text-lg"
-            >
-              {isInterviewer
-                ? "Manage your interviews and review candidates effectively"
-                : "Access your upcoming interviews and preparations"}
-            </motion.p>
-          </div>
-        </motion.div> */}
-        {/* 
-        actual code will be implemented in the next commit. */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -282,10 +252,11 @@ const Home = () => {
                     scale: 1.05,
                   }}
                   whileTap={{ scale: 0.98 }}
+                  className={`border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 ${!isCandidate ? "block" : "hidden"}`}
                 >
                   <Button
                     variant="outline"
-                    className="border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300"
+                    className={`border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 ${!isCandidate ? "block" : "hidden"}`}
                   >
                     View Dashboard
                   </Button>
@@ -465,39 +436,61 @@ const Home = () => {
                   View and join your scheduled interviews
                 </p>
               </motion.div>
-
-              <motion.div
-                variants={itemVariants}
-                className="mt-8 p-8 rounded-xl bg-card border border-border/40 shadow-md text-center"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-8 w-8 text-purple-600 dark:text-purple-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+              {interviews && interviews.length > 0 ? (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {interviews.map((interview) => (
+                    <motion.div
+                      key={interview._id}
+                      variants={itemVariants}
+                      whileHover={{
+                        scale: 1.03,
+                        boxShadow:
+                          "0 10px 25px -5px rgba(124, 58, 237, 0.1), 0 8px 10px -6px rgba(124, 58, 237, 0.1)",
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
+                      }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
+                      <MeetingCard interview={interview} />
+                    </motion.div>
+                  ))}
                 </div>
-                <h3 className="text-xl font-medium text-foreground">
-                  No upcoming interviews
-                </h3>
-                <p className="text-muted-foreground mt-2">
-                  When interviews are scheduled, they will appear here
-                </p>
-                <button className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:opacity-90 transition-opacity">
-                  Check Schedule
-                </button>
-              </motion.div>
+              ) : (
+                <motion.div
+                  variants={itemVariants}
+                  className="mt-8 p-8 rounded-xl bg-card border border-border/40 shadow-md text-center"
+                >
+                  <div className="flex justify-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-8 w-8 text-purple-600 dark:text-purple-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-medium text-foreground">
+                    No upcoming interviews
+                  </h3>
+                  <p className="text-muted-foreground mt-2">
+                    When interviews are scheduled, they will appear here
+                  </p>
+                  <button className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:opacity-90 transition-opacity">
+                    Check Schedule
+                  </button>
+                </motion.div>
+              )}
             </motion.div>
           )}
         </div>

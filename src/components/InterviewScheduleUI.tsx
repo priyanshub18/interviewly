@@ -411,7 +411,7 @@ function InterviewScheduleUI() {
         <motion.div
           className="space-y-4"
           variants={containerVariants}
-          initial="hidden"
+        //   initial="hidden"
           animate="visible"
         >
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
