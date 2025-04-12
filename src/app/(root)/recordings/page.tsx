@@ -23,7 +23,8 @@ function RecordingsPage() {
           calls.map((call) => call.queryRecordings()),
         );
         const allRecordings = callData.flatMap((call) => call.recordings);
-
+        console.log("Call Data:", callData);
+        console.log("All Recordings:", allRecordings);
         setRecordings(allRecordings);
       } catch (error) {
         console.log("Error fetching recordings:", error);
@@ -93,7 +94,6 @@ function RecordingsPage() {
         />
       </div>
 
-    
       <ScrollArea className="h-[calc(100vh-12rem)] mt-3 pr-4">
         <AnimatePresence>
           {recordings.length > 0 ? (

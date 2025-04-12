@@ -1,17 +1,25 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react"; // Fallback icon
+import { useTheme } from "next-themes";
 
-function FeatureCard({ icon, title, description }:{
-    icon: React.ReactNode;
-    title: string;
-    description: string;
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
 }) {
-  const primaryColor = "#a855f7"; // A nice indigo
-  const backgroundColor = "bg-black/80"; // Dark background
-  const borderColor = "border-gray-800"; // Dark border
-  const textColor = "text-gray-200"; // Light text
-  const secondaryTextColor = "text-gray-400"; // Lighter text
+ const { theme } = useTheme();
+
+ const primaryColor = theme === "dark" ? "#4f46e5" : "#6366f1"; // Indigo-600 for dark, Indigo-500 for light
+ const backgroundColor = theme === "dark" ? "bg-black/80" : "bg-white";
+ const borderColor = theme === "dark" ? "border-gray-800" : "border-gray-300";
+ const textColor = theme === "dark" ? "text-gray-200" : "text-gray-800";
+ const secondaryTextColor =
+   theme === "dark" ? "text-gray-400" : "text-gray-600";
 
   const cardVariants = {
     initial: { opacity: 0, y: 10 },

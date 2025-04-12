@@ -50,8 +50,18 @@ const useGetCalls = () => {
   const liveCalls = calls?.filter(({ state: { startsAt, endedAt } }: Call) => {
     return startsAt && new Date(startsAt) < now && !endedAt;
   });
+  const getCallBySteamId = (streamCallId: string) => {
+    return calls?.find((call) => call.id === streamCallId);
+  };
 
-  return { calls, endedCalls, upcomingCalls, liveCalls, isLoading };
+  return {
+    calls,
+    endedCalls,
+    upcomingCalls,
+    liveCalls,
+    isLoading,
+    getCallBySteamId,
+  };
 };
 
 export default useGetCalls;
