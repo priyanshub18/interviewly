@@ -48,7 +48,7 @@ function MeetingRoom() {
         className="container max-w-7xl mx-auto mt-24 flex items-center my-20 justify-center h-64"
       >
         <div className="flex flex-col items-center space-y-4">
-          <div className="h-12 w-12 border-4 border-t-indigo-600 border-b-indigo-500 border-l-indigo-400 border-r-indigo-300 rounded-full animate-spin"></div>
+          <div className="h-12 w-12 border-4 border-t-blue-600 border-b-blue-500 border-l-blue-400 border-r-blue-300 rounded-full animate-spin"></div>
           <p className="text-muted-foreground">Joining the call...</p>
         </div>
       </motion.div>
@@ -66,15 +66,15 @@ function MeetingRoom() {
       >
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center space-x-2">
-            {/* <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-600 to-indigo-400"></div> */}
+            {/* <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400"></div> */}
             <h1 className="font-semibold text-lg"></h1>
           </div>
-          <div className="text-sm text-muted-foreground bg-indigo-50/10 px-3 py-1.5 rounded-full"></div>
+          <div className="text-sm text-muted-foreground bg-blue-50/10 px-3 py-1.5 rounded-full"></div>
           <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
               size="sm"
-              className="text-indigo-500 hover:text-indigo-600 hover:bg-indigo-50/10"
+              className="text-blue-500 hover:text-blue-600 hover:bg-blue-50/10"
             ></Button>
           </div>
         </div>
@@ -106,7 +106,7 @@ function MeetingRoom() {
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: 300, opacity: 0 }}
                     transition={{ type: "spring", damping: 20 }}
-                    className="absolute right-0 top-0 h-full w-[300px] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-l border-indigo-200/20"
+                    className="absolute right-0 top-0 h-full w-[300px] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-l border-blue-200/20"
                   >
                     <CallParticipantsList
                       onClose={() => setShowParticipants(false)}
@@ -173,7 +173,7 @@ function MeetingRoom() {
           </ResizablePanel>
 
           <ResizableHandle
-            className="bg-indigo-200/20 hover:bg-indigo-300/30"
+            className="bg-blue-200/20 hover:bg-blue-300/30"
             withHandle
           />
 

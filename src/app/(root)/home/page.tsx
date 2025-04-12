@@ -63,7 +63,7 @@ const Home = () => {
     return (
       <div className="container max-w-7xl mx-auto mt-24 flex items-center my-20 justify-center h-64">
         <div className="flex flex-col items-center space-y-4">
-          <div className="h-12 w-12 border-4 border-t-indigo-600 border-b-blue-500 border-l-indigo-400 border-r-blue-300 rounded-full animate-spin"></div>
+          <div className="h-12 w-12 border-4 border-t-blue-600 border-b-blue-500 border-l-blue-400 border-r-blue-300 rounded-full animate-spin"></div>
           <p className="text-muted-foreground">Loading your dashboard...</p>
         </div>
       </div>
@@ -81,7 +81,7 @@ const Home = () => {
         >
           {/* Decorative elements - color changes based on theme */}
           <motion.div
-            className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-indigo-200/50 dark:bg-indigo-900/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-60"
+            className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-blue-200/50 dark:bg-blue-900/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-60"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.5, 0.7, 0.5],
@@ -93,7 +93,7 @@ const Home = () => {
             }}
           />
           <motion.div
-            className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-indigo-300/50 dark:bg-indigo-600/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-60"
+            className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-blue-300/50 dark:bg-blue-600/30 mix-blend-multiply dark:mix-blend-soft-light blur-3xl opacity-60"
             animate={{
               scale: [1.2, 1, 1.2],
               opacity: [0.5, 0.7, 0.5],
@@ -110,7 +110,7 @@ const Home = () => {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="h-2 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-700"
+            className="h-2 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700"
           />
 
           <div className="p-8 relative z-10">
@@ -126,7 +126,7 @@ const Home = () => {
               }}
               className="mb-6 inline-block"
             >
-              <div className="bg-gradient-to-br from-indigo-600 to-indigo-700 p-3 rounded-lg shadow-lg">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-3 rounded-lg shadow-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -154,11 +154,11 @@ const Home = () => {
                   className="text-4xl font-bold"
                 >
                   <span className="inline-block relative">
-                    <span className="bg-gradient-to-r from-indigo-500 to-indigo-700 bg-clip-text text-transparent no-underline">
+                    <span className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent no-underline">
                       Welcome back!
                     </span>
                     <motion.span
-                      className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-indigo-700 rounded-full"
+                      className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-700 rounded-full"
                       initial={{ scaleX: 0, originX: 0 }}
                       animate={{ scaleX: 1 }}
                       transition={{ delay: 1, duration: 0.8 }}
@@ -189,7 +189,7 @@ const Home = () => {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.9, type: "spring" }}
-                      className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-300"
+                      className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-300"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -226,7 +226,14 @@ const Home = () => {
                 >
                   <Button
                     variant="default"
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2"
+                    className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+                    onClick={() => {
+                      if (isInterviewer) {
+                        router.push("/dashboard");
+                      } else {
+                        router.push("/prepare-interview");
+                      }
+                    }}
                   >
                     {isInterviewer
                       ? "Review Candidates"
@@ -252,11 +259,11 @@ const Home = () => {
                     scale: 1.05,
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className={`border-indigo-200 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 ${!isCandidate ? "block" : "hidden"}`}
+                  className={`border-blue-200 dark:border-blue-600 text-blue-700 dark:text-blue-300 ${!isCandidate ? "block" : "hidden"}`}
                 >
                   <Button
                     variant="outline"
-                    className={`border-indigo-200 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 ${!isCandidate ? "block" : "hidden"}`}
+                    className={`border-blue-200 dark:border-blue-600 text-blue-700 dark:text-blue-300 ${!isCandidate ? "block" : "hidden"}`}
                   >
                     View Dashboard
                   </Button>
@@ -295,7 +302,7 @@ const Home = () => {
                       <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                   ),
-                  color: "bg-indigo-600 dark:bg-indigo-700",
+                  color: "bg-blue-600 dark:bg-blue-700",
                 },
                 {
                   label: isInterviewer
@@ -320,7 +327,7 @@ const Home = () => {
                       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                   ),
-                  color: "bg-indigo-500 dark:bg-indigo-600",
+                  color: "bg-blue-500 dark:bg-blue-600",
                 },
                 {
                   label: isInterviewer ? "Feedback Given" : "Skills Improved",
@@ -340,7 +347,7 @@ const Home = () => {
                       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                     </svg>
                   ),
-                  color: "bg-indigo-700 dark:bg-indigo-600",
+                  color: "bg-blue-700 dark:bg-blue-600",
                 },
               ].map((stat, index) => (
                 <motion.div
@@ -391,7 +398,7 @@ const Home = () => {
             >
               <motion.div variants={itemVariants}>
                 <h2 className="text-2xl font-semibold mb-6 text-foreground flex items-center">
-                  <span className="h-6 w-1.5 bg-indigo-600 rounded-full mr-3"></span>
+                  <span className="h-6 w-1.5 bg-blue-600 rounded-full mr-3"></span>
                   Quick Actions
                 </h2>
               </motion.div>
@@ -429,7 +436,7 @@ const Home = () => {
             >
               <motion.div variants={itemVariants}>
                 <h2 className="text-2xl font-semibold flex items-center">
-                  <span className="h-6 w-1.5 bg-indigo-600 rounded-full mr-3"></span>
+                  <span className="h-6 w-1.5 bg-blue-600 rounded-full mr-3"></span>
                   Your Interviews
                 </h2>
                 <p className="text-muted-foreground mt-2 ml-4 text-lg">
@@ -463,10 +470,10 @@ const Home = () => {
                   className="mt-8 p-8 rounded-xl bg-card border border-border/40 shadow-md text-center"
                 >
                   <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8 text-indigo-600 dark:text-indigo-400"
+                        className="h-8 w-8 text-blue-600 dark:text-blue-400"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -486,7 +493,7 @@ const Home = () => {
                   <p className="text-muted-foreground mt-2">
                     When interviews are scheduled, they will appear here
                   </p>
-                  <button className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-medium hover:opacity-90 transition-opacity">
+                  <button className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium hover:opacity-90 transition-opacity">
                     Check Schedule
                   </button>
                 </motion.div>

@@ -14,7 +14,7 @@ function FeatureCard({
 }) {
  const { theme } = useTheme();
 
- const primaryColor = theme === "dark" ? "#4f46e5" : "#6366f1"; // Indigo-600 for dark, Indigo-500 for light
+ const primaryColor = theme === "dark" ? "#4f46e5" : "#6366f1"; // blue-600 for dark, blue-500 for light
  const backgroundColor = theme === "dark" ? "bg-black/80" : "bg-white";
  const borderColor = theme === "dark" ? "border-gray-800" : "border-gray-300";
  const textColor = theme === "dark" ? "text-gray-200" : "text-gray-800";
@@ -42,7 +42,7 @@ function FeatureCard({
     >
       <div className="flex items-center mb-2">
         <motion.div
-          className="bg-indigo-600 p-2 rounded-md mr-2 text-indigo-300 flex items-center justify-center w-8 h-8" // Darker indigo background for icon
+          className="bg-blue-600 p-2 rounded-md mr-2 text-blue-300 flex items-center justify-center w-8 h-8" // Darker blue background for icon
           variants={iconVariants}
           whileHover="hover"
         >

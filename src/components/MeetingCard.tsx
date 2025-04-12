@@ -81,13 +81,13 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
   useEffect(() => {}, [interview]);
   const statusVariants = {
     live: {
-      badge: "bg-indigo-600 text-white hover:bg-indigo-700",
+      badge: "bg-blue-600 text-white hover:bg-blue-700",
       text: "Live Now",
       icon: <span className="animate-pulse mr-1">●</span>,
     },
     upcoming: {
       badge:
-        "bg-indigo-100 text-indigo-700 border border-indigo-200 hover:bg-indigo-200",
+        "bg-blue-100 text-blue-700 border border-blue-200 hover:bg-blue-200",
       text: "Upcoming",
       icon: <Clock className="h-3 w-3 mr-1" />,
     },
@@ -151,12 +151,12 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
 
       <Card className="overflow-hidden border-gray-200 dark:border-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
         <div
-          className={`h-1 ${status === "live" ? "bg-indigo-600" : "bg-indigo-200 dark:bg-indigo-600"}`}
+          className={`h-1 ${status === "live" ? "bg-blue-600" : "bg-blue-200 dark:bg-blue-600"}`}
         />
         <CardHeader className="space-y-3 pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CalendarIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <CalendarIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               {formattedDate}
             </div>
 
@@ -168,7 +168,7 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
             </motion.div>
           </div>
 
-          <CardTitle className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+          <CardTitle className="text-xl font-bold text-blue-600 dark:text-blue-400">
             {interview.title}
           </CardTitle>
 
@@ -181,7 +181,7 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
 
         <CardContent className="pb-6">
           <div className="flex items-center text-sm text-muted-foreground mb-4">
-            <Users className="h-4 w-4 mr-2 text-indigo-500" />
+            <Users className="h-4 w-4 mr-2 text-blue-500" />
             <span>
               {interview.interviewerIds?.length || 0} interviewer
               {(interview.interviewerIds?.length || 0) !== 1 ? "s" : ""} • 1
@@ -192,7 +192,7 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
           {status === "live" && (
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Button
-                className="w-full bg-indigo-600 hover:bg-indigo-700 transition-all font-medium text-white"
+                className="w-full bg-blue-600 hover:bg-blue-700 transition-all font-medium text-white"
                 onClick={() => joinMeeting(interview.streamCallId)}
               >
                 Join Meeting
@@ -204,13 +204,13 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
             <div className="relative">
               <Button
                 variant="outline"
-                className="w-full border-indigo-200 dark:border-indigo-600 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                className="w-full border-blue-200 dark:border-blue-600 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                 disabled
               >
                 Waiting to Start
               </Button>
               <motion.div
-                className="absolute inset-0 bg-indigo-100 dark:bg-indigo-900/20 rounded-md -z-10 opacity-0"
+                className="absolute inset-0 bg-blue-100 dark:bg-blue-900/20 rounded-md -z-10 opacity-0"
                 animate={{
                   opacity: [0, 0.5, 0],
                 }}

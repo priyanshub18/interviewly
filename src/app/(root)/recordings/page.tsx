@@ -71,7 +71,7 @@ function RecordingsPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <div className="flex items-center gap-2 mt-2">
-            <div className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 px-3 py-1 rounded-full text-sm font-medium flex items-center">
+            <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-medium flex items-center">
               <VideoIcon className="h-3.5 w-3.5 mr-1" />
               <span>
                 {recordings.length}{" "}
@@ -81,7 +81,7 @@ function RecordingsPage() {
           </div>
         </motion.div>
         <motion.div
-          className="absolute -z-10 top-0 left-0 h-24 w-24 rounded-full bg-indigo-500/10 blur-2xl"
+          className="absolute -z-10 top-0 left-0 h-24 w-24 rounded-full bg-blue-500/10 blur-2xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.5, 0.8, 0.5],
@@ -131,9 +131,9 @@ function RecordingsPage() {
                   repeat: Infinity,
                   repeatType: "reverse",
                 }}
-                className="bg-indigo-100 dark:bg-indigo-900/20 p-6 rounded-full"
+                className="bg-blue-100 dark:bg-blue-900/20 p-6 rounded-full"
               >
-                <VideoIcon className="h-12 w-12 text-indigo-500" />
+                <VideoIcon className="h-12 w-12 text-blue-500" />
               </motion.div>
               <p className="text-xl font-medium text-muted-foreground">
                 No recordings available

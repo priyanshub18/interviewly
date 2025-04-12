@@ -28,6 +28,42 @@ export const getMyInterviews = query({
   },
 });
 
+export const getUpcomingInterviews = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+
+    const allForUser = await ctx.db
+      .query("interviews")
+      .withIndex("by_candidate_id", (q) =>
+        q.eq("candidateId", identity.subject),
+      )
+      .collect();
+
+    return allForUser.filter((i) => i.status === "upcoming");
+  },
+});
+
+export const getNumberofInterviews = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+
+    const allForUser = await ctx.db
+      .query("interviews")
+      .withIndex("by_candidate_id", (q) =>
+        q.eq("candidateId", identity.subject),
+      )
+      .collect();
+
+    const upcomingInterviews = allForUser.filter(
+      (i) => i.status === "upcoming",
+    );
+
+    return upcomingInterviews.length;
+  },
+});
+
 export const getInterviewByStreamCallId = query({
   args: { streamCallId: v.string() },
   handler: async (ctx, args) => {
@@ -70,5 +106,3 @@ export const updateInterviewStatus = mutation({
     });
   },
 });
-
-

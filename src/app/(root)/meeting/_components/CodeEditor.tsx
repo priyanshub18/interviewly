@@ -77,7 +77,7 @@ function CodeEditor() {
   const getCardHeaderStyle = () => {
     return isDarkMode
       ? "bg-zinc-900"
-      : "bg-gradient-to-r from-indigo-50 to-transparent";
+      : "bg-gradient-to-r from-blue-50 to-transparent";
   };
 
   return (
@@ -114,7 +114,7 @@ function CodeEditor() {
                         delay: 0.2,
                       }}
                     >
-                      <Badge className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                      <Badge className="bg-blue-600 hover:bg-blue-700 text-white">
                         Challenge
                       </Badge>
                     </motion.div>
@@ -131,7 +131,7 @@ function CodeEditor() {
                     value={selectedQuestion.id}
                     onValueChange={handleQuestionChange}
                   >
-                    <SelectTrigger className="w-[180px] border-indigo-200 focus:ring-indigo-500">
+                    <SelectTrigger className="w-[180px] border-blue-200 focus:ring-blue-500">
                       <SelectValue placeholder="Select question" />
                     </SelectTrigger>
                     <SelectContent>
@@ -139,7 +139,7 @@ function CodeEditor() {
                         <SelectItem
                           key={q.id}
                           value={q.id}
-                          className="focus:bg-indigo-100 focus:text-indigo-900"
+                          className="focus:bg-blue-100 focus:text-blue-900"
                         >
                           {q.title}
                         </SelectItem>
@@ -148,7 +148,7 @@ function CodeEditor() {
                   </Select>
 
                   <Select value={language} onValueChange={handleLanguageChange}>
-                    <SelectTrigger className="w-[150px] border-indigo-200 focus:ring-indigo-500">
+                    <SelectTrigger className="w-[150px] border-blue-200 focus:ring-blue-500">
                       {/* SELECT VALUE */}
                       <SelectValue>
                         <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ function CodeEditor() {
                         <SelectItem
                           key={lang.id}
                           value={lang.id}
-                          className="focus:bg-indigo-100 focus:text-indigo-900"
+                          className="focus:bg-blue-100 focus:text-blue-900"
                         >
                           <div className="flex items-center gap-2">
                             <img
@@ -187,7 +187,7 @@ function CodeEditor() {
 
               {/* PROBLEM DESC. */}
               <motion.div variants={fadeInUpVariants}>
-                <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-indigo-100 dark:border-zinc-800">
+                <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-blue-100 dark:border-zinc-800">
                   <CardHeader
                     className={`flex flex-row items-center gap-2 ${getCardHeaderStyle()}`}
                   >
@@ -195,7 +195,7 @@ function CodeEditor() {
                       whileHover={{ rotate: 15 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
-                      <BookIcon className="h-5 w-5 text-indigo-600" />
+                      <BookIcon className="h-5 w-5 text-blue-600" />
                     </motion.div>
                     <CardTitle>Problem Description</CardTitle>
                   </CardHeader>
@@ -204,7 +204,7 @@ function CodeEditor() {
                       <p className="whitespace-pre-line text-base leading-7">
                         {selectedQuestion.description}
                       </p>
-                      <div className="mt-4 font-medium text-indigo-700 dark:text-indigo-400">
+                      <div className="mt-4 font-medium text-blue-700 dark:text-blue-400">
                         Try to solve it optimally in terms of both time and
                         space complexity.
                       </div>
@@ -215,7 +215,7 @@ function CodeEditor() {
 
               {/* PROBLEM EXAMPLES */}
               <motion.div variants={fadeInUpVariants}>
-                <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-indigo-100 dark:border-zinc-800">
+                <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-blue-100 dark:border-zinc-800">
                   <CardHeader
                     className={`flex flex-row items-center justify-between cursor-pointer ${getCardHeaderStyle()}`}
                     onClick={() => toggleSection("examples")}
@@ -235,7 +235,7 @@ function CodeEditor() {
                       }}
                       transition={{ duration: 0.3 }}
                     >
-                      <ChevronDownIcon className="h-5 w-5 text-indigo-500" />
+                      <ChevronDownIcon className="h-5 w-5 text-blue-500" />
                     </motion.div>
                   </CardHeader>
                   <AnimatePresence>
@@ -248,7 +248,7 @@ function CodeEditor() {
                         style={{ overflow: "hidden" }}
                       >
                         <CardContent className="pt-2 pb-4">
-                          <ScrollArea className="h-full w-full rounded-md border border-indigo-100 dark:border-zinc-700">
+                          <ScrollArea className="h-full w-full rounded-md border border-blue-100 dark:border-zinc-700">
                             <div className="p-4 space-y-4">
                               {selectedQuestion.examples.map(
                                 (example, index) => (
@@ -259,11 +259,11 @@ function CodeEditor() {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: index * 0.1 }}
                                   >
-                                    <p className="font-medium text-sm text-indigo-700 dark:text-indigo-400">
+                                    <p className="font-medium text-sm text-blue-700 dark:text-blue-400">
                                       Example {index + 1}:
                                     </p>
                                     <ScrollArea className="h-full w-full rounded-md">
-                                      <pre className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg text-sm font-mono">
+                                      <pre className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-sm font-mono">
                                         <div className="font-bold">
                                           Input:{" "}
                                           <span className="font-normal">
@@ -277,7 +277,7 @@ function CodeEditor() {
                                           </span>
                                         </div>
                                         {example.explanation && (
-                                          <div className="pt-2 text-muted-foreground border-t border-indigo-100 dark:border-indigo-600/30 mt-2">
+                                          <div className="pt-2 text-muted-foreground border-t border-blue-100 dark:border-blue-600/30 mt-2">
                                             <span className="font-bold">
                                               Explanation:
                                             </span>{" "}
@@ -303,7 +303,7 @@ function CodeEditor() {
               {/* CONSTRAINTS */}
               {selectedQuestion.constraints && (
                 <motion.div variants={fadeInUpVariants}>
-                  <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-indigo-100 dark:border-zinc-800">
+                  <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-blue-100 dark:border-zinc-800">
                     <CardHeader
                       className={`flex flex-row items-center justify-between cursor-pointer ${getCardHeaderStyle()}`}
                       onClick={() => toggleSection("constraints")}
@@ -313,7 +313,7 @@ function CodeEditor() {
                           whileHover={{ rotate: 360 }}
                           transition={{ duration: 0.6 }}
                         >
-                          <AlertCircleIcon className="h-5 w-5 text-indigo-500" />
+                          <AlertCircleIcon className="h-5 w-5 text-blue-500" />
                         </motion.div>
                         <CardTitle>Constraints</CardTitle>
                       </div>
@@ -323,7 +323,7 @@ function CodeEditor() {
                         }}
                         transition={{ duration: 0.3 }}
                       >
-                        <ChevronDownIcon className="h-5 w-5 text-indigo-500" />
+                        <ChevronDownIcon className="h-5 w-5 text-blue-500" />
                       </motion.div>
                     </CardHeader>
                     <AnimatePresence>
@@ -349,7 +349,7 @@ function CodeEditor() {
                                     className="text-muted-foreground"
                                     variants={fadeInUpVariants}
                                   >
-                                    <span className="font-mono bg-indigo-50 dark:bg-indigo-900/20 px-1 py-0.5 rounded text-indigo-700 dark:text-indigo-300">
+                                    <span className="font-mono bg-blue-50 dark:bg-blue-900/20 px-1 py-0.5 rounded text-blue-700 dark:text-blue-300">
                                       {constraint}
                                     </span>
                                   </motion.li>
@@ -373,7 +373,7 @@ function CodeEditor() {
         <div className="h-4 w-full flex items-center justify-center">
           <motion.div
             whileHover={{ scale: 1.2 }}
-            className="bg-indigo-400 h-1 w-6 rounded-full"
+            className="bg-blue-400 h-1 w-6 rounded-full"
           />
         </div>
       </ResizableHandle>
@@ -413,7 +413,7 @@ function CodeEditor() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg"
               onClick={() =>
                 toast.success("Interviewer Informed Succesfully", {
                   position: "top-center",
@@ -422,7 +422,7 @@ function CodeEditor() {
                     color: "#fff", // White text
                   },
                   iconTheme: {
-                    primary: "#7c3aed", // indigo icon
+                    primary: "#7c3aed", // blue icon
                     secondary: "#fff",
                   },
                 })

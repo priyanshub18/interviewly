@@ -15,7 +15,7 @@ function ActionCard({
       transition={{ type: "spring", stiffness: 400, damping: 10 }}
     >
       <Card
-        className="group relative overflow-hidden border border-border hover:border-indigo-500/50 transition-all duration-300 cursor-pointer"
+        className="group relative overflow-hidden border border-border hover:border-blue-500/50 transition-all duration-300 cursor-pointer"
         onClick={onClick}
       >
         <motion.div
@@ -33,16 +33,16 @@ function ActionCard({
             transition={{ duration: 0.3 }}
           >
             <motion.div
-              className={`w-12 h-12 rounded-full flex items-center justify-center bg-indigo-500/10 dark:bg-indigo-500/20`}
+              className={`w-12 h-12 rounded-full flex items-center justify-center bg-blue-500/10 dark:bg-blue-500/20`}
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: "spring", stiffness: 300, damping: 10 }}
             >
-              <action.icon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+              <action.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </motion.div>
 
             <div className="space-y-2">
               <motion.h3
-                className="font-semibold text-xl text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
+                className="font-semibold text-xl text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
                 initial={{ x: 0 }}
                 whileHover={{ x: 5 }}
                 transition={{ duration: 0.2 }}
@@ -62,7 +62,7 @@ function ActionCard({
         </div>
 
         <motion.div
-          className="absolute -inset-1 bg-indigo-500/10 dark:bg-indigo-500/5 rounded-lg blur-sm"
+          className="absolute -inset-1 bg-blue-500/10 dark:bg-blue-500/5 rounded-lg blur-sm"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.2 }}

@@ -163,7 +163,7 @@ function InterviewScheduleUI() {
         {/* HEADER INFO */}
         <div>
           <h1 className="text-4xl font-bold ">Interviews</h1>
-          <p className="text-muted-foreground mt-1 hover:text-indigo-500">
+          <p className="text-muted-foreground mt-1 hover:text-blue-500">
             Schedule and manage interviews
           </p>
         </div>
@@ -174,7 +174,7 @@ function InterviewScheduleUI() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 size="lg"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                className="bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <PlusCircleIcon className="mr-2 h-5 w-5" />
                 Schedule Interview
@@ -182,9 +182,9 @@ function InterviewScheduleUI() {
             </motion.div>
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-[800px] h-[calc(100vh-200px)] overflow-auto border-indigo-200 dark:border-indigo-600 p-6">
+          <DialogContent className="sm:max-w-[800px] h-[calc(100vh-200px)] overflow-auto border-blue-200 dark:border-blue-600 p-6">
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-indigo-700 dark:text-indigo-400">
+              <DialogTitle className="text-xl font-bold text-blue-700 dark:text-blue-400">
                 Schedule Interview
               </DialogTitle>
             </DialogHeader>
@@ -208,7 +208,7 @@ function InterviewScheduleUI() {
                       onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
                       }
-                      className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400 "
+                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 "
                     />
                   </div>
 
@@ -225,7 +225,7 @@ function InterviewScheduleUI() {
                         })
                       }
                       rows={3}
-                      className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400 "
+                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 "
                     />
                   </div>
 
@@ -238,7 +238,7 @@ function InterviewScheduleUI() {
                         setFormData({ ...formData, candidateId })
                       }
                     >
-                      <SelectTrigger className="border-indigo-200 focus:ring-indigo-400 ">
+                      <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
                         <SelectValue placeholder="Select candidate" />
                       </SelectTrigger>
                       <SelectContent>
@@ -263,7 +263,7 @@ function InterviewScheduleUI() {
                         setFormData({ ...formData, time })
                       }
                     >
-                      <SelectTrigger className="border-indigo-200 focus:ring-indigo-400 ">
+                      <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
                         <SelectValue placeholder="Select time" />
                       </SelectTrigger>
                       <SelectContent>
@@ -282,7 +282,7 @@ function InterviewScheduleUI() {
                   {/* CALENDAR */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Date *</label>
-                    <div className="border border-indigo-200  rounded-md p-2">
+                    <div className="border border-blue-200  rounded-md p-2">
                       <Calendar
                         mode="single"
                         selected={formData.date}
@@ -302,12 +302,12 @@ function InterviewScheduleUI() {
                     </label>
 
                     {/* Selected Interviewers */}
-                    <div className="border border-indigo-200  rounded-md p-3 min-h-24 flex flex-wrap gap-2 mb-2">
+                    <div className="border border-blue-200  rounded-md p-3 min-h-24 flex flex-wrap gap-2 mb-2">
                       {selectedInterviewers.length > 0 ? (
                         selectedInterviewers.map((interviewer) => (
                           <motion.div
                             key={interviewer.clerkId}
-                            className="inline-flex items-center gap-2 bg-indigo-100 dark:bg-indigo-900/40 px-2 py-1 rounded-md text-sm"
+                            className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded-md text-sm"
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.8 }}
@@ -339,7 +339,7 @@ function InterviewScheduleUI() {
                     {/* Add Interviewers Dropdown */}
                     {availableInterviewers.length > 0 && (
                       <Select onValueChange={addInterviewer}>
-                        <SelectTrigger className="border-indigo-200 focus:ring-indigo-400 ">
+                        <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
                           <SelectValue placeholder="Add interviewer" />
                         </SelectTrigger>
                         <SelectContent>
@@ -359,7 +359,7 @@ function InterviewScheduleUI() {
               </div>
 
               {/* ACTION BUTTONS */}
-              <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-indigo-100 dark:border-indigo-900/50">
+              <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-blue-100 dark:border-blue-900/50">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -367,7 +367,7 @@ function InterviewScheduleUI() {
                   <Button
                     variant="outline"
                     onClick={() => setOpen(false)}
-                    className="border-indigo-200 hover:bg-indigo-50 dark:border-indigo-900 dark:hover:bg-indigo-900/30"
+                    className="border-blue-200 hover:bg-blue-50 dark:border-blue-900 dark:hover:bg-blue-900/30"
                   >
                     Cancel
                   </Button>
@@ -379,7 +379,7 @@ function InterviewScheduleUI() {
                   <Button
                     onClick={scheduleMeeting}
                     disabled={isCreating}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {isCreating ? (
                       <>
@@ -404,7 +404,7 @@ function InterviewScheduleUI() {
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
           >
-            <Loader2Icon className="size-8 text-indigo-500" />
+            <Loader2Icon className="size-8 text-blue-500" />
           </motion.div>
         </div>
       ) : interviews.length > 0 ? (
@@ -438,7 +438,7 @@ function InterviewScheduleUI() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <CalendarIcon className="mx-auto h-12 w-12 text-indigo-300 dark:text-indigo-700 mb-4" />
+          <CalendarIcon className="mx-auto h-12 w-12 text-blue-300 dark:text-blue-700 mb-4" />
           <p className="text-lg font-medium">No interviews scheduled</p>
           <p className="mt-2">
             Click "Schedule Interview" to create your first interview
@@ -450,7 +450,7 @@ function InterviewScheduleUI() {
           >
             <Button
               onClick={() => setOpen(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <PlusCircleIcon className="mr-2 h-5 w-5" />
               Schedule Interview

@@ -120,7 +120,7 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
         >
           <Button
             variant="secondary"
-            className="w-full bg-gradient-to-r from-indigo-500/80 to-indigo-500/80 hover:from-indigo-600/80 hover:to-indigo-600/80 text-white border-none"
+            className="w-full bg-gradient-to-r from-blue-500/80 to-blue-500/80 hover:from-blue-600/80 hover:to-blue-600/80 text-white border-none"
           >
             <MessageSquareIcon className="h-4 w-4 mr-2" />
             Comments & Feedback
@@ -130,7 +130,7 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
 
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+          <DialogTitle className="text-xl font-bold text-blue-600 dark:text-blue-400">
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
@@ -160,7 +160,7 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
                 <h4 className="text-sm font-medium">Previous Feedback</h4>
                 <Badge
                   variant="outline"
-                  className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800"
+                  className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
                 >
                   {existingComments.length} Comment
                   {existingComments.length !== 1 ? "s" : ""}
@@ -189,9 +189,9 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <motion.div whileHover={{ scale: 1.1 }}>
-                                <Avatar className="h-8 w-8 ring-1 ring-indigo-200 dark:ring-indigo-900">
+                                <Avatar className="h-8 w-8 ring-1 ring-blue-200 dark:ring-blue-900">
                                   <AvatarImage src={interviewer.image} />
-                                  <AvatarFallback className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                                  <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                                     {interviewer.initials}
                                   </AvatarFallback>
                                 </Avatar>
@@ -235,11 +235,11 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
           >
             {/* RATING */}
             <div className="space-y-2">
-              <Label className="text-indigo-700 dark:text-indigo-300 font-medium">
+              <Label className="text-blue-700 dark:text-blue-300 font-medium">
                 Rating
               </Label>
               <Select value={rating} onValueChange={setRating}>
-                <SelectTrigger className="border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500">
+                <SelectTrigger className="border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500">
                   <SelectValue placeholder="Select rating" />
                 </SelectTrigger>
                 <SelectContent>
@@ -263,14 +263,14 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
 
             {/* COMMENT */}
             <div className="space-y-2">
-              <Label className="text-indigo-700 dark:text-indigo-300 font-medium">
+              <Label className="text-blue-700 dark:text-blue-300 font-medium">
                 Your Feedback
               </Label>
               <Textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Share your detailed feedback about the candidate's performance..."
-                className="h-32 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 resize-none"
+                className="h-32 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 resize-none"
               />
             </div>
           </motion.div>
@@ -298,7 +298,7 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
           >
             <Button
               onClick={handleSubmit}
-              className="bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
               <SendIcon className="h-4 w-4 mr-2" />
               Submit Feedback

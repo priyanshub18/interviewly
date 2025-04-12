@@ -16,7 +16,7 @@ const AnimatedBackground = () => {
   const numberOfDots = 20;
   const commonIconSize = 24;
   const numberOfParticles = 30;
-  const primaryindigo = "#8b5cf6"; // Example primary indigo
+  const primaryblue = "#8b5cf6"; // Example primary blue
 
   const taglineVariants = {
     initial: { x: -50, opacity: 0 },
@@ -64,12 +64,12 @@ const AnimatedBackground = () => {
         </motion.h2>
         <motion.h1
           className="text-4xl md:text-5xl lg:text-6xl font-extrabold"
-        //   style={{ color: primaryindigo }}
+        //   style={{ color: primaryblue }}
           initial="initial"
           animate="animate"
           variants={appNameVariants}
           whileHover="hover"
-          style={{ cursor: "default", color: primaryindigo }}
+          style={{ cursor: "default", color: primaryblue }}
         >
           {appName}
         </motion.h1>
@@ -77,10 +77,10 @@ const AnimatedBackground = () => {
       {/* Circular Orbiting Icons */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         {/* Central Coding Icon */}
-        <div className="relative w-16 h-16 rounded-full flex items-center justify-center bg-indigo-200 dark:bg-indigo-700 shadow-md">
+        <div className="relative w-16 h-16 rounded-full flex items-center justify-center bg-blue-200 dark:bg-blue-700 shadow-md">
           <Terminal
             size={32}
-            className="text-indigo-500 dark:text-indigo-300"
+            className="text-blue-500 dark:text-blue-300"
           />
         </div>
         {/* Orbiting Icons */}
@@ -125,9 +125,9 @@ const AnimatedBackground = () => {
             >
               <Icon
                 size={commonIconSize - 4}
-                className={`text-indigo-${((index % 5) + 3) * 100}`}
+                className={`text-blue-${((index % 5) + 3) * 100}`}
               />{" "}
-              {/* Varying indigo shades */}
+              {/* Varying blue shades */}
             </motion.div>
           );
         })}
@@ -172,7 +172,7 @@ const AnimatedBackground = () => {
           }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-full p-3 shadow-md">
-            <Camera size={commonIconSize} className="text-indigo-400" />
+            <Camera size={commonIconSize} className="text-blue-400" />
           </div>
         </motion.div>
 
@@ -203,7 +203,7 @@ const AnimatedBackground = () => {
           }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-full p-4 shadow-md">
-            <Users size={commonIconSize} className="text-indigo-400" />
+            <Users size={commonIconSize} className="text-blue-400" />
           </div>
         </motion.div>
 
@@ -277,7 +277,7 @@ const AnimatedBackground = () => {
 
         {/* Background gradient circles remain for subtle background texture */}
         <div className="absolute top-1/4 left-1/8 w-48 h-48 rounded-full bg-primary-400/10 blur-2xl" />
-        <div className="absolute top-1/3 right-1/8 w-64 h-64 rounded-full bg-indigo-400/10 blur-2xl" />
+        <div className="absolute top-1/3 right-1/8 w-64 h-64 rounded-full bg-blue-400/10 blur-2xl" />
         <div className="absolute bottom-1/3 left-1/4 w-56 h-56 rounded-full bg-blue-400/10 blur-2xl" />
 
         {/* Subtle grid pattern */}
@@ -307,9 +307,9 @@ const AnimatedBackground = () => {
             Math.random() > 0.5 ? -Math.random() * 80 : Math.random() * 80;
           let backgroundColor;
           if (i % 3 === 0)
-            backgroundColor = "#6366f1"; // indigo-500
+            backgroundColor = "#6366f1"; // blue-500
           else if (i % 3 === 1)
-            backgroundColor = "#a855f7"; // indigo-500
+            backgroundColor = "#a855f7"; // blue-500
           else backgroundColor = "#3b82f6"; // blue-500
 
           return (

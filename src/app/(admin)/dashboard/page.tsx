@@ -97,7 +97,7 @@ function DashboardPage() {
         transition={{ duration: 0.5 }}
         className="flex items-center justify-between mb-8"
       >
-        <h1 className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+        <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400">
           Interview Dashboard
         </h1>
         <Link href="/schedule">
@@ -106,7 +106,7 @@ function DashboardPage() {
             whileTap="tap"
             variants={buttonVariants}
           >
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
               <PlusCircleIcon className="h-5 w-5" />
               Schedule New Interview
             </Button>
@@ -124,7 +124,7 @@ function DashboardPage() {
                 animate="visible"
                 variants={containerVariants}
                 transition={{ delay: categoryIndex * 0.1 }}
-                className="border-l-4 pl-4 border-indigo-500 dark:border-indigo-400"
+                className="border-l-4 pl-4 border-blue-500 dark:border-blue-400"
               >
                 {/* CATEGORY TITLE */}
                 <motion.div
@@ -132,7 +132,7 @@ function DashboardPage() {
                   variants={itemVariants}
                 >
                   <h2 className="text-2xl font-semibold">{category.title}</h2>
-                  <Badge className="bg-indigo-600 hover:bg-indigo-700">
+                  <Badge className="bg-blue-600 hover:bg-blue-700">
                     {groupedInterviews[category.id].length}
                   </Badge>
                 </motion.div>
@@ -155,8 +155,8 @@ function DashboardPage() {
                           variants={itemVariants}
                           whileHover={{ y: -5, transition: { duration: 0.2 } }}
                         >
-                          <Card className="overflow-hidden border border-indigo-200 dark:border-indigo-900 shadow-md">
-                            <div className="h-2 bg-gradient-to-r from-indigo-400 to-indigo-600" />
+                          <Card className="overflow-hidden border border-blue-200 dark:border-blue-900 shadow-md">
+                            <div className="h-2 bg-gradient-to-r from-blue-400 to-blue-600" />
                             {/* CANDIDATE INFO */}
                             <CardHeader className="p-4">
                               <div className="flex items-center gap-3">
@@ -167,9 +167,9 @@ function DashboardPage() {
                                     stiffness: 300,
                                   }}
                                 >
-                                  <Avatar className="h-12 w-12 ring-2 ring-indigo-300 dark:ring-indigo-600">
+                                  <Avatar className="h-12 w-12 ring-2 ring-blue-300 dark:ring-blue-600">
                                     <AvatarImage src={candidateInfo.image} />
-                                    <AvatarFallback className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-200">
+                                    <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-200">
                                       {candidateInfo.initials}
                                     </AvatarFallback>
                                   </Avatar>
@@ -186,14 +186,14 @@ function DashboardPage() {
                             </CardHeader>
 
                             {/* DATE & TIME */}
-                            <CardContent className="p-4 bg-indigo-50 dark:bg-indigo-950/30">
+                            <CardContent className="p-4 bg-blue-50 dark:bg-blue-950/30">
                               <div className="flex items-center gap-6 text-sm">
                                 <div className="flex items-center gap-2">
-                                  <CalendarIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                                  <CalendarIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                                   <span>{format(startTime, "MMM dd")}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <ClockIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                                  <ClockIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                                   <span>{format(startTime, "hh:mm a")}</span>
                                 </div>
                               </div>

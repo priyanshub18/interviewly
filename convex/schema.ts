@@ -21,7 +21,8 @@ export default defineSchema({
     interviewerIds: v.array(v.string()),
   })
     .index("by_candidate_id", ["candidateId"])
-    .index("by_stream_id", ["streamCallId"]),
+    .index("by_stream_id", ["streamCallId"])
+    .index("by_status", ["status"]),
 
   comments: defineTable({
     content: v.string(),
