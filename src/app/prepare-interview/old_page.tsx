@@ -11,7 +11,6 @@ import {
   ArrowDownWideNarrowIcon,
   BookOpen,
   Calendar,
-  Loader,
 } from "lucide-react";
 import { set } from "date-fns";
 import toast from "react-hot-toast";
@@ -43,53 +42,6 @@ export default function InterviewPrepApp() {
   const [studyPlan, setStudyPlan] = useState<StudyPlanDay[]>([]);
 
   const interviews = useQuery(api.interviews.getUpcomingInterviews);
-  const buttonVariants = {
-    initial: {
-      scale: 1,
-    },
-    hover: {
-      scale: 1.05,
-      boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
-    },
-    tap: {
-      scale: 0.97,
-    },
-    loading: {
-      scale: [1, 1.02, 1],
-      transition: {
-        duration: 1.5,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  // Loader animation
-  const loaderVariants = {
-    animate: {
-      rotate: 360,
-      transition: {
-        duration: 1,
-        repeat: Infinity,
-        ease: "linear",
-      },
-    },
-  };
-
-  // Text fade animation
-  const textVariants = {
-    initial: { opacity: 0, y: 5 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.3 },
-    },
-    exit: {
-      opacity: 0,
-      y: -5,
-      transition: { duration: 0.2 },
-    },
-  };
 
   const container = {
     hidden: { opacity: 0 },
@@ -130,11 +82,6 @@ export default function InterviewPrepApp() {
         damping: 24,
       },
     },
-  };
-  const getButtonText = () => {
-    if (isLoading) return "Loading...";
-    if (currentStep === totalSteps) return "Generate Plan";
-    return "Next";
   };
 
   const pageVariants = {
@@ -231,7 +178,7 @@ export default function InterviewPrepApp() {
   };
 
   return (
-    <div className="min-h-screen text-gray-900 dark:text-gray-100 p-4 md:p-8 mt-12 bg-gray-50 dark:bg-gray-950 transition-colors">
+    <div className="min-h-screen  text-gray-100 p-4 md:p-8 mt-12 ">
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -243,11 +190,11 @@ export default function InterviewPrepApp() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, type: "spring", stiffness: 100 }}
-          className="rounded-xl border-2 border-gray-200/40 dark:border-gray-700/40 bg-white dark:bg-gray-900 shadow-xl mb-12 overflow-hidden relative"
+          className="rounded-xl border-2 border-gray-700/40 shadow-xl mb-12 overflow-hidden relative"
         >
           {/* Decorative elements */}
           <motion.div
-            className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-blue-400/30 dark:bg-blue-900/30 mix-blend-soft-light blur-3xl opacity-60"
+            className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-blue-900/30 mix-blend-soft-light blur-3xl opacity-60"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.5, 0.7, 0.5],
@@ -259,7 +206,7 @@ export default function InterviewPrepApp() {
             }}
           />
           <motion.div
-            className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-blue-200/30 dark:bg-blue-600/30 mix-blend-soft-light blur-3xl opacity-60"
+            className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-blue-600/30 mix-blend-soft-light blur-3xl opacity-60"
             animate={{
               scale: [1.2, 1, 1.2],
               opacity: [0.5, 0.7, 0.5],
@@ -276,7 +223,7 @@ export default function InterviewPrepApp() {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="h-2 bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-600 dark:to-blue-700"
+            className="h-2 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700"
           />
 
           <div className="p-8 relative z-10">
@@ -292,7 +239,7 @@ export default function InterviewPrepApp() {
               }}
               className="mb-6 inline-block"
             >
-              <div className="bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-600 dark:to-blue-700 p-3 rounded-lg shadow-lg">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-3 rounded-lg shadow-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -336,7 +283,7 @@ export default function InterviewPrepApp() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
-                  className="text-gray-500 dark:text-gray-400 mt-4 text-lg max-w-lg"
+                  className="text-gray-400 mt-4 text-lg max-w-lg"
                 >
                   Create a personalized plan to ace your next interview
                 </motion.p>
@@ -356,7 +303,7 @@ export default function InterviewPrepApp() {
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <button className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium flex items-center gap-2">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium flex items-center gap-2">
                     Prepare for Interview
                     <ArrowDownIcon className="size-5" />
                   </button>
@@ -367,7 +314,7 @@ export default function InterviewPrepApp() {
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <button className="border border-blue-200/20 dark:border-blue-300/20 text-blue-500 dark:text-blue-300 py-2 px-4 rounded-lg font-medium">
+                  <button className="border border-blue-300/20 text-blue-300 py-2 px-4 rounded-lg font-medium">
                     View Dashboard
                   </button>
                 </motion.div>
@@ -403,7 +350,7 @@ export default function InterviewPrepApp() {
                       <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                   ),
-                  color: "bg-blue-500 dark:bg-blue-600",
+                  color: "bg-blue-600",
                 },
                 {
                   label: "Practice Sessions",
@@ -426,7 +373,7 @@ export default function InterviewPrepApp() {
                       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                   ),
-                  color: "bg-blue-400 dark:bg-blue-500",
+                  color: "bg-blue-500",
                 },
                 {
                   label: "Skills Improved",
@@ -446,7 +393,7 @@ export default function InterviewPrepApp() {
                       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                     </svg>
                   ),
-                  color: "bg-blue-600 dark:bg-blue-700",
+                  color: "bg-blue-700",
                 },
               ].map((stat, index) => (
                 <motion.div
@@ -456,7 +403,7 @@ export default function InterviewPrepApp() {
                   transition={{ delay: 1.2 + index * 0.1, duration: 0.7 }}
                   whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 >
-                  <div className="bg-white dark:bg-gray-800 p-4 rounded-lg flex items-center gap-4 h-full shadow-lg border border-gray-200/50 dark:border-gray-700/50">
+                  <div className="bg-gray-800 p-4 rounded-lg flex items-center gap-4 h-full shadow-lg border border-gray-700/50">
                     <div
                       className={`${stat.color} h-10 w-10 rounded-lg flex items-center justify-center text-white`}
                     >
@@ -475,9 +422,7 @@ export default function InterviewPrepApp() {
                           {stat.value}
                         </motion.span>
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {stat.label}
-                      </div>
+                      <div className="text-xs text-gray-400">{stat.label}</div>
                     </div>
                   </div>
                 </motion.div>
@@ -499,12 +444,12 @@ export default function InterviewPrepApp() {
                   exit="exit"
                   variants={pageVariants}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="bg-white dark:bg-gray-800 border border-gray-200/50 dark:border-gray-700/50 rounded-lg shadow-lg overflow-hidden"
+                  className="bg-gray-800 border border-gray-700/50 rounded-lg shadow-lg overflow-hidden"
                 >
                   {/* Progress bar */}
-                  <div className="h-2 bg-gray-100 dark:bg-gray-700 w-full">
+                  <div className="h-2 bg-gray-700 w-full">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-blue-400 to-blue-500 dark:from-blue-600 dark:to-blue-600"
+                      className="h-full bg-gradient-to-r from-blue-600 to-blue-600"
                       initial={{ width: "0%" }}
                       animate={{
                         width: `${(currentStep / totalSteps) * 100}%`,
@@ -526,10 +471,10 @@ export default function InterviewPrepApp() {
                             className={`w-10 h-10 rounded-full flex items-center justify-center
                               ${
                                 currentStep > idx + 1
-                                  ? "bg-blue-500 dark:bg-blue-600 text-white"
+                                  ? "bg-blue-600 text-white"
                                   : currentStep === idx + 1
-                                    ? "bg-blue-500 dark:bg-blue-600 text-white"
-                                    : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-700 text-gray-400"
                               }`}
                           >
                             {currentStep > idx + 1 ? (
@@ -550,7 +495,7 @@ export default function InterviewPrepApp() {
                               idx + 1
                             )}
                           </motion.div>
-                          <span className="text-xs mt-2 text-gray-500 dark:text-gray-400">
+                          <span className="text-xs mt-2 text-gray-400">
                             {
                               [
                                 "Job Info",
@@ -564,9 +509,9 @@ export default function InterviewPrepApp() {
                       ))}
 
                       {/* Connecting line */}
-                      <div className="absolute top-5 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-700 -translate-y-1/2 z-0">
+                      <div className="absolute top-5 left-0 w-full h-0.5 bg-gray-700 -translate-y-1/2 z-0">
                         <motion.div
-                          className="h-full bg-blue-500 dark:bg-blue-600"
+                          className="h-full bg-blue-600"
                           initial={{ width: "0%" }}
                           animate={{
                             width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%`,
@@ -587,16 +532,16 @@ export default function InterviewPrepApp() {
                           transition={{ duration: 0.3 }}
                           className="space-y-6"
                         >
-                          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                          <h2 className="text-2xl font-bold text-white">
                             Job Information
                           </h2>
-                          <p className="text-gray-600 dark:text-gray-400">
+                          <p className="text-gray-400">
                             Let's start with some basic information about the
                             position you're applying for.
                           </p>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
                               Job Title
                             </label>
                             <input
@@ -604,7 +549,7 @@ export default function InterviewPrepApp() {
                               value={jobTitle}
                               onChange={(e) => setJobTitle(e.target.value)}
                               placeholder="e.g. Frontend Developer"
-                              className="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-white"
                             />
                           </div>
                         </motion.div>
@@ -619,10 +564,10 @@ export default function InterviewPrepApp() {
                           transition={{ duration: 0.3 }}
                           className="space-y-6"
                         >
-                          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                          <h2 className="text-2xl font-bold text-white">
                             Your Skills
                           </h2>
-                          <p className="text-gray-600 dark:text-gray-400">
+                          <p className="text-gray-400">
                             Enter the skills you currently possess
                           </p>
 
@@ -632,14 +577,14 @@ export default function InterviewPrepApp() {
                               value={newSkill}
                               onChange={(e) => setNewSkill(e.target.value)}
                               placeholder="e.g. React, JavaScript, UI Design"
-                              className="flex-grow p-3 rounded-l-md bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                              className="flex-grow p-3 rounded-l-md bg-gray-700 border border-gray-600 text-white"
                               onKeyDown={(e) =>
                                 e.key === "Enter" && addUserSkill()
                               }
                             />
                             <button
                               onClick={addUserSkill}
-                              className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white p-3 rounded-r-md flex items-center justify-center"
+                              className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-r-md flex items-center justify-center"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -664,9 +609,9 @@ export default function InterviewPrepApp() {
                                 key={index}
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-3 py-1 rounded-full flex items-center"
+                                className="bg-gray-700 border border-gray-600 px-3 py-1 rounded-full flex items-center"
                               >
-                                <span className="text-sm text-gray-800 dark:text-white">
+                                <span className="text-sm text-white">
                                   {skill}
                                 </span>
                                 <button
@@ -675,7 +620,7 @@ export default function InterviewPrepApp() {
                                       userSkills.filter((_, i) => i !== index),
                                     )
                                   }
-                                  className="ml-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                                  className="ml-2 text-gray-400 hover:text-gray-200"
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -696,7 +641,7 @@ export default function InterviewPrepApp() {
                             ))}
 
                             {userSkills.length === 0 && (
-                              <p className="text-gray-500 dark:text-gray-500 text-sm italic">
+                              <p className="text-gray-500 text-sm italic">
                                 No skills added yet
                               </p>
                             )}
@@ -713,10 +658,10 @@ export default function InterviewPrepApp() {
                           transition={{ duration: 0.3 }}
                           className="space-y-6"
                         >
-                          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                          <h2 className="text-2xl font-bold text-white">
                             Job Requirements
                           </h2>
-                          <p className="text-gray-600 dark:text-gray-400">
+                          <p className="text-gray-400">
                             List the skills required for the job position
                           </p>
 
@@ -728,14 +673,14 @@ export default function InterviewPrepApp() {
                                 setNewRequiredSkill(e.target.value)
                               }
                               placeholder="e.g. TypeScript, Redux, Jest"
-                              className="flex-grow p-3 rounded-l-md bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                              className="flex-grow p-3 rounded-l-md bg-gray-700 border border-gray-600 text-white"
                               onKeyDown={(e) =>
                                 e.key === "Enter" && addRequiredSkill()
                               }
                             />
                             <button
                               onClick={addRequiredSkill}
-                              className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white p-3 rounded-r-md flex items-center justify-center"
+                              className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-r-md flex items-center justify-center"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -760,9 +705,9 @@ export default function InterviewPrepApp() {
                                 key={index}
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-3 py-1 rounded-full flex items-center"
+                                className="bg-gray-700 border border-gray-600 px-3 py-1 rounded-full flex items-center"
                               >
-                                <span className="text-sm text-gray-800 dark:text-white">
+                                <span className="text-sm text-white">
                                   {skill}
                                 </span>
                                 <button
@@ -773,7 +718,7 @@ export default function InterviewPrepApp() {
                                       ),
                                     )
                                   }
-                                  className="ml-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                                  className="ml-2 text-gray-400 hover:text-gray-200"
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -794,8 +739,8 @@ export default function InterviewPrepApp() {
                             ))}
 
                             {requiredSkills.length === 0 && (
-                              <p className="text-gray-500 dark:text-gray-500 text-sm italic">
-                                No required skills added yet
+                              <p className="text-gray-500 text-sm italic">
+                                No requirements added yet
                               </p>
                             )}
                           </div>
@@ -811,79 +756,53 @@ export default function InterviewPrepApp() {
                           transition={{ duration: 0.3 }}
                           className="space-y-6"
                         >
-                          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Time Planning
+                          <h2 className="text-2xl font-bold text-white">
+                            Study Plan
                           </h2>
-                          <p className="text-gray-600 dark:text-gray-400">
-                            How much time do you have to prepare for the
-                            interview?
+                          <p className="text-gray-400">
+                            How much time do you have for preparation?
                           </p>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-4">
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
                                 Days until interview
                               </label>
-                              <div className="relative">
+                              <div className="flex items-center">
                                 <input
-                                  type="number"
+                                  type="range"
                                   min="1"
                                   max="30"
                                   value={prepDays}
                                   onChange={(e) =>
                                     setPrepDays(parseInt(e.target.value))
                                   }
-                                  className="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                                  className="w-full h-2 appearance-none bg-gray-700 rounded-full"
                                 />
-                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400 dark:text-gray-500">
-                                  days
-                                </div>
+                                <span className="ml-3 font-medium text-white w-8 text-center">
+                                  {prepDays}
+                                </span>
                               </div>
                             </div>
 
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Hours per day
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Hours per day for studying
                               </label>
-                              <div className="relative">
+                              <div className="flex items-center">
                                 <input
-                                  type="number"
+                                  type="range"
                                   min="1"
-                                  max="10"
+                                  max="8"
                                   value={hoursPerDay}
                                   onChange={(e) =>
                                     setHoursPerDay(parseInt(e.target.value))
                                   }
-                                  className="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                                  className="w-full h-2 appearance-none bg-gray-700 rounded-full"
                                 />
-                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400 dark:text-gray-500">
-                                  hours
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="mt-4">
-                            <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 rounded-lg p-4 flex items-start gap-3">
-                              <AlertCircle
-                                className="text-blue-500 dark:text-blue-400 flex-shrink-0 mt-0.5"
-                                size={18}
-                              />
-                              <div>
-                                <p className="text-blue-800 dark:text-blue-300 text-sm">
-                                  Your study plan will include {prepDays} days
-                                  with {hoursPerDay} hours of focused
-                                  preparation each day.
-                                  {skillsToImprove.length > 0 && (
-                                    <>
-                                      <br />
-                                      <span className="font-medium mt-1 inline-block">
-                                        Skills to improve:{" "}
-                                        {skillsToImprove.join(", ")}
-                                      </span>
-                                    </>
-                                  )}
-                                </p>
+                                <span className="ml-3 font-medium text-white w-8 text-center">
+                                  {hoursPerDay}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -897,54 +816,51 @@ export default function InterviewPrepApp() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={prevStep}
-                        className={`px-4 py-2 rounded-md text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                          currentStep === 1
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                        }`}
                         disabled={currentStep === 1}
+                        className={`px-4 py-2 rounded-md flex items-center gap-2 ${
+                          currentStep === 1
+                            ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        }`}
                       >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="19" y1="12" x2="5" y2="12" />
+                          <polyline points="12 19 5 12 12 5" />
+                        </svg>
                         Back
                       </motion.button>
 
                       <motion.button
-                        variants={buttonVariants}
-                        initial="initial"
-                        whileHover="hover"
-                        whileTap="tap"
-                        animate={isLoading ? "loading" : "initial"}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={nextStep}
-                        disabled={isLoading}
-                        className={`
-        px-6 py-3 
-        flex justify-center items-center gap-3 
-        rounded-lg
-        bg-blue-500 hover:bg-blue-600 
-        dark:bg-blue-600 dark:hover:bg-blue-700 
-        text-white font-medium
-        transition-colors duration-300
-        ${isLoading ? "cursor-not-allowed opacity-90" : "cursor-pointer"}
-        shadow-md
-      `}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
                       >
-                        {isLoading && (
-                          <motion.div
-                            variants={loaderVariants}
-                            animate="animate"
-                          >
-                            <Loader className="h-5 w-5" />
-                          </motion.div>
-                        )}
-
-                        <motion.span
-                          key={getButtonText()}
-                          variants={textVariants}
-                          initial="initial"
-                          animate="animate"
-                          exit="exit"
+                        {currentStep < totalSteps ? "Next" : "Generate Plan"}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          {getButtonText()}
-                        </motion.span>
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                          <polyline points="12 5 19 12 12 19" />
+                        </svg>
                       </motion.button>
                     </div>
                   </div>
@@ -956,105 +872,131 @@ export default function InterviewPrepApp() {
                   animate="animate"
                   exit="exit"
                   variants={pageVariants}
-                  className="bg-white dark:bg-gray-800 border border-gray-200/50 dark:border-gray-700/50 rounded-lg shadow-lg overflow-hidden"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="bg-gray-800 border border-gray-700/50 rounded-lg shadow-lg overflow-hidden"
                 >
                   <div className="p-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-                      <motion.div
+                    <div className="flex justify-between items-center mb-6">
+                      <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-2xl font-bold text-white flex items-center gap-2"
                       >
-                        <motion.h2
-                          className="text-3xl font-bold text-gray-900 dark:text-white mb-2"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.2, duration: 0.6 }}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-blue-500"
                         >
-                          Your Interview Prep Plan for {jobTitle}
-                        </motion.h2>
-                        <motion.p
-                          className="text-gray-600 dark:text-gray-400 text-lg"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.4, duration: 0.6 }}
-                        >
-                          {prepDays} days with {hoursPerDay} hours per day
-                        </motion.p>
-                      </motion.div>
-
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5, duration: 0.5 }}
-                        className="mt-6 md:mt-0"
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                          <polyline points="14 2 14 8 20 8" />
+                          <line x1="16" y1="13" x2="8" y2="13" />
+                          <line x1="16" y1="17" x2="8" y2="17" />
+                          <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                        Your Study Plan for {jobTitle}
+                      </motion.h2>
+                      <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        onClick={() => setPlanGenerated(false)}
+                        className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
                       >
-                        <motion.button
-                          whileHover={{
-                            scale: 1.05,
-                            boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
-                          }}
-                          whileTap={{ scale: 0.95 }}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 15,
-                          }}
-                          onClick={() => setPlanGenerated(false)}
-                          className="px-6 py-3 rounded-lg text-blue-500 dark:text-blue-400 border-2 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 font-medium flex items-center gap-2"
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <motion.svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            animate={{ rotate: [0, 15, 0] }}
-                            transition={{
-                              duration: 1,
-                              repeat: Infinity,
-                              repeatDelay: 3,
-                            }}
-                          >
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                          </motion.svg>
-                          Edit Plan
-                        </motion.button>
-                      </motion.div>
+                          <path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38" />
+                        </svg>
+                        Edit Information
+                      </motion.button>
                     </div>
 
-                    {/* Loading indicator */}
-                    {isLoading ? (
-                      <div className="flex flex-col items-center justify-center py-20">
-                        <motion.div
-                          animate={{
-                            rotate: 360,
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            ease: "linear",
-                          }}
-                          className="w-10 h-10 border-4 border-blue-200 dark:border-blue-900 border-t-blue-500 dark:border-t-blue-600 rounded-full mb-4"
-                        />
-                        <p className="text-gray-600 dark:text-gray-400">
-                          Creating your personalized study plan...
-                        </p>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="mb-6 p-4 bg-gray-900/50 rounded-lg"
+                    >
+                      <h3 className="font-medium text-gray-300 mb-2">
+                        Summary:
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-400">
+                            Skills to Improve:
+                          </span>
+                          <div className="font-medium text-white mt-1">
+                            {skillsToImprove.length > 0
+                              ? skillsToImprove.join(", ")
+                              : "None - Great job!"}
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">Study Period:</span>
+                          <div className="font-medium text-white mt-1">
+                            {prepDays} days
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">Daily Study:</span>
+                          <div className="font-medium text-white mt-1">
+                            {hoursPerDay} hours
+                          </div>
+                        </div>
                       </div>
-                    ) : (
-                      <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                      >
-                        <div className="flex flex-col items-center rounded-xl min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors duration-200">
+                    </motion.div>
+
+                    <motion.div
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="space-y-4"
+                    >
+                      {isLoading ? (
+                        <div className="flex justify-center">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 2,
+                              ease: "linear",
+                            }}
+                            className="mr-2"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                            </svg>
+                          </motion.div>
+                          <p className="text-muted-foreground">Loading...</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors duration-200">
                           <div className="w-full max-w-4xl">
                             <div className="flex justify-center items-center mb-6">
                               <h1 className="text-3xl font-bold text-gray-800 text-center dark:text-gray-100">
@@ -1150,21 +1092,40 @@ export default function InterviewPrepApp() {
                             </motion.div>
                           </div>
                         </div>
-                      </motion.div>
-                    )}
+                      )}
+                    </motion.div>
+
+                    <div className="mt-8 flex justify-center">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7 10 12 15 17 10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Save Study Plan
+                      </motion.button>
+                    </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* Upcoming Interviews Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-            >
-              <UpcomingInterviews />
-            </motion.div>
+            <UpcomingInterviews />
           </div>
         </div>
       </motion.div>
