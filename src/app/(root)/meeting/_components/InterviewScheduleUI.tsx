@@ -35,6 +35,8 @@ import MeetingCard from "@/components/MeetingCard";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import ProblemSelection from "./ProblemPicker";
+import { sendScheduledEmail } from "@/lib/SendVerificationMail";
+import axios from "axios";
 const SAMPLE_PROBLEMS = [
   {
     id: "two-sum",
@@ -91,7 +93,6 @@ function InterviewScheduleUI() {
   const questions = useQuery(api.questions.getAllQuestions) ?? [];
   const candidates = users?.filter((u) => u.role === "candidate");
   const interviewers = users?.filter((u) => u.role === "interviewer");
-
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -133,7 +134,7 @@ function InterviewScheduleUI() {
           },
         },
       });
-
+      const user2 = users.find((u) => u.clerkId === user?.id);
       await createInterview({
         title,
         description,
@@ -142,9 +143,21 @@ function InterviewScheduleUI() {
         streamCallId: id,
         candidateId,
         interviewerIds,
-        questions : formData.questionId,
+        questions: formData.questionId,
       });
-
+      const emailResponse = await axios.post("/api/send-email", {
+        name: user2?.name,
+        title,
+        email: user2?.email,
+        date: formData.date,
+        time: formData.time,
+        type: "Video Interview",
+      });
+      if (emailResponse.data.success) {
+        toast.success("Mail Sent Successfully");
+      } else {
+        toast.error("Failed to Send Mail!. Check your internet connection");
+      }
       setOpen(false);
       toast.success("Meeting scheduled successfully!");
 
