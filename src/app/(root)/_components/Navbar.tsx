@@ -32,7 +32,7 @@ import {
   useUser,
 } from "@clerk/nextjs";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function GlassmorphicNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,6 +41,7 @@ export default function GlassmorphicNavbar() {
   const { isInterviewer, isCandidate, isLoading } = useUserRoles();
   const { user } = useUser();
   const router = useRouter();
+  const pathname = usePathname(); // Get current path
   const primaryblue = "#2563eb"; // Tailwind blue-600
   const accentblue = "#3b82f6"; // Tailwind blue-500
 
@@ -56,6 +57,13 @@ export default function GlassmorphicNavbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Function to check if a path is active
+  const isActive = (path) => {
+    if (path === "/" && pathname === "/") return true;
+    if (path !== "/" && pathname.startsWith(path)) return true;
+    return false;
+  };
 
   // Function to close mobile menu when navigating
   const handleNavigation = (path) => {
@@ -105,9 +113,9 @@ export default function GlassmorphicNavbar() {
                     <NavLink
                       text="Home"
                       icon={<Menu className="w-4 h-4 mr-1" />}
-                      active={true}
+                      active={isActive("/")}
                       primaryColor={primaryblue}
-                      onClick={() => handleNavigation("/home")}
+                      onClick={() => handleNavigation("/")}
                     />
 
                     {/* Candidate-specific navigation */}
@@ -116,24 +124,28 @@ export default function GlassmorphicNavbar() {
                         <NavLink
                           text="Interviews"
                           icon={<Code className="w-4 h-4 mr-1" />}
+                          active={isActive("/home")}
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/home")}
                         />
                         <NavLink
                           text="Prepare"
                           icon={<BookOpen className="w-4 h-4 mr-1" />}
+                          active={isActive("/prepare-interview")}
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/prepare-interview")}
                         />
                         <NavLink
                           text="Resume Builder"
                           icon={<FileText className="w-4 h-4 mr-1" />}
+                          active={isActive("/make-resume")}
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/make-resume")}
                         />
                         <NavLink
                           text="Job Board"
                           icon={<Briefcase className="w-4 h-4 mr-1" />}
+                          active={isActive("/job-board")}
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/jobs-board")}
                         />
@@ -144,28 +156,32 @@ export default function GlassmorphicNavbar() {
                     {isInterviewer && (
                       <>
                         <NavLink
+                          text="Actions"
+                          icon={<ListChecks className="w-4 h-4 mr-1" />}
+                          active={isActive("/home")}
+                          primaryColor={primaryblue}
+                          onClick={() => handleNavigation("/home")}
+                        />
+                        <NavLink
+                          text="Create Interview"
+                          icon={<PlusCircle className="w-4 h-4 mr-1" />}
+                          active={isActive("/schedule")}
+                          primaryColor={primaryblue}
+                          onClick={() => handleNavigation("/schedule")}
+                        />
+                        <NavLink
                           text="Problems"
                           icon={<Code className="w-4 h-4 mr-1" />}
+                          active={isActive("/all-problems")}
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/all-problems")}
                         />
                         <NavLink
-                          text="Create"
-                          icon={<PlusCircle className="w-4 h-4 mr-1" />}
-                          primaryColor={primaryblue}
-                          onClick={() => handleNavigation("/schedule")}
-                        />
-                        <NavLink
-                          text="Sessions"
-                          icon={<ListChecks className="w-4 h-4 mr-1" />}
-                          primaryColor={primaryblue}
-                          onClick={() => handleNavigation("/schedule")}
-                        />
-                        <NavLink
                           text="Settings"
                           icon={<Settings className="w-4 h-4 mr-1" />}
+                          active={isActive("/settings")}
                           primaryColor={primaryblue}
-                          onClick={() => handleNavigation("/")}
+                          onClick={() => handleNavigation("/settings")}
                         />
                       </>
                     )}
@@ -175,36 +191,40 @@ export default function GlassmorphicNavbar() {
                   <SignedOut>
                     <NavLink
                       text="Home"
-                      active={true}
-                      icon={<LucideHome />}
+                      active={isActive("/")}
+                      icon={<LucideHome className="w-4 h-4 mr-1" />}
                       primaryColor={primaryblue}
                       onClick={() => handleNavigation("/")}
                     />
 
                     <NavLink
                       text="Products"
-                      icon={<Package />}
+                      icon={<Package className="w-4 h-4 mr-1" />}
+                      active={pathname.includes("#hero")}
                       primaryColor={primaryblue}
                       onClick={() => handleNavigation("/#hero")}
                     />
 
                     <NavLink
                       text="Services"
-                      icon={<Settings />}
+                      icon={<Settings className="w-4 h-4 mr-1" />}
+                      active={pathname.includes("#features")}
                       primaryColor={primaryblue}
                       onClick={() => handleNavigation("/#features")}
                     />
 
                     <NavLink
                       text="About"
-                      icon={<UserRound />}
+                      icon={<UserRound className="w-4 h-4 mr-1" />}
+                      active={pathname.includes("#about")}
                       primaryColor={primaryblue}
                       onClick={() => handleNavigation("/#about")}
                     />
 
                     <NavLink
                       text="Contact"
-                      icon={<Mail />}
+                      icon={<Mail className="w-4 h-4 mr-1" />}
+                      active={pathname.includes("#contact")}
                       primaryColor={primaryblue}
                       onClick={() => handleNavigation("/#contact")}
                     />
@@ -319,32 +339,42 @@ export default function GlassmorphicNavbar() {
                 {/* Common mobile links for all signed-in users */}
                 <MobileNavLink
                   text="Home"
-                  icon={<Menu className="w-4 h-4 mr-2" />}
-                  onClick={() => handleNavigation("/home")}
+                  icon={<LucideHome className="w-4 h-4 mr-2" />}
+                  onClick={() => handleNavigation("/")}
+                  active={isActive("/")}
+                  primaryColor={primaryblue}
                 />
 
                 {/* Candidate-specific mobile navigation */}
                 {isCandidate && (
                   <>
                     <MobileNavLink
+                      text="Interviews"
+                      icon={<Code className="w-4 h-4 mr-2" />}
+                      onClick={() => handleNavigation("/home")}
+                      active={isActive("/home")}
+                      primaryColor={primaryblue}
+                    />
+                    <MobileNavLink
                       text="Prepare"
                       icon={<BookOpen className="w-4 h-4 mr-2" />}
-                      onClick={() => handleNavigation("/prepare")}
+                      onClick={() => handleNavigation("/prepare-interview")}
+                      active={isActive("/prepare-interview")}
+                      primaryColor={primaryblue}
                     />
                     <MobileNavLink
                       text="Resume Builder"
                       icon={<FileText className="w-4 h-4 mr-2" />}
-                      onClick={() => handleNavigation("/resume-builder")}
-                    />
-                    <MobileNavLink
-                      text="Practice"
-                      icon={<Code className="w-4 h-4 mr-2" />}
-                      onClick={() => handleNavigation("/practice")}
+                      onClick={() => handleNavigation("/make-resume")}
+                      active={isActive("/make-resume")}
+                      primaryColor={primaryblue}
                     />
                     <MobileNavLink
                       text="Job Board"
                       icon={<Briefcase className="w-4 h-4 mr-2" />}
-                      onClick={() => handleNavigation("/jobs")}
+                      onClick={() => handleNavigation("/jobs-board")}
+                      active={isActive("/jobs-board")}
+                      primaryColor={primaryblue}
                     />
                   </>
                 )}
@@ -353,29 +383,39 @@ export default function GlassmorphicNavbar() {
                 {isInterviewer && (
                   <>
                     <MobileNavLink
+                      text="Actions"
+                      icon={<ListChecks className="w-4 h-4 mr-2" />}
+                      onClick={() => handleNavigation("/home")}
+                      active={isActive("/home")}
+                      primaryColor={primaryblue}
+                    />
+                    <MobileNavLink
+                      text="Create Interview"
+                      icon={<PlusCircle className="w-4 h-4 mr-2" />}
+                      onClick={() => handleNavigation("/schedule")}
+                      active={isActive("/schedule")}
+                      primaryColor={primaryblue}
+                    />
+                    <MobileNavLink
                       text="Problems"
                       icon={<Code className="w-4 h-4 mr-2" />}
-                      onClick={() => handleNavigation("/problems")}
-                    />
-                    <MobileNavLink
-                      text="Create"
-                      icon={<PlusCircle className="w-4 h-4 mr-2" />}
-                      onClick={() => handleNavigation("/create")}
-                    />
-                    <MobileNavLink
-                      text="Sessions"
-                      icon={<ListChecks className="w-4 h-4 mr-2" />}
-                      onClick={() => handleNavigation("/sessions")}
+                      onClick={() => handleNavigation("/all-problems")}
+                      active={isActive("/all-problems")}
+                      primaryColor={primaryblue}
                     />
                     <MobileNavLink
                       text="Settings"
                       icon={<Settings className="w-4 h-4 mr-2" />}
                       onClick={() => handleNavigation("/settings")}
+                      active={isActive("/settings")}
+                      primaryColor={primaryblue}
                     />
                     <MobileNavLink
                       text="Dashboard"
                       icon={<ListChecks className="w-4 h-4 mr-2" />}
                       onClick={() => handleNavigation("/dashboard")}
+                      active={isActive("/dashboard")}
+                      primaryColor={primaryblue}
                     />
                   </>
                 )}
@@ -385,28 +425,38 @@ export default function GlassmorphicNavbar() {
               <SignedOut>
                 <MobileNavLink
                   text="Home"
-                  icon={<LucideHome />}
+                  icon={<LucideHome className="w-4 h-4 mr-2" />}
                   onClick={() => handleNavigation("/")}
+                  active={isActive("/")}
+                  primaryColor={primaryblue}
                 />
                 <MobileNavLink
                   text="Products"
-                  icon={<Package />}
+                  icon={<Package className="w-4 h-4 mr-2" />}
                   onClick={() => handleNavigation("/#hero")}
+                  active={pathname.includes("#hero")}
+                  primaryColor={primaryblue}
                 />
                 <MobileNavLink
                   text="Services"
-                  icon={<Settings />}
+                  icon={<Settings className="w-4 h-4 mr-2" />}
                   onClick={() => handleNavigation("/#features")}
+                  active={pathname.includes("#features")}
+                  primaryColor={primaryblue}
                 />
                 <MobileNavLink
                   text="About"
-                  icon={<UserRound />}
+                  icon={<UserRound className="w-4 h-4 mr-2" />}
                   onClick={() => handleNavigation("/#about")}
+                  active={pathname.includes("#about")}
+                  primaryColor={primaryblue}
                 />
                 <MobileNavLink
                   text="Contact"
-                  icon={<Mail />}
+                  icon={<Mail className="w-4 h-4 mr-2" />}
                   onClick={() => handleNavigation("/#contact")}
+                  active={pathname.includes("#contact")}
+                  primaryColor={primaryblue}
                 />
               </SignedOut>
             </div>
@@ -437,11 +487,18 @@ function NavLink({ text, icon, active = false, primaryColor, onClick }) {
   );
 }
 
-function MobileNavLink({ text, icon, onClick }) {
+function MobileNavLink({ text, icon, onClick, active = false, primaryColor }) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 flex items-center text-foreground/80 hover:text-foreground hover:bg-accent/50"
+      className={`w-full text-left px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 flex items-center ${
+        active
+          ? "text-white bg-opacity-80 backdrop-blur-md hover:bg-opacity-90"
+          : "text-foreground/80 hover:text-foreground hover:bg-accent/50"
+      }`}
+      style={{
+        backgroundColor: active ? primaryColor : "transparent",
+      }}
     >
       {icon && icon}
       {text}
