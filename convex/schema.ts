@@ -19,6 +19,7 @@ export default defineSchema({
     streamCallId: v.string(),
     candidateId: v.string(),
     interviewerIds: v.array(v.string()),
+    
   })
     .index("by_candidate_id", ["candidateId"])
     .index("by_stream_id", ["streamCallId"])
