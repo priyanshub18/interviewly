@@ -114,6 +114,12 @@ export default function GlassmorphicNavbar() {
                     {isCandidate && (
                       <>
                         <NavLink
+                          text="Interviews"
+                          icon={<Code className="w-4 h-4 mr-1" />}
+                          primaryColor={primaryblue}
+                          onClick={() => handleNavigation("/home")}
+                        />
+                        <NavLink
                           text="Prepare"
                           icon={<BookOpen className="w-4 h-4 mr-1" />}
                           primaryColor={primaryblue}
@@ -122,12 +128,6 @@ export default function GlassmorphicNavbar() {
                         <NavLink
                           text="Resume Builder"
                           icon={<FileText className="w-4 h-4 mr-1" />}
-                          primaryColor={primaryblue}
-                          onClick={() => handleNavigation("/make-resume")}
-                        />
-                        <NavLink
-                          text="Practice"
-                          icon={<Code className="w-4 h-4 mr-1" />}
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/make-resume")}
                         />
