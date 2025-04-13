@@ -46,18 +46,25 @@ export const createQuestion = mutation({
     }
   },
 });
-export const getQuestionById = query({
-  args: { q_id: v.string() },
+export const getQuestionsById = query({
+  args: { ids: v.array(v.string()) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return null;
+    console.log("ids", args.ids);
+    let questions = [];
+    for (const id of args.ids) {
+      const question = await ctx.db
+        .query("questions")
+        .withIndex("by_qid", (q) => q.eq("q_id", id))
+        .first();
+      if (question) {
+        questions.push(question);
+      }
+    }
+    console.log("questions", questions);
 
-    const question = await ctx.db
-      .query("questions")
-      .withIndex("by_qid", (q) => q.eq("q_id", args.q_id))
-      .first();
-
-    return question;
+    return questions;
   },
 });
 export const getAllQuestions = query({
@@ -66,7 +73,8 @@ export const getAllQuestions = query({
     if (!identity) return [];
 
     const questions = await ctx.db.query("questions").collect();
-    console.log(questions);
+
+    console.log("from here", questions);
     return questions;
   },
 });

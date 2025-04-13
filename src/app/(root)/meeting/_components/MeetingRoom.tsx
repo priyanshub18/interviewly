@@ -27,7 +27,7 @@ import CodeEditor from "../_components/CodeEditor";
 
 // import CodeEditor from "./CodeEditor";
 
-function MeetingRoom() {
+function MeetingRoom({ questions }: { questions: any }) {
   const router = useRouter();
   const [layout, setLayout] = useState<"grid" | "speaker">("speaker");
   const [showParticipants, setShowParticipants] = useState(false);
@@ -129,7 +129,7 @@ function MeetingRoom() {
                   whileHover={{ y: -2 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <CallControls onLeave={() => router.push("/")} />
+                  <CallControls onLeave={() => router.push("/home")} />
 
                   <div className="h-8 w-px bg-gray-200/20 mx-1"></div>
 
@@ -182,7 +182,7 @@ function MeetingRoom() {
             minSize={25}
             className="bg-background"
           >
-            <CodeEditor />
+            <CodeEditor questions={questions} />
           </ResizablePanel>
         </ResizablePanelGroup>
       </motion.div>

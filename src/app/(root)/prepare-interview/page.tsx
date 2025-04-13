@@ -8,7 +8,6 @@ import UpcomingInterviews from "./_components/UpcomingInterviews";
 import {
   AlertCircle,
   ArrowDownIcon,
-  ArrowDownWideNarrowIcon,
   BookOpen,
   Calendar,
   Loader,
@@ -149,16 +148,16 @@ export default function InterviewPrepApp() {
 
   // Generate the study plan
   const generatePlan = async () => {
-    if(userSkills.length === 0) {
+    if (userSkills.length === 0) {
       toast.error("Please add your skills first");
     }
-    if(requiredSkills.length === 0) {
+    if (requiredSkills.length === 0) {
       toast.error("Please add required skills first");
     }
-    if(userSkills.length === 0 || requiredSkills.length === 0) {
+    if (userSkills.length === 0 || requiredSkills.length === 0) {
       return;
     }
-    
+
     setIsLoading(true);
     setPlanGenerated(false);
     if (skillsToImprove.length === 0) {

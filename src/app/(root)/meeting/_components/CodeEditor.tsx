@@ -1,4 +1,4 @@
-import { CODING_QUESTIONS, LANGUAGES } from "@/constants";
+import { LANGUAGES } from "@/constants";
 import { useState } from "react";
 import {
   ResizableHandle,
@@ -26,8 +26,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
+import convertQuestionFormat from "../utils";
 
-function CodeEditor() {
+
+function CodeEditor({ questions }: { questions: any }) {
+  const CODING_QUESTIONS = convertQuestionFormat(questions);
+
   const [selectedQuestion, setSelectedQuestion] = useState(CODING_QUESTIONS[0]);
   const [language, setLanguage] = useState<
     "javascript" | "python" | "java" | "cpp"
@@ -37,13 +41,13 @@ function CodeEditor() {
     "examples" | "constraints" | null
   >(null);
   const { theme } = useTheme();
+
   const isDarkMode = theme === "dark";
 
   const handleQuestionChange = (questionId: string) => {
     const question = CODING_QUESTIONS.find((q) => q.id === questionId)!;
     setSelectedQuestion(question);
     setCode(question.starterCode[language]);
-    // Reset active sections when changing questions
     setActiveSection(null);
   };
 
@@ -73,7 +77,7 @@ function CodeEditor() {
     setActiveSection(activeSection === section ? null : section);
   };
 
-  // Determine card header background style based on theme
+  
   const getCardHeaderStyle = () => {
     return isDarkMode
       ? "bg-zinc-900"

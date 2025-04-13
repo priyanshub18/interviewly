@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useMutation, useQuery } from "convex/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../../../../convex/_generated/api";
 import toast from "react-hot-toast";
 import {
@@ -23,21 +23,72 @@ import {
 } from "@/components/ui/select";
 import UserInfo from "../../../../components/UserInfo";
 import { Calendar } from "@/components/ui/calendar";
-import { Loader2Icon, CalendarIcon, XIcon, PlusCircleIcon } from "lucide-react";
+import {
+  Loader2Icon,
+  CalendarIcon,
+  XIcon,
+  PlusCircleIcon,
+  ArrowUpRight,
+} from "lucide-react";
 import { TIME_SLOTS } from "@/constants";
 import MeetingCard from "@/components/MeetingCard";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import ProblemSelection from "./ProblemPicker";
+const SAMPLE_PROBLEMS = [
+  {
+    id: "two-sum",
+    number: 1,
+    title: "Two Sum",
+    difficulty: "Easy",
+  },
+  {
+    id: "add-two-numbers",
+    number: 2,
+    title: "Add Two Numbers",
+    difficulty: "Medium",
+  },
+  {
+    id: "longest-substring",
+    number: 3,
+    title: "Longest Substring Without Repeating Characters",
+    difficulty: "Medium",
+  },
+  {
+    id: "median-two-arrays",
+    number: 4,
+    title: "Median of Two Sorted Arrays",
+    difficulty: "Hard",
+  },
+];
 
+// Component to display problem info
+const ProblemInfo = ({ problem }) => (
+  <div className="flex items-center gap-1">
+    <span className="font-medium">{problem.number}.</span>
+    <span>{problem.title}</span>
+    <span
+      className={`text-xs px-1.5 py-0.5 rounded ${
+        problem.difficulty === "Easy"
+          ? "bg-green-100 text-green-800"
+          : problem.difficulty === "Medium"
+            ? "bg-yellow-100 text-yellow-800"
+            : "bg-red-100 text-red-800"
+      }`}
+    >
+      {problem.difficulty}
+    </span>
+  </div>
+);
 function InterviewScheduleUI() {
   const client = useStreamVideoClient();
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-
   const interviews = useQuery(api.interviews.getAllInterviews) ?? [];
   const users = useQuery(api.users.getUsers) ?? [];
   const createInterview = useMutation(api.interviews.createInterview);
-
+  const questions = useQuery(api.questions.getAllQuestions) ?? [];
   const candidates = users?.filter((u) => u.role === "candidate");
   const interviewers = users?.filter((u) => u.role === "interviewer");
 
@@ -48,9 +99,12 @@ function InterviewScheduleUI() {
     time: "09:00",
     candidateId: "",
     interviewerIds: user?.id ? [user.id] : [],
-    
+    questionId: [],
   });
-
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+  const router = useRouter();
   const scheduleMeeting = async () => {
     if (!client || !user) return;
     if (!formData.candidateId || formData.interviewerIds.length === 0) {
@@ -88,6 +142,7 @@ function InterviewScheduleUI() {
         streamCallId: id,
         candidateId,
         interviewerIds,
+        questions : formData.questionId,
       });
 
       setOpen(false);
@@ -100,6 +155,7 @@ function InterviewScheduleUI() {
         time: "09:00",
         candidateId: "",
         interviewerIds: user?.id ? [user.id] : [],
+        questionId: [],
       });
     } catch (error) {
       console.error(error);
@@ -107,6 +163,28 @@ function InterviewScheduleUI() {
     } finally {
       setIsCreating(false);
     }
+  };
+
+  const availableProblems = questions.filter(
+    (problem) => !formData.questionId.includes(problem.q_id),
+  );
+
+  const addProblem = (problemId) => {
+    if (!formData.questionId.includes(problemId)) {
+      setFormData((prev) => ({
+        ...prev,
+        questionId: [...prev.questionId, problemId],
+      }));
+    }
+  };
+  const selectedProblems = questions.filter((p) =>
+    formData.questionId.includes(p.q_id),
+  );
+  const removeProblem = (problemId) => {
+    setFormData((prev) => ({
+      ...prev,
+      questionId: prev.questionId.filter((q_id) => q_id !== problemId),
+    }));
   };
 
   const addInterviewer = (interviewerId: string) => {
@@ -202,7 +280,9 @@ function InterviewScheduleUI() {
                 <div className="space-y-5">
                   {/* INTERVIEW TITLE */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Title *</label>
+                    <label className="text-sm font-medium">
+                      Title<span className="text-red-500">*</span>
+                    </label>
                     <Input
                       placeholder="Interview title"
                       value={formData.title}
@@ -232,7 +312,9 @@ function InterviewScheduleUI() {
 
                   {/* CANDIDATE */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Candidate *</label>
+                    <label className="text-sm font-medium">
+                      Candidate<span className="text-red-500">*</span>
+                    </label>
                     <Select
                       value={formData.candidateId}
                       onValueChange={(candidateId) =>
@@ -257,7 +339,9 @@ function InterviewScheduleUI() {
 
                   {/* TIME SLOT */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Time</label>
+                    <label className="text-sm font-medium">
+                      Time<span className="text-red-500">*</span>
+                    </label>
                     <Select
                       value={formData.time}
                       onValueChange={(time) =>
@@ -276,13 +360,75 @@ function InterviewScheduleUI() {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium">
+                      Problems<span className="text-red-500">*</span>
+                    </label>
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700 transition-all font-medium text-white p-2"
+                      onClick={() => router.push("/create-problem")}
+                    >
+                      <ArrowUpRight className="w-4 h-4 mr-1" />
+                      Create
+                    </Button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="border border-blue-200 rounded-md p-3 min-h-24 flex flex-wrap gap-2 mb-2">
+                      {selectedProblems.length > 0 ? (
+                        selectedProblems.map((problem) => (
+                          <motion.div
+                            key={problem.q_id}
+                            className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded-md text-sm"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <ProblemInfo problem={problem} />
+                            <motion.button
+                              onClick={() => removeProblem(problem.q_id)}
+                              className="hover:text-destructive transition-colors"
+                              whileHover={{ rotate: 90 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <XIcon className="h-4 w-4" />
+                            </motion.button>
+                          </motion.div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No Problems selected
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Add Problems Dropdown */}
+                    {availableProblems.length > 0 && (
+                      <Select onValueChange={addProblem}>
+                        <SelectTrigger className="border-blue-200 focus:ring-blue-400">
+                          <SelectValue placeholder="Add problem" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableProblems.map((problem) => (
+                            <SelectItem key={problem.q_id} value={problem.q_id}>
+                              <ProblemInfo problem={problem} />
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
                 </div>
 
                 {/* RIGHT COLUMN - Date & Interviewers */}
                 <div className="space-y-5">
                   {/* CALENDAR */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Date *</label>
+                    <label className="text-sm font-medium">
+                      Date<span className="text-red-500">*</span>
+                    </label>
                     <div className="border border-blue-200  rounded-md p-2">
                       <Calendar
                         mode="single"
@@ -299,7 +445,7 @@ function InterviewScheduleUI() {
                   {/* INTERVIEWERS */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium">
-                      Interviewers *
+                      Interviewer<span className="text-red-500">*</span>
                     </label>
 
                     {/* Selected Interviewers */}
@@ -412,7 +558,7 @@ function InterviewScheduleUI() {
         <motion.div
           className="space-y-4"
           variants={containerVariants}
-        //   initial="hidden"
+          //   initial="hidden"
           animate="visible"
         >
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
