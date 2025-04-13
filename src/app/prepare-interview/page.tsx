@@ -5,9 +5,27 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import MeetingCard from "@/components/MeetingCard";
 import UpcomingInterviews from "./_components/UpcomingInterviews";
+import {
+  AlertCircle,
+  ArrowDownIcon,
+  ArrowDownWideNarrowIcon,
+  BookOpen,
+  Calendar,
+} from "lucide-react";
+import { set } from "date-fns";
+import toast from "react-hot-toast";
 
+interface StudyPlanDay {
+  day: number;
+  topics?: Array<{
+    topic: string;
+    hours_allocated: number;
+    focus_area: string;
+    notes?: string;
+  }>;
+  notes?: string;
+}
 export default function InterviewPrepApp() {
-  // Multi-step form state
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
@@ -19,11 +37,26 @@ export default function InterviewPrepApp() {
   const [hoursPerDay, setHoursPerDay] = useState(2);
   const [newSkill, setNewSkill] = useState("");
   const [newRequiredSkill, setNewRequiredSkill] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [planGenerated, setPlanGenerated] = useState(false);
-  const [studyPlan, setStudyPlan] = useState([]);
+  const [studyPlan, setStudyPlan] = useState<StudyPlanDay[]>([]);
 
   const interviews = useQuery(api.interviews.getUpcomingInterviews);
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05, // Reduced from 0.1 for faster appearance
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 },
+  };
   useEffect(() => {
     console.log("interviews", interviews);
   }, [interviews]);
@@ -63,51 +96,51 @@ export default function InterviewPrepApp() {
   );
 
   // Generate the study plan
-  const generatePlan = () => {
+  const generatePlan = async () => {
+    setIsLoading(true);
+    setPlanGenerated(false);
     if (skillsToImprove.length === 0) {
       setStudyPlan([
         {
-          day: 1,
-          tasks: [
-            "Great job! You already have all the required skills. Use this time to practice interview questions.",
+          day: 0,
+          topics: [
+            {
+              topic:
+                "Great job! You already have all the required skills. Use this time to practice interview questions.",
+              hours_allocated: 2,
+              focus_area: "learning",
+            },
           ],
         },
       ]);
       setPlanGenerated(true);
+      setIsLoading(false);
       return;
     }
-
-    const totalDays = prepDays;
-    const plan = [];
-
-    // Distribute skills across days
-    const daysPerSkill = Math.max(
-      1,
-      Math.floor(totalDays / skillsToImprove.length),
-    );
-    let remainingDays = totalDays;
-
-    skillsToImprove.forEach((skill, index) => {
-      const daysForThisSkill =
-        index === skillsToImprove.length - 1 ? remainingDays : daysPerSkill;
-
-      remainingDays -= daysForThisSkill;
-
-      for (let i = 0; i < daysForThisSkill; i++) {
-        const dayNumber = plan.length + 1;
-        plan.push({
-          day: dayNumber,
-          skill: skill,
-          tasks: [
-            `Study ${skill} fundamentals (${hoursPerDay / 2} hours)`,
-            `Practice ${skill} exercises (${hoursPerDay / 2} hours)`,
-          ],
-        });
-      }
+    const response = await fetch("/api/generate-studyplan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        job_title: jobTitle,
+        number_of_days: prepDays,
+        hours_per_day: hoursPerDay,
+        my_current_skills: userSkills,
+        required_job_skills: requiredSkills,
+      }),
     });
-
-    setStudyPlan(plan);
+    const data = await response.json();
+    console.log("Study plan response:", data);
+    if (data.error) {
+      toast.error(data.error);
+      setIsLoading(false);
+      return;
+    }
+    setStudyPlan(data.study_plan);
     setPlanGenerated(true);
+
+    setIsLoading(false);
   };
 
   // Handle step navigation
@@ -127,28 +160,21 @@ export default function InterviewPrepApp() {
 
   // Handle skill addition
   const addUserSkill = () => {
+    // @ts-ignore
     if (newSkill && !userSkills.includes(newSkill)) {
+      // @ts-ignore
       setUserSkills([...userSkills, newSkill]);
       setNewSkill("");
     }
   };
 
   const addRequiredSkill = () => {
+    // @ts-ignore
     if (newRequiredSkill && !requiredSkills.includes(newRequiredSkill)) {
+      // @ts-ignore
       setRequiredSkills([...requiredSkills, newRequiredSkill]);
       setNewRequiredSkill("");
     }
-  };
-
-  const formatDate = (dateString: any) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
   };
 
   return (
@@ -164,7 +190,7 @@ export default function InterviewPrepApp() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, type: "spring", stiffness: 100 }}
-          className="rounded-xl bg-gray-800 border border-gray-700/40 shadow-xl mb-12 overflow-hidden relative"
+          className="rounded-xl border-2 border-gray-700/40 shadow-xl mb-12 overflow-hidden relative"
         >
           {/* Decorative elements */}
           <motion.div
@@ -279,20 +305,7 @@ export default function InterviewPrepApp() {
                 >
                   <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium flex items-center gap-2">
                     Prepare for Interview
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
+                    <ArrowDownIcon className="size-5" />
                   </button>
                 </motion.div>
                 <motion.div
@@ -318,7 +331,7 @@ export default function InterviewPrepApp() {
               {[
                 {
                   label: "Upcoming Interviews",
-                  value: "2",
+                  value: interviews?.length || 0,
                   icon: (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -955,47 +968,131 @@ export default function InterviewPrepApp() {
                       animate="visible"
                       className="space-y-4"
                     >
-                      {studyPlan.map((day, index) => (
-                        <motion.div
-                          key={index}
-                          variants={itemVariants}
-                          className="bg-gray-700/50 rounded-lg p-4 border border-gray-600/50"
-                        >
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="bg-blue-600 h-8 w-8 rounded-full flex items-center justify-center font-bold text-white text-sm">
-                              {day.day}
+                      {isLoading ? (
+                        <div className="flex justify-center">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 2,
+                              ease: "linear",
+                            }}
+                            className="mr-2"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                            </svg>
+                          </motion.div>
+                          <p className="text-muted-foreground">Loading...</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors duration-200">
+                          <div className="w-full max-w-4xl">
+                            <div className="flex justify-center items-center mb-6">
+                              <h1 className="text-3xl font-bold text-gray-800 text-center dark:text-gray-100">
+                                Your {prepDays}-Days Study Plan
+                              </h1>
                             </div>
-                            <h3 className="font-medium text-white">
-                              Day {day.day} {day.skill && `- ${day.skill}`}
-                            </h3>
+
+                            <motion.div
+                              className="relative"
+                              variants={container}
+                              initial="hidden"
+                              animate="show"
+                            >
+                              {/* Timeline line */}
+                              <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-blue-400 dark:bg-blue-600" />
+
+                              {studyPlan.map((day, index) => {
+                                const isEven = index % 2 === 0;
+                                return (
+                                  <motion.div
+                                    key={day.day}
+                                    variants={item}
+                                    className={`flex items-center mb-6 relative ${isEven ? "justify-start" : "justify-end"}`}
+                                  >
+                                    {/* Timeline dot */}
+                                    <div className="absolute left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-blue-500 dark:bg-blue-400 z-10 flex items-center justify-center">
+                                      <div className="w-2 h-2 rounded-full bg-white" />
+                                    </div>
+
+                                    {/* Content box */}
+                                    <motion.div
+                                      className={`w-5/12 p-4 rounded-lg shadow-md bg-white dark:bg-gray-800 border-l-4 border-blue-500 dark:border-blue-400 ${isEven ? "mr-auto" : "ml-auto"}`}
+                                      whileHover={{ scale: 1.02 }}
+                                      transition={{
+                                        type: "spring",
+                                        stiffness: 400,
+                                        damping: 10,
+                                      }}
+                                    >
+                                      <div className="flex items-center mb-2">
+                                        <Calendar
+                                          size={18}
+                                          className="text-blue-600 dark:text-blue-400 mr-2"
+                                        />
+                                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                                          Day {day.day}
+                                        </h3>
+                                      </div>
+
+                                      <div className="mb-2">
+                                        <div className="flex items-start mb-1">
+                                          <BookOpen
+                                            size={16}
+                                            className="text-blue-500 dark:text-blue-400 mt-1 mr-2"
+                                          />
+                                          <div>
+                                            <h4 className="font-medium text-gray-700 dark:text-gray-300">
+                                              Topics:
+                                            </h4>
+                                            <ul className="list-disc list-inside pl-1 text-gray-600 dark:text-gray-400 text-sm">
+                                              {day.topics &&
+                                              day.topics.length > 0 ? (
+                                                day.topics.map((topic, i) => (
+                                                  <li key={i}>
+                                                    {topic.topic ||
+                                                      "Unnamed Topic"}
+                                                  </li>
+                                                ))
+                                              ) : (
+                                                <li className="text-yellow-600 dark:text-yellow-400">
+                                                  No topics assigned
+                                                </li>
+                                              )}
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {/* @ts-ignore */}
+                                      {day.notes && (
+                                        <div className="flex items-start text-gray-600 dark:text-gray-400 text-sm">
+                                          <AlertCircle
+                                            size={14}
+                                            className="text-blue-400 dark:text-blue-300 mt-1 mr-2"
+                                          />
+
+                                          <p>{day.notes}</p>
+                                        </div>
+                                      )}
+                                    </motion.div>
+                                  </motion.div>
+                                );
+                              })}
+                            </motion.div>
                           </div>
-                          <ul className="space-y-2 text-gray-300 ml-11">
-                            {day.tasks.map((task, taskIndex) => (
-                              <li
-                                key={taskIndex}
-                                className="flex items-center gap-2"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="14"
-                                  height="14"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  className="text-blue-400"
-                                >
-                                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
-                                {task}
-                              </li>
-                            ))}
-                          </ul>
-                        </motion.div>
-                      ))}
+                        </div>
+                      )}
                     </motion.div>
 
                     <div className="mt-8 flex justify-center">

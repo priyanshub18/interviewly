@@ -11,7 +11,7 @@ const UpcomingInterviews = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.7 }}
-      className=" rounded-lg shadow-lg overflow-hidden"
+      className=" border-2 border-gray-700/50 rounded-lg shadow-lg overflow-hidden"
     >
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
@@ -37,7 +37,7 @@ const UpcomingInterviews = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-md ">
           {interviews &&
             interviews.length > 0 &&
             interviews.map((interview) => (

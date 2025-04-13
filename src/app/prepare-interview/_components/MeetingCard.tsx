@@ -111,7 +111,7 @@ function BlueMeetingCard({ interview }: { interview: EnhancedInterview }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
       whileHover={{ y: -8, transition: { duration: 0.2 } }}
-      className="relative bg-gray-700/50"
+      className="relative bg-gray-700/50 rounded-xl"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
