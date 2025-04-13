@@ -23,11 +23,11 @@ function RecordingsPage() {
           calls.map((call) => call.queryRecordings()),
         );
         const allRecordings = callData.flatMap((call) => call.recordings);
-        console.log("Call Data:", callData);
-        console.log("All Recordings:", allRecordings);
+        //console.log("Call Data:", callData);
+        //console.log("All Recordings:", allRecordings);
         setRecordings(allRecordings);
       } catch (error) {
-        console.log("Error fetching recordings:", error);
+        //console.log("Error fetching recordings:", error);
       }
     };
 

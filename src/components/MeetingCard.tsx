@@ -47,7 +47,7 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
       }
       try {
         const recordings = await call.queryRecordings();
-        console.log("Recordings:", recordings);
+        //console.log("Recordings:", recordings);
         if (!recordings.recordings) {
           setIsRecordingAvailable(false);
           return;
@@ -60,7 +60,7 @@ function MeetingCard({ interview }: { interview: EnhancedInterview }) {
         setIsRecordingAvailable(true);
         setCallRecordingUrl(final_ans.url);
 
-        console.log("final_ans:", final_ans.url);
+        //console.log("final_ans:", final_ans.url);
         return final_ans.url;
       } catch (error) {
         return null;

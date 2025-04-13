@@ -105,7 +105,7 @@ export default function LeetCodeProblemFetcher() {
         constraints: problem.constraints,
         starterCode: problem.starterCode,
       });
-      console.log(problemData);
+      //console.log(problemData);
       toast.success("Question created successfully!");
     } catch (error) {
       if (error.message.includes("Unauthorized")) {
@@ -143,12 +143,12 @@ export default function LeetCodeProblemFetcher() {
         problem_description: problemName,
       });
       const data = await res.data;
-      console.log(data);
+      //console.log(data);
       setFetching(false);
       setProblem(data);
     } catch (e) {
       setFetching(false);
-      console.log(e);
+      //console.log(e);
       return;
     }
   };

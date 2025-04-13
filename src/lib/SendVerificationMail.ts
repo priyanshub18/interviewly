@@ -10,7 +10,7 @@ export async function sendScheduledEmail(
   interviewFormat: string,
 ): Promise<any> {
   try {
-    console.log("Email", email);
+    //console.log("Email", email);
     await resend.emails.send({
       from: "admin@priyanshubhardwaj.site",
       to: email,
@@ -28,7 +28,7 @@ export async function sendScheduledEmail(
       message: "Verification email sent",
     };
   } catch (emailError) {
-    console.log(emailError);
+    //console.log(emailError);
     return {
       success: false,
       message: "Failed to send verification email",

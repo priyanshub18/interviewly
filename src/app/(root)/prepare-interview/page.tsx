@@ -104,7 +104,7 @@ export default function InterviewPrepApp() {
     show: { opacity: 1, y: 0 },
   };
   useEffect(() => {
-    console.log("interviews", interviews);
+    //console.log("interviews", interviews);
   }, [interviews]);
   // Animation variants
   const containerVariants = {
@@ -192,7 +192,7 @@ export default function InterviewPrepApp() {
       }),
     });
     const data = await response.json();
-    console.log("Study plan response:", data);
+    //console.log("Study plan response:", data);
     if (data.error) {
       toast.error(data.error);
       setIsLoading(false);

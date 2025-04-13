@@ -41,7 +41,7 @@ export const createQuestion = mutation({
         ...args,
       });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       throw error;
     }
   },
@@ -51,7 +51,7 @@ export const getQuestionsById = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return null;
-    console.log("ids", args.ids);
+    //console.log("ids", args.ids);
     let questions = [];
     for (const id of args.ids) {
       const question = await ctx.db
@@ -62,7 +62,7 @@ export const getQuestionsById = query({
         questions.push(question);
       }
     }
-    console.log("questions", questions);
+    //console.log("questions", questions);
 
     return questions;
   },
@@ -74,7 +74,7 @@ export const getAllQuestions = query({
 
     const questions = await ctx.db.query("questions").collect();
 
-    console.log("from here", questions);
+    //console.log("from here", questions);
     return questions;
   },
 });

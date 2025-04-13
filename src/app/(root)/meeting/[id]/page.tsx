@@ -22,8 +22,8 @@ function MeetingPage() {
     ids: codeId,
   });
   useEffect(() => {
-    console.log(codeId);
-    console.log("questions", questions);
+    //console.log(codeId);
+    //console.log("questions", questions);
   }, [codeId]);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
 

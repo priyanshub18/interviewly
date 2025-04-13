@@ -33,13 +33,13 @@ function extractJSON(input: string | object) {
 
 export async function POST(req: Request) {
   try {
-    console.log("POST request received");
+    //console.log("POST request received");
 
     // Improved error handling for request body parsing
     let requestBody;
     try {
       const text = await req.text();
-      console.log("Raw request body:", text);
+      //console.log("Raw request body:", text);
       requestBody = JSON.parse(text);
     } catch (error: any) {
       console.error("Error parsing request body:", error);

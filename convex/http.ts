@@ -59,7 +59,7 @@ http.route({
           image: image_url,
         });
       } catch (error) {
-        console.log("Error creating user:", error);
+        // //console.log("Error creating user:", error);
         return new Response("Error creating user", { status: 500 });
       }
     }

@@ -37,7 +37,7 @@ function EndCallButton() {
       router.push("/home");
       toast.success("Meeting ended for everyone");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       toast.error("Failed to end meeting");
     }
   };
