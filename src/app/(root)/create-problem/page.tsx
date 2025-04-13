@@ -14,6 +14,8 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "../../../../convex/_generated/api";
+import LoaderUI from "@/components/LoaderUI";
+import ProfessionalLoader from "../_components/Loader2";
 
 // Mock LeetCode problems data structure (you would fetch real data)
 interface Example {
@@ -119,6 +121,7 @@ export default function LeetCodeProblemFetcher() {
       toast.error("Failed to create question. Please try again.");
       return;
     } finally {
+      setProblem(null);
       setIsLoading(false);
     }
   };
@@ -246,7 +249,7 @@ export default function LeetCodeProblemFetcher() {
             </div>
           </div>
         </motion.div>
-
+        {fetching && <ProfessionalLoader />}
         {/* Problem Display Section */}
         <AnimatePresence>
           {problem && (

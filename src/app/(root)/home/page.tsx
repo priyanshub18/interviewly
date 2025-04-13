@@ -297,8 +297,9 @@ const Home = () => {
                   <Button
                     variant="outline"
                     className={`border-blue-200 dark:border-blue-600 text-blue-700 dark:text-blue-300 ${!isCandidate ? "block" : "hidden"}`}
+                    onClick={() => router.push("/all-problems")}
                   >
-                    View Dashboard
+                    View All Problems
                   </Button>
                 </motion.div>
               </motion.div>
