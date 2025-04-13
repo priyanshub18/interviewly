@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 AI Interview Prep Platform
 
-## Getting Started
+Welcome to the **AI Interview Preparation Platform** – a smart, real-time web application built to help users streamline their technical interview journey. With advanced integrations like **Clerk for authentication**, **Convex for real-time backend**, and **AI-powered features** for resume building, interview planning, and quizzes, this app provides a seamless and intuitive experience for developers.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Frontend**: React, Tailwind CSS
+- **Authentication**: Clerk
+- **Backend-as-a-Service**: Convex (real-time mutations, queries, and data syncing)
+- **Email Services**: Resend + React Emails
+- **Libraries**: SCIX for secure Clerk-to-Convex JWT verification
+- **Deployment**: Vercel (recommended)
+
+---
+
+## 🔥 Features
+
+### ✅ Authentication
+
+- Seamless login/signup flow using **Clerk**
+- JWT verification between Clerk and Convex using **SCIX**
+- Webhooks configured to listen to user-related events like registration
+
+### 🧠 AI-Powered Interview Planner
+
+- Enter your skills, experience, and goals
+- Get a **customized AI-generated interview prep plan**
+- Powered via AI integrations
+
+### 📋 Quiz Platform
+
+- Dynamic quiz generation engine (based on skills or topics)
+- Interactive and time-based quizzes
+- Scoring & summary analytics
+
+### 📝 Resume Builder
+
+- Interactive UI to generate a resume
+- Real-time saving via Convex
+- Download/export options
+
+### 📹 Mock Interviews + Meeting Tools
+
+- Schedule mock interviews
+- Interview summary and feedback features
+- Meeting integration support
+
+### 🎯 Problem Tracker
+
+- Create, edit, and view all coding problems
+- Track interview questions
+- Real-time CRUD via Convex
+
+---
+
+## 📁 Folder Structure
+
+src/
+├── app/ # App Router structure
+│ ├── (admin)/ # Admin specific pages
+│ ├── (root)/ # Main user pages
+│ │ ├── \_components/ # Reusable components
+│ │ ├── home/ # Homepage
+│ │ ├── make-resume/ # Resume builder
+│ │ ├── prepare-interview/ # AI interview planner
+│ │ ├── schedule/ # Scheduling logic
+│ │ ├── create-problem/ # Add problem page
+│ │ ├── all-problems/ # View all problems
+│ │ ├── recordings/ # Interview recordings
+│ └── layout.tsx
+├── components/ # Shared components
+├── constants/ # Static constants
+├── actions/ # Server actions
+├── api/ # API routes
+├── emails/ # React email templates
+├── fonts/ # Fonts
+└── interview-summary/ # Interview summary view
+
+---
+
+## 🔐 Authentication + Convex Integration
+
+- **Clerk** is used for user management.
+- **Convex** is connected via JWT using **SCIX** library.
+- Example: When a user registers, a webhook (`/api/webhooks/clerk`) is triggered to update Convex database.
+
+### Convex Tables
+
+- `users.ts`: Handles user creation, mutation, and fetching logic
+- Queries = read-only access
+- Mutations = database writes or updates
+
+---
+
+## 📬 Emails
+
+Uses `@react-email` and `resend` to send:
+
+- Interview reminders
+- Plan summaries
+- Resume download links
+- Other transactional emails
+
+---
+
+## 🛠 Setup Instructions
+
+git clone https://github.com/your-username/ai-interview-platform.git
+cd ai-interview-platform
+pnpm install
 pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Set environment variables for **Clerk**, **Convex**, **Resend**, and **SCIX**
+- Configure Clerk webhooks pointing to `/api/webhooks/clerk`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤩 Future Scope
 
-## Learn More
+- Add code editor for mock interviews
+- Integrate OpenAI for resume enhancement
+- Enhance quiz engine using AI-generated questions
+- Add leaderboard & interview streaks
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 👨‍💻 Author
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Priyanshu Bhardwaj**  
+🧠 2nd-year CSE, NIT Jalandhar  
+🔗 [LinkedIn]
