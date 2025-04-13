@@ -2,7 +2,8 @@
 
 A comprehensive platform for interview preparation powered by AI, real-time collaboration, and interactive quizzes designed to help candidates excel in their job interviews.
 
-(![InterviewPrep AI Banner](https://raw.githubusercontent.com/priyanshub18/interviewly/main/public/ss01.png))
+![Image2](https://raw.githubusercontent.com/priyanshub18/interviewly/main/public/ss03.png)
+![InterviewPrep AI Banner](https://raw.githubusercontent.com/priyanshub18/interviewly/main/public/ss01.png)
 
 ## 🚀 Features
 
@@ -208,4 +209,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📧 Contact
 
-For questions or support, please reach out to our team at support@interviewprepai.com or open an issue on GitHub.
+For questions or support, please reach out to our team at priyanshub18.work@gmail.com or open an issue on GitHub.
