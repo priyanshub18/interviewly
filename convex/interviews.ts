@@ -74,6 +74,20 @@ export const getInterviewByStreamCallId = query({
   },
 });
 
+// export const getQuestions = query({
+//   args: { streamCallId: v.string() },
+//   handler: async (ctx, args) => {
+//     const identity = await ctx.auth.getUserIdentity();
+//     if (!identity) return [];
+
+//     const interview = await ctx.db
+//       .query("interviews")
+//       .withIndex("by_stream_id", (q) => q.eq("streamCallId", args.streamCallId))
+//       .first();
+//     return interview?.questions || [];
+//   },
+// });
+
 export const createInterview = mutation({
   args: {
     title: v.string(),
@@ -83,6 +97,7 @@ export const createInterview = mutation({
     streamCallId: v.string(),
     candidateId: v.string(),
     interviewerIds: v.array(v.string()),
+    questions: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();

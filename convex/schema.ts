@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { title } from "process";
 
 export default defineSchema({
   users: defineTable({
@@ -19,7 +20,6 @@ export default defineSchema({
     streamCallId: v.string(),
     candidateId: v.string(),
     interviewerIds: v.array(v.string()),
-    
   })
     .index("by_candidate_id", ["candidateId"])
     .index("by_stream_id", ["streamCallId"])
@@ -31,4 +31,30 @@ export default defineSchema({
     interviewerId: v.string(),
     interviewId: v.id("interviews"),
   }).index("by_interview_id", ["interviewId"]),
+
+  questions: defineTable({
+    q_id: v.string(),
+    number: v.number(),
+    title: v.string(),
+    description: v.string(),
+    difficulty: v.union(
+      v.literal("Easy"),
+      v.literal("Medium"),
+      v.literal("Hard"),
+    ),
+    examples: v.array(
+      v.object({
+        input: v.string(),
+        output: v.string(),
+        explanation: v.optional(v.string()),
+      }),
+    ),
+    constraints: v.array(v.string()),
+    starterCode: v.array(
+      v.object({
+        lang: v.string(),
+        code: v.string(),
+      }),
+    ),
+  }).index("by_qid", ["q_id", "number"]),
 });

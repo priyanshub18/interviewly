@@ -1,6 +1,32 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-function extractJSON(input: string | object) {
+// Define interfaces for the response
+interface Example {
+  input: string;
+  output: string;
+  explanation?: string;
+}
+
+interface CodeSnippet {
+  lang: string;
+  code: string;
+}
+
+interface LeetCodeProblem {
+  id: string;
+  number: number;
+  title: string;
+  description: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  examples: Example[];
+  constraints: string[];
+  starterCode: CodeSnippet[];
+}
+
+/**
+ * Extracts and parses JSON from various string formats
+ */
+function extractJSON(input: string | object): any {
   try {
     if (typeof input === "object") return input;
 
@@ -28,6 +54,62 @@ function extractJSON(input: string | object) {
     console.error("Unexpected error in extractJSON function:", error);
     return null;
   }
+}
+
+/**
+ * Validates that the response matches the LeetCodeProblem interface
+ */
+function validateLeetCodeProblem(data: any): LeetCodeProblem | null {
+  // Basic validation
+  if (!data || typeof data !== "object") return null;
+
+  const requiredFields = [
+    "id",
+    "number",
+    "title",
+    "description",
+    "difficulty",
+    "examples",
+    "constraints",
+    "starterCode",
+  ];
+
+  for (const field of requiredFields) {
+    if (!data[field]) {
+      console.error(`Missing required field: ${field}`);
+      return null;
+    }
+  }
+
+  // Check difficulty is valid
+  if (!["Easy", "Medium", "Hard"].includes(data.difficulty)) {
+    console.error(`Invalid difficulty: ${data.difficulty}`);
+    return null;
+  }
+
+  // Validate examples and starterCode are arrays
+  if (
+    !Array.isArray(data.examples) ||
+    !Array.isArray(data.constraints) ||
+    !Array.isArray(data.starterCode)
+  ) {
+    console.error("examples, constraints, and starterCode must be arrays");
+    return null;
+  }
+
+  return data as LeetCodeProblem;
+}
+
+/**
+ * Convert the old starterCode format to the new CodeSnippet[] format
+ */
+function convertStarterCode(starterCode: any): CodeSnippet[] {
+  if (!starterCode || typeof starterCode !== "object") return [];
+
+  return Object.entries(starterCode).map(([lang, code]) => ({
+    lang,
+    code: code as string,
+  }));
 }
 
 export async function POST(req: Request) {
@@ -64,13 +146,7 @@ export async function POST(req: Request) {
       return new Response(
         JSON.stringify({
           error: "Missing required fields",
-          required: [
-            "job_title",
-            "number_of_days",
-            "hours_per_day",
-            "my_current_skills",
-            "required_job_skills",
-          ],
+          required: ["problem_number", "problem_description"],
           received: Object.keys(requestBody),
         }),
         {
@@ -108,28 +184,35 @@ export async function POST(req: Request) {
       };
 
       const prompt = `You are given a LeetCode problem with the following details:
-•	LeetCode Problem Number: ${problem_number}
-•	LeetCode Problem Title: ${problem_description} Give problem number more priority than problem title.
-Your task is to create a JSON object with the following structure:{
-"id": "unique-kebab-case-id",
-"title": "Problem Title",
-"description": "Detailed problem description with logic, format, and clarity similar to LeetCode.",
-"examples": [
-{ "input": "example input 1", "output": "example output 1" },
-{ "input": "example input 2", "output": "example output 2" }
-],
-"constraints": [
-"Constraint 1",
-"Constraint 2",
-"...and so on"
-],
-"starterCode": {
-"javascript": "// JavaScript\nfunction solution() {\n  // Write your solution here\n}",
-"python": "# Python\ndef solution():\n    # Write your solution here\n    pass",
-"java": "// Java\npublic class Solution {\n    public void solution() {\n        // Write your solution here\n    }\n}",
-"cpp": "// C++\nvoid solution() {\n    // Write your solution here\n}"
+• LeetCode Problem Number: ${problem_number}
+• LeetCode Problem Title: ${problem_description} Give problem number more priority than problem title.
+
+Your task is to create a JSON object that follows this interface:
+
+interface Example {
+  input: string;
+  output: string;
+  explanation?: string;
 }
-}Format your response as a pure JSON object, without any extra explanation. Make sure the id is in kebab-case format based on the problem title.`;
+
+interface CodeSnippet {
+  lang: string;
+  code: string;
+}
+
+interface LeetCodeProblem {
+  id: string;           // kebab-case identifier based on title
+  number: number;       // The LeetCode problem number
+  title: string;        // The title of the problem
+  description: string;  // Detailed problem description
+  difficulty: "Easy" | "Medium" | "Hard";  // Problem difficulty
+  examples: Example[];  // Array of input/output examples with optional explanations
+  constraints: string[]; // Array of constraints
+  starterCode: CodeSnippet[]; // Array of code snippets in different languages
+}
+
+Include starter code for JavaScript, Python, Java, and C++ at minimum.
+Format your response as a pure JSON object, without any extra explanation.`;
 
       try {
         const chatSession = model.startChat({
@@ -139,7 +222,7 @@ Your task is to create a JSON object with the following structure:{
               role: "user",
               parts: [
                 {
-                  text: 'You are given a LeetCode problem with the following details:\n\t•\tLeetCode Problem Number: 100\n\t•\tLeetCode Problem Title: \n\nYour task is to create a JSON object with the following structure:{\n  "id": "unique-kebab-case-id",\n  "title": "Problem Title",\n  "description": "Detailed problem description with logic, format, and clarity similar to LeetCode.",\n  "examples": [\n    { "input": "example input 1", "output": "example output 1" },\n    { "input": "example input 2", "output": "example output 2" }\n  ],\n  "constraints": [\n    "Constraint 1",\n    "Constraint 2",\n    "...and so on"\n  ],\n  "starterCode": {\n    "javascript": "// JavaScript\\nfunction solution() {\\n  // Write your solution here\\n}",\n    "python": "# Python\\ndef solution():\\n    # Write your solution here\\n    pass",\n    "java": "// Java\\npublic class Solution {\\n    public void solution() {\\n        // Write your solution here\\n    }\\n}",\n    "cpp": "// C++\\nvoid solution() {\\n    // Write your solution here\\n}"\n  }\n}Format your response as a pure JSON object, without any extra explanation. Make sure the id is in kebab-case format based on the problem title.\n',
+                  text: 'You are given a LeetCode problem with the following details:\n• LeetCode Problem Number: 100\n• LeetCode Problem Title: \n\nYour task is to create a JSON object that follows this interface:\n\ninterface Example {\n  input: string;\n  output: string;\n  explanation?: string;\n}\n\ninterface CodeSnippet {\n  lang: string;\n  code: string;\n}\n\ninterface LeetCodeProblem {\n  id: string;           // kebab-case identifier based on title\n  number: number;       // The LeetCode problem number\n  title: string;        // The title of the problem\n  description: string;  // Detailed problem description\n  difficulty: "Easy" | "Medium" | "Hard";  // Problem difficulty\n  examples: Example[];  // Array of input/output examples with optional explanations\n  constraints: string[]; // Array of constraints\n  starterCode: CodeSnippet[]; // Array of code snippets in different languages\n}\n\nInclude starter code for JavaScript, Python, Java, and C++ at minimum.\nFormat your response as a pure JSON object, without any extra explanation.',
                 },
               ],
             },
@@ -147,7 +230,7 @@ Your task is to create a JSON object with the following structure:{
               role: "model",
               parts: [
                 {
-                  text: '```json\n{\n  "id": "same-tree",\n  "title": "Same Tree",\n  "description": "Given the roots of two binary trees `p` and `q`, write a function to check if they are the same.\\n\\nTwo binary trees are considered the same if they are structurally identical, and the nodes have the same value.\\n\\nSpecifically:\\n\\n1.  If both trees are empty, they are the same.\\n2.  If only one tree is empty, they are not the same.\\n3.  If the root nodes have different values, they are not the same.\\n4.  Recursively check the left and right subtrees for equality.",\n  "examples": [\n    {\n      "input": "p = [1,2,3], q = [1,2,3]",\n      "output": "true"\n    },\n    {\n      "input": "p = [1,2], q = [1,null,2]",\n      "output": "false"\n    },\n    {\n      "input": "p = [1,2,1], q = [1,1,2]",\n      "output": "false"\n    }\n  ],\n  "constraints": [\n    "The number of nodes in both trees is in the range [0, 100].",\n    "-10^4 <= Node.val <= 10^4"\n  ],\n  "starterCode": {\n    "javascript": "// JavaScript\\n/**\\n * Definition for a binary tree node.\\n * function TreeNode(val, left, right) {\\n *     this.val = (val===undefined ? 0 : val)\\n *     this.left = (left===undefined ? null : left)\\n *     this.right = (right===undefined ? null : right)\\n * }\\n */\\n/**\\n * @param {TreeNode} p\\n * @param {TreeNode} q\\n * @return {boolean}\\n */\\nvar isSameTree = function(p, q) {\\n    if (!p && !q) return true;\\n    if (!p || !q) return false;\\n    if (p.val !== q.val) return false;\\n    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);\\n};",\n    "python": "# Python\\n# Definition for a binary tree node.\\n# class TreeNode:\\n#     def __init__(self, val=0, left=None, right=None):\\n#         self.val = val\\n#         self.left = left\\n#         self.right = right\\nclass Solution:\\n    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:\\n        if not p and not q:\\n            return True\\n        if not p or not q:\\n            return False\\n        if p.val != q.val:\\n            return False\\n        return self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)",\n    "java": "// Java\\n/**\\n * Definition for a binary tree node.\\n * public class TreeNode {\\n *     int val;\\n *     TreeNode left;\\n *     TreeNode right;\\n *     TreeNode() {}\\n *     TreeNode(int val) { this.val = val; }\\n *     TreeNode(int val, TreeNode left, TreeNode right) {this.val = val; this.left = left; this.right = right;}\\n * }\\n */\\nclass Solution {\\n    public boolean isSameTree(TreeNode p, TreeNode q) {\\n        if (p == null && q == null) return true;\\n        if (p == null || q == null) return false;\\n        if (p.val != q.val) return false;\\n        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);\\n    }\\n}",\n    "cpp": "// C++\\n/**\\n * Definition for a binary tree node.\\n * struct TreeNode {\\n *     int val;\\n *     TreeNode *left;\\n *     TreeNode *right;\\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\\n * };\\n */\\nclass Solution {\\npublic:\\n    bool isSameTree(TreeNode* p, TreeNode* q) {\\n        if (!p && !q) return true;\\n        if (!p || !q) return false;\\n        if (p->val != q->val) return false;\\n        return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);\\n    }\\n};"\n  }\n}\n```',
+                  text: '```json\n{\n  "id": "same-tree",\n  "number": 100,\n  "title": "Same Tree",\n  "description": "Given the roots of two binary trees p and q, write a function to check if they are the same.\\n\\nTwo binary trees are considered the same if they are structurally identical, and the nodes have the same value.",\n  "difficulty": "Easy",\n  "examples": [\n    {\n      "input": "p = [1,2,3], q = [1,2,3]",\n      "output": "true",\n      "explanation": "Both trees have the same structure and the same values at corresponding nodes."\n    },\n    {\n      "input": "p = [1,2], q = [1,null,2]",\n      "output": "false",\n      "explanation": "Although both trees have the same values, their structure is different."\n    },\n    {\n      "input": "p = [1,2,1], q = [1,1,2]",\n      "output": "false",\n      "explanation": "The values at the same positions are different."\n    }\n  ],\n  "constraints": [\n    "The number of nodes in both trees is in the range [0, 100].",\n    "-10^4 <= Node.val <= 10^4"\n  ],\n  "starterCode": [\n    {\n      "lang": "javascript",\n      "code": "/**\\n * Definition for a binary tree node.\\n * function TreeNode(val, left, right) {\\n *     this.val = (val===undefined ? 0 : val)\\n *     this.left = (left===undefined ? null : left)\\n *     this.right = (right===undefined ? null : right)\\n * }\\n */\\n/**\\n * @param {TreeNode} p\\n * @param {TreeNode} q\\n * @return {boolean}\\n */\\nvar isSameTree = function(p, q) {\\n    // Your code here\\n};" \n    },\n    {\n      "lang": "python",\n      "code": "# Definition for a binary tree node.\\n# class TreeNode:\\n#     def __init__(self, val=0, left=None, right=None):\\n#         self.val = val\\n#         self.left = left\\n#         self.right = right\\nclass Solution:\\n    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:\\n        # Your code here\\n        pass"\n    },\n    {\n      "lang": "java",\n      "code": "/**\\n * Definition for a binary tree node.\\n * public class TreeNode {\\n *     int val;\\n *     TreeNode left;\\n *     TreeNode right;\\n *     TreeNode() {}\\n *     TreeNode(int val) { this.val = val; }\\n *     TreeNode(int val, TreeNode left, TreeNode right) {\\n *         this.val = val;\\n *         this.left = left;\\n *         this.right = right;\\n *     }\\n * }\\n */\\nclass Solution {\\n    public boolean isSameTree(TreeNode p, TreeNode q) {\\n        // Your code here\\n    }\\n}"\n    },\n    {\n      "lang": "cpp",\n      "code": "/**\\n * Definition for a binary tree node.\\n * struct TreeNode {\\n *     int val;\\n *     TreeNode *left;\\n *     TreeNode *right;\\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\\n * };\\n */\\nclass Solution {\\npublic:\\n    bool isSameTree(TreeNode* p, TreeNode* q) {\\n        // Your code here\\n    }\\n};"\n    }\n  ]\n}\n```',
                 },
               ],
             },
@@ -155,9 +238,9 @@ Your task is to create a JSON object with the following structure:{
         });
 
         const result = await chatSession.sendMessage(prompt);
-        const ans = extractJSON(result.response.text());
+        let responseData = extractJSON(result.response.text());
 
-        if (!ans) {
+        if (!responseData) {
           return new Response(
             JSON.stringify({
               error: "Failed to parse JSON response from Gemini",
@@ -171,7 +254,41 @@ Your task is to create a JSON object with the following structure:{
           );
         }
 
-        return new Response(JSON.stringify(ans), {
+        // Handle old format response (convert if needed)
+        if (
+          responseData.starterCode &&
+          typeof responseData.starterCode === "object" &&
+          !Array.isArray(responseData.starterCode)
+        ) {
+          responseData.starterCode = convertStarterCode(
+            responseData.starterCode,
+          );
+        }
+
+        // Ensure number field is present and is a number
+        if (!responseData.number && problem_number) {
+          responseData.number = parseInt(problem_number, 10);
+        }
+
+        // Validate the response structure
+        const validatedResponse = validateLeetCodeProblem(responseData);
+
+        if (!validatedResponse) {
+          return new Response(
+            JSON.stringify({
+              error: "Invalid response structure from Gemini",
+              received: responseData,
+            }),
+            {
+              status: 500,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
+        }
+
+        return new Response(JSON.stringify(validatedResponse), {
           status: 200,
           headers: {
             "Content-Type": "application/json",

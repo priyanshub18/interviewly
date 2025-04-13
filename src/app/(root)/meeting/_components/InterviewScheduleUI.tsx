@@ -48,6 +48,7 @@ function InterviewScheduleUI() {
     time: "09:00",
     candidateId: "",
     interviewerIds: user?.id ? [user.id] : [],
+    
   });
 
   const scheduleMeeting = async () => {
