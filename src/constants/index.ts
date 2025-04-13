@@ -33,6 +33,14 @@ export const TIME_SLOTS = [
   "17:00",
   "19:00",
   "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+  "21:30",
+  "22:00",
+  "22:30",
+  "23:00",
+  "23:30",
 ];
 
 export const QUICK_ACTIONS = [
@@ -66,7 +74,7 @@ export const QUICK_ACTIONS = [
   },
 ];
 
-export const CODING_QUESTIONS: CodeQuestion[] = [
+export const CODING_QUESTIONS01: CodeQuestion[] = [
   {
     id: "valid-parentheses",
     title: "Valid Parentheses",

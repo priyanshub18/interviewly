@@ -1,4 +1,4 @@
-import { LANGUAGES } from "@/constants";
+import { CODING_QUESTIONS01, LANGUAGES } from "@/constants";
 import { useState } from "react";
 import {
   ResizableHandle,
@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import InterviewNotesApp from "@/app/(root)/meeting/_components/Notes";
 import {
   AlertCircleIcon,
   BookIcon,
@@ -27,16 +28,19 @@ import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
 import convertQuestionFormat from "../utils";
-
+import { useUserRoles } from "@/hooks/useUserRoles";
 
 function CodeEditor({ questions }: { questions: any }) {
-  const CODING_QUESTIONS = convertQuestionFormat(questions);
-
+  let CODING_QUESTIONS = convertQuestionFormat(questions);
+  if (questions.length === 0) {
+    CODING_QUESTIONS = CODING_QUESTIONS01;
+  }
+  const { isInterviewer, isCandidate } = useUserRoles();
   const [selectedQuestion, setSelectedQuestion] = useState(CODING_QUESTIONS[0]);
   const [language, setLanguage] = useState<
     "javascript" | "python" | "java" | "cpp"
   >(LANGUAGES[0].id);
-  const [code, setCode] = useState(selectedQuestion.starterCode[language]);
+  const [code, setCode] = useState(selectedQuestion?.starterCode[language]);
   const [activeSection, setActiveSection] = useState<
     "examples" | "constraints" | null
   >(null);
@@ -77,7 +81,6 @@ function CodeEditor({ questions }: { questions: any }) {
     setActiveSection(activeSection === section ? null : section);
   };
 
-  
   const getCardHeaderStyle = () => {
     return isDarkMode
       ? "bg-zinc-900"
@@ -390,24 +393,38 @@ function CodeEditor({ questions }: { questions: any }) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
-          <Editor
-            height={"100%"}
-            defaultLanguage={language}
-            language={language}
-            theme="vs-dark"
-            value={code}
-            onChange={(value: any) => setCode(value || "")}
-            options={{
-              minimap: { enabled: false },
-              fontSize: 18,
-              lineNumbers: "on",
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              padding: { top: 16, bottom: 16 },
-              wordWrap: "on",
-              wrappingIndent: "indent",
-            }}
-          />
+          {isCandidate ? (
+            <motion.div
+              className="h-full relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              <Editor
+                height={"100%"}
+                defaultLanguage={language}
+                language={language}
+                theme="vs-dark"
+                value={code}
+                onChange={(value: any) => setCode(value || "")}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 18,
+                  lineNumbers: "on",
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  padding: { top: 16, bottom: 16 },
+                  wordWrap: "on",
+                  wrappingIndent: "indent",
+                }}
+              />
+            </motion.div>
+          ) : (
+            <div className="h-full w-full">
+              <InterviewNotesApp />
+            </div>
+          )}
+
           <motion.div
             className="absolute bottom-4 right-4"
             initial={{ scale: 0 }}
@@ -431,9 +448,10 @@ function CodeEditor({ questions }: { questions: any }) {
                   },
                 })
               }
+              disabled={!isInterviewer}
             >
               <CheckIcon className="h-4 w-4" />
-              Submit Solution
+              {isCandidate ? "Submit Solution" : "View Notes"}
             </motion.button>
           </motion.div>
         </motion.div>
