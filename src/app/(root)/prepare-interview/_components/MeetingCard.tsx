@@ -12,7 +12,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../../convex/_generated/dataModel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -28,10 +28,10 @@ import {
 type Interview = Doc<"interviews">;
 
 interface EnhancedInterview extends Interview {
-  reviewStatus?: "pending" | "pass" | "fail";
+  reviewStatus?: "pending" | "pass" | "fail" | "none";
 }
 
-function BlueMeetingCard({ interview }: { interview: EnhancedInterview }) {
+function BlueMeetingCard({ interview }: { interview: Interview }) {
   const [isCandidate, setIsCandidate] = useState(true); // Mocked for demo
   const [isRecordingAvailable, setIsRecordingAvailable] = useState(false);
   const [callRecordingUrl, setCallRecordingUrl] = useState<string | null>(null);

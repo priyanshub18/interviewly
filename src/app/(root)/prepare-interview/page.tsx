@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import MeetingCard from "@/components/MeetingCard";
 import UpcomingInterviews from "./_components/UpcomingInterviews";
 import {
@@ -30,7 +30,6 @@ export default function InterviewPrepApp() {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
-  // Interview data
   const [jobTitle, setJobTitle] = useState("");
   const [userSkills, setUserSkills] = useState([]);
   const [requiredSkills, setRequiredSkills] = useState([]);
@@ -150,6 +149,16 @@ export default function InterviewPrepApp() {
 
   // Generate the study plan
   const generatePlan = async () => {
+    if(userSkills.length === 0) {
+      toast.error("Please add your skills first");
+    }
+    if(requiredSkills.length === 0) {
+      toast.error("Please add required skills first");
+    }
+    if(userSkills.length === 0 || requiredSkills.length === 0) {
+      return;
+    }
+    
     setIsLoading(true);
     setPlanGenerated(false);
     if (skillsToImprove.length === 0) {

@@ -61,12 +61,12 @@ export const getQuestionById = query({
   },
 });
 export const getAllQuestions = query({
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return [];
 
     const questions = await ctx.db.query("questions").collect();
-
+    console.log(questions);
     return questions;
   },
 });

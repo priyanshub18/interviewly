@@ -9,7 +9,7 @@ import {
   ChevronDown,
   Code,
   LightbulbIcon,
-  Search
+  Search,
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -104,6 +104,7 @@ export default function LeetCodeProblemFetcher() {
         starterCode: problem.starterCode,
       });
       console.log(problemData);
+      toast.success("Question created successfully!");
     } catch (error) {
       if (error.message.includes("Unauthorized")) {
         toast.error(

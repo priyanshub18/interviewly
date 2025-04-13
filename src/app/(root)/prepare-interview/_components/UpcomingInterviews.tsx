@@ -1,6 +1,6 @@
 import { useQuery } from "convex/react";
 import React from "react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import { motion } from "framer-motion";
 
 import BlueMeetingCard from "./MeetingCard";
