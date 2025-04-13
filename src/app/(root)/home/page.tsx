@@ -226,7 +226,7 @@ const Home = () => {
                 >
                   <Button
                     variant="default"
-                    className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+                    className="bg-blue-600 hover:bg-blue-700 text-white gap-2 mr-"
                     onClick={() => {
                       if (isInterviewer) {
                         router.push("/dashboard");
@@ -238,6 +238,39 @@ const Home = () => {
                     {isInterviewer
                       ? "Review Candidates"
                       : "Prepare for Interview"}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 10px 25px -5px rgba(124, 58, 237, 0.3)",
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button
+                    variant="default"
+                    className={`hover:bg-white/80 text-blue-600 gap-2 mr-2 ${isCandidate ? "flex" : "hidden"}`}
+                    onClick={() => {
+                      if (!isInterviewer) {
+                        router.push("/make-resume");
+                      }
+                    }}
+                  >
+                    Create Resume
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
