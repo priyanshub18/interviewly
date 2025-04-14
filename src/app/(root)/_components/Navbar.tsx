@@ -1,5 +1,5 @@
 "use client";
-
+import { TbCards } from "react-icons/tb";
 import { useState, useEffect } from "react";
 import {
   Menu,
@@ -143,11 +143,11 @@ export default function GlassmorphicNavbar() {
                           onClick={() => handleNavigation("/make-resume")}
                         />
                         <NavLink
-                          text="Job Board"
-                          icon={<Briefcase className="w-4 h-4 mr-1" />}
-                          active={isActive("/job-board")}
+                          text="Flash Cards"
+                          icon={<TbCards className="w-4 h-4 mr-1" />}
+                          active={isActive("/flashcard")}
                           primaryColor={primaryblue}
-                          onClick={() => handleNavigation("/jobs-board")}
+                          onClick={() => handleNavigation("/flashcard")}
                         />
                       </>
                     )}

@@ -58,6 +58,8 @@ http.route({
           name,
           image: image_url,
         });
+
+        // await ctx.runMutation()
       } catch (error) {
         // //console.log("Error creating user:", error);
         return new Response("Error creating user", { status: 500 });

@@ -58,4 +58,18 @@ export default defineSchema({
       }),
     ),
   }).index("by_qid", ["q_id", "number"]),
+  flashcards: defineTable({
+    user: v.string(),
+    categories: v.optional(v.array(v.string())),
+    flashcards: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          question: v.string(),
+          answer: v.string(),
+          category: v.string(),
+        }),
+      ),
+    ),
+  }).index("by_user", ["user"]),
 });
