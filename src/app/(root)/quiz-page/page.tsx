@@ -826,7 +826,7 @@ import {
 } from "lucide-react";
 
 // Quiz Interface Component - shown after clicking "Start Quiz"
-export function QuizInterface({ darkMode = false, quizData, onExit }) {
+ function QuizInterface({ darkMode = false, quizData, onExit }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [writtenAnswer, setWrittenAnswer] = useState("");
