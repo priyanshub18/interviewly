@@ -26,7 +26,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "../../../../../../convex/_generated/api";
 import ProgressChart from "./_components/ProgressChart";
 
 export default function QuizDetail({ params }) {

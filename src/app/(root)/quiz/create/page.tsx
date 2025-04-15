@@ -33,7 +33,7 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import { title } from "process";
 import { useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import { useSavingToast } from "./_components/useSavingToast";
 import { useRouter } from "next/navigation";
 
