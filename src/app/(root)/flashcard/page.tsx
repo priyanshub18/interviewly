@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Loader, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import { set } from "date-fns";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useUser } from "@clerk/nextjs";

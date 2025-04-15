@@ -20,6 +20,14 @@
     "isolatedModules": true,
     "noEmit": true
   },
+  "functions": {
+    "cronJobs": {
+      "check-meeting-status": {
+        "name": "check-meeting-status",
+        "schedule": "*/10 * * * *"
+      }
+    }
+  },
   "include": ["./**/*"],
   "exclude": ["./_generated"]
 }

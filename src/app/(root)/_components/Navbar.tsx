@@ -19,6 +19,7 @@ import {
   Package,
   UserRound,
   Mail,
+  BookOpenCheck,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
@@ -134,6 +135,13 @@ export default function GlassmorphicNavbar() {
                           active={isActive("/prepare-interview")}
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/prepare-interview")}
+                        />
+                        <NavLink
+                          text="Quiz"
+                          icon={<BookOpenCheck className="w-4 h-4 mr-1" />}
+                          active={isActive("/quiz/*")}
+                          primaryColor={primaryblue}
+                          onClick={() => handleNavigation("/quiz/view")}
                         />
                         <NavLink
                           text="Resume Builder"

@@ -14,10 +14,12 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as comments from "../comments.js";
+import type * as crons from "../crons.js";
 import type * as flashcards from "../flashcards.js";
 import type * as http from "../http.js";
 import type * as interviews from "../interviews.js";
 import type * as questions from "../questions.js";
+import type * as quizzes from "../quizzes.js";
 import type * as users from "../users.js";
 
 /**
@@ -30,10 +32,12 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   comments: typeof comments;
+  crons: typeof crons;
   flashcards: typeof flashcards;
   http: typeof http;
   interviews: typeof interviews;
   questions: typeof questions;
+  quizzes: typeof quizzes;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

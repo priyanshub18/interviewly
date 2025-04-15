@@ -24,7 +24,8 @@ export default defineSchema({
   })
     .index("by_candidate_id", ["candidateId"])
     .index("by_stream_id", ["streamCallId"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_status_and_time", ["status", "startTime"]),
 
   comments: defineTable({
     content: v.string(),
@@ -72,4 +73,50 @@ export default defineSchema({
       ),
     ),
   }).index("by_user", ["user"]),
+
+  quizzes: defineTable({
+    userId: v.string(),
+    quizId: v.string(),
+    title: v.string(),
+    category: v.string(),
+    description: v.string(),
+    totalQuestions: v.number(),
+    badges: v.array(v.string()),
+    totalTime: v.number(),
+    strongAreas: v.array(v.string()),
+    weakAreas: v.array(v.string()),
+    attempts: v.number(),
+
+    attemptsHistory: v.array(
+      v.object({
+        attemptId: v.number(),
+        completedOn: v.string(),
+        score: v.number(),
+        correctAnswers: v.number(),
+        incorrectAnswers: v.number(),
+        skippedAnswers: v.number(),
+        timeSpent: v.string(),
+        questions: v.array(
+          v.object({
+            id: v.string(),
+            question: v.string(),
+            yourAnswer: v.string(),
+            correctAnswer: v.string(),
+            isCorrect: v.boolean(),
+            timeSpent: v.string(),
+          }),
+        ),
+      }),
+    ),
+
+    recommendedResources: v.array(
+      v.object({
+        title: v.string(),
+        type: v.string(),
+        url: v.string(),
+      }),
+    ),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_quizId", ["quizId"]),
 });

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import MeetingCard from "@/components/MeetingCard";
 import UpcomingInterviews from "./_components/UpcomingInterviews";
 import {
   AlertCircle,
