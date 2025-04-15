@@ -139,7 +139,11 @@ export default function GlassmorphicNavbar() {
                         <NavLink
                           text="Quiz"
                           icon={<BookOpenCheck className="w-4 h-4 mr-1" />}
-                          active={isActive("/quiz/*")}
+                          active={
+                            isActive("/quiz/view") ||
+                            isActive("/quiz/create") ||
+                            isActive("/quiz/history")
+                          }
                           primaryColor={primaryblue}
                           onClick={() => handleNavigation("/quiz/view")}
                         />
