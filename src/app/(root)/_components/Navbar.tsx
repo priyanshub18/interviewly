@@ -92,10 +92,10 @@ export default function GlassmorphicNavbar() {
                 <div className="font-bold text-xl flex items-center gap-2">
                   <div
                     className="rounded-lg p-1"
-                    style={{ backgroundColor: accentblue }}
+                    // style={{ backgroundColor: accentblue }}
                   >
                     <img
-                      src="logo-2.png"
+                      src="/applogo.png"
                       alt="Interviewly Logo"
                       className="w-8 h-8"
                     />
