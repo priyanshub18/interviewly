@@ -18,17 +18,12 @@ function RecordingsPage() {
       if (!calls) return;
 
       try {
-        // Get recordings for each call
         const callData = await Promise.all(
           calls.map((call) => call.queryRecordings()),
         );
         const allRecordings = callData.flatMap((call) => call.recordings);
-        //console.log("Call Data:", callData);
-        //console.log("All Recordings:", allRecordings);
         setRecordings(allRecordings);
-      } catch (error) {
-        //console.log("Error fetching recordings:", error);
-      }
+      } catch (error) {}
     };
 
     fetchRecordings();
@@ -36,7 +31,6 @@ function RecordingsPage() {
 
   if (isLoading) return <LoaderUI />;
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
