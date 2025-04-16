@@ -83,6 +83,14 @@ export default defineSchema({
     totalQuestions: v.number(),
     badges: v.array(v.string()),
     totalTime: v.number(),
+    questions: v.array(
+      v.object({
+        question: v.string(),
+        options: v.array(v.string()),
+        correct: v.number(),
+      }),
+    ),
+
     strongAreas: v.array(v.string()),
     weakAreas: v.array(v.string()),
     attempts: v.number(),

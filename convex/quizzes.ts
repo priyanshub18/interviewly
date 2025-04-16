@@ -10,6 +10,14 @@ export const saveQuizRecord = mutation({
     description: v.string(),
     totalTime: v.number(),
     totalQuestions: v.number(),
+    questions: v.array(
+      v.object({
+        question: v.string(),
+        options: v.array(v.string()),
+        correct: v.number(),
+      }),
+    ),
+
     badges: v.array(v.string()),
     strongAreas: v.array(v.string()),
     weakAreas: v.array(v.string()),
@@ -77,6 +85,7 @@ export const saveQuizRecord = mutation({
         description: args.description,
         totalTime: args.totalTime,
         totalQuestions: args.totalQuestions,
+        questions: args.questions,
         badges: args.badges,
         strongAreas: args.strongAreas,
         weakAreas: args.weakAreas,
@@ -103,7 +112,6 @@ export const getQuizHistoryByUser = query({
   },
 });
 
-
 export const getQuizByQuizId = query({
   args: {
     quizId: v.string(),
@@ -116,8 +124,6 @@ export const getQuizByQuizId = query({
     return quiz;
   },
 });
-
-
 
 export const getQuizSummaries = query({
   args: {
@@ -158,5 +164,22 @@ export const getQuizSummaries = query({
 
     // Return as a property of an object
     return { summaries };
+  },
+});
+
+export const getQuizConfig = query({
+  args: {
+    quizId: v.string(),
+  },
+  handler: async (ctx, { quizId }) => {
+    const quiz = await ctx.db
+      .query("quizzes")
+      .withIndex("by_quizId", (q) => q.eq("quizId", quizId))
+      .unique();
+    const difficulty = quiz?.description.split(" ")[1];
+    return {
+      topic: quiz?.title,
+      difficulty: difficulty,
+    };
   },
 });

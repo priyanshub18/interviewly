@@ -86,100 +86,6 @@ export default function QuizUI() {
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  //     ).length;
-  //     const incorrectAnswers = quizResults.answers.filter(
-  //       (ans) => ans && !ans.isCorrect,
-  //     ).length;
-  //     const skippedAnswers = quizResults.answers.filter(
-  //       (ans) => ans === null,
-  //     ).length;
-  //     const scorePercentage = Math.round(
-  //       (correctAnswers / demoQuestions.length) * 100,
-  //     );
-
-  //     let questionAnalysis; // Identify strong and weak areas
-  //     const keywordPerformance = {};
-  //     questionAnalysis.forEach((item) => {
-  //       item.keywords.forEach((keyword) => {
-  //         if (!keywordPerformance[keyword]) {
-  //           keywordPerformance[keyword] = { correct: 0, total: 0 };
-  //         }
-  //         keywordPerformance[keyword].total++;
-  //         if (item.isCorrect) keywordPerformance[keyword].correct++;
-  //       });
-  //     });
-
-  //     // Filter for keywords with at least 2 occurrences
-  //     let strongAreas, weakAreas;
-  //     // Generate badges based on performance
-  //     const badges = [];
-  //     if (scorePercentage >= 90) badges.push("Expert");
-  //     else if (scorePercentage >= 75) badges.push("Proficient");
-  //     else if (scorePercentage >= 50) badges.push("Intermediate");
-  //     else badges.push("Beginner");
-
-  //     if (quizResults.totalTime / demoQuestions.length < 15)
-  //       badges.push("Speed Demon");
-  //     if (correctAnswers === demoQuestions.length) badges.push("Perfect Score");
-  //     if (quizConfig.difficulty === "hard") badges.push("Challenger");
-
-  //     const totalTimeFormatted = formatTime(quizResults.totalTime);
-
-  //     const questionsData = demoQuestions.map((q, idx) => {
-  //       const answer = quizResults.answers[idx];
-  //       return {
-  //         id: `q-${idx + 1}`,
-  //         question: q.question,
-  //         yourAnswer: answer ? q.options[answer.selectedAnswer] : "Skipped",
-  //         correctAnswer: q.options[q.correct],
-  //         isCorrect: answer ? answer.isCorrect : false,
-  //         timeSpent: formatTime(quizResults.questionTimes[idx] || 0),
-  //       };
-  //     });
-
-  //     const recommendedResources = [];
-
-  //     // Create the quiz record
-  //     const quizRecord = {
-  //       userId: user.id, // Replace with actual user ID from auth
-  //       quizId: `quiz-${Date.now()}`,
-  //       title: `${quizConfig.topic} Quiz`,
-  //       category: quizConfig.topic,
-  //       description: `A ${quizConfig.difficulty} level quiz on ${quizConfig.topic} with ${demoQuestions.length} questions`,
-  //       totalQuestions: demoQuestions.length,
-  //       // badges,
-  //       // strongAreas,
-  //       // weakAreas,
-  //       attempts: 1,
-  //       attemptsHistory: [
-  //         {
-  //           attemptId: 1,
-  //           completedOn: new Date().toISOString(),
-  //           score: scorePercentage,
-  //           correctAnswers,
-  //           incorrectAnswers,
-  //           skippedAnswers,
-  //           timeSpent: totalTimeFormatted,
-  //           questions: questionsData,
-  //         },
-  //       ],
-  //       // recommendedResources,
-  //     };
-
-  //     console.log("Saving quiz to database:", quizRecord);
-
-  //     setSavedQuizData(quizRecord);
-  //     setIsSaving(false);
-  //     toast.success("Quiz results saved successfully!");
-  //     return quizRecord;
-  //   } catch (error) {
-  //     console.error("Error saving quiz results:", error);
-  //     toast.error("Failed to save quiz results");
-  //     setIsSaving(false);
-  //     return null;
-  //   }
-  // };
-
   const addToDB = useMutation(api.quizzes.saveQuizRecord);
   const { startSaving, endSaving } = useSavingToast();
   const saveQuizToDB = async () => {
@@ -268,6 +174,7 @@ export default function QuizUI() {
         totalQuestions: req_body.totalQuestions,
         totalTime: quizResults.totalTime,
         badges,
+        questions : demoQuestions,
         strongAreas,
         weakAreas,
         attempts: 1,

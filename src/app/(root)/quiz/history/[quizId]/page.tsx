@@ -21,6 +21,8 @@ import {
   Book,
   Globe,
   CircleHelp,
+  Check,
+  CheckCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -38,6 +40,17 @@ export default function QuizDetail({ params }) {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [currentAttempt, setCurrentAttempt] = useState(null);
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async (link) => {
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+    } catch (err) {
+      console.error("Failed to copy!", err);
+    }
+  };
 
   // Fetch quiz data
   const quizData = useQuery(api.quizzes.getQuizByQuizId, {
@@ -610,13 +623,26 @@ export default function QuizDetail({ params }) {
 
             <div className="mt-6 md:mt-0 flex gap-2">
               <button
-                className={`${currentTheme.button.secondary} py-2 px-4 rounded-lg flex items-center text-sm`}
+                className={`${currentTheme.button.secondary} py-2 px-4 rounded-lg flex items-center text-sm transition-all duration-200`}
+                onClick={() => handleCopy(window.location.href)}
               >
-                <Share2 size={16} className="mr-2" />
-                Share
+                {copied ? (
+                  <>
+                    <CheckCheck size={16} className="mr-2" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Share2 size={16} className="mr-2" />
+                    Share
+                  </>
+                )}
               </button>
               <button
                 className={`${currentTheme.button.primary} py-2 px-4 rounded-lg flex items-center text-sm`}
+                onClick={() => {
+                  router.push("/quiz/re-take/" + quizData.quizId);
+                }}
               >
                 Retake Quiz
               </button>
