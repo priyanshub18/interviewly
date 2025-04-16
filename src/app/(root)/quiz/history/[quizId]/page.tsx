@@ -30,6 +30,7 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import ProgressChart from "./_components/ProgressChart";
+import toast from "react-hot-toast";
 
 export default function QuizDetail({ params }) {
   const { quizId } = params;
@@ -163,12 +164,29 @@ export default function QuizDetail({ params }) {
       minute: "2-digit",
     });
   };
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   const getScoreColor = (score) => {
     if (score >= 90) return "text-green-500";
     if (score >= 70) return "text-yellow-500";
     return "text-red-500";
   };
+  const highestScore = quizData?.attemptsHistory.reduce((acc, curr) => {
+    if (curr.score > acc.score) return curr;
+    return acc;
+  });
+  console.log(highestScore);
+
+  const averageTimeSpent =
+    quizData?.attemptsHistory.reduce((acc, curr) => {
+      const [minutes, seconds] = curr.timeSpent.split(":").map(Number);
+      const totalSeconds = minutes * 60 + seconds;
+      return acc + totalSeconds;
+    }, 0) / quizData?.attemptsHistory.length;
 
   const renderTabContent = () => {
     if (!quizData || !currentAttempt) return null;
@@ -302,7 +320,7 @@ export default function QuizDetail({ params }) {
                     <span
                       className={`font-medium ${currentTheme.text.primary}`}
                     >
-                      {currentAttempt.score}%
+                      {highestScore.score}%
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
@@ -312,7 +330,7 @@ export default function QuizDetail({ params }) {
                     <span
                       className={`font-medium ${currentTheme.text.primary}`}
                     >
-                      {currentAttempt.timeSpent}
+                      {Math.floor(averageTimeSpent)} secs
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
@@ -498,7 +516,7 @@ export default function QuizDetail({ params }) {
                 </p>
               </div>
             </motion.div> */}
-            <ProgressChart />
+            <ProgressChart quizData={quizData} />
 
             {/* Learning Badges */}
             <motion.div
@@ -639,10 +657,20 @@ export default function QuizDetail({ params }) {
                 )}
               </button>
               <button
-                className={`${currentTheme.button.primary} py-2 px-4 rounded-lg flex items-center text-sm`}
+                className={`${currentTheme.button.primary} py-2 px-4 rounded-lg flex items-center text-sm transition 
+    ${
+      quizData.attempts > 8
+        ? "opacity-50 cursor-not-allowed grayscale"
+        : "hover:brightness-110 hover:scale-[1.02]"
+    }`}
                 onClick={() => {
-                  router.push("/quiz/re-take/" + quizData.quizId);
+                  if (quizData.attempts <= 8) {
+                    router.push("/quiz/re-take/" + quizData.quizId);
+                  } else {
+                    toast.error("Maximum attempts reached. ");
+                  }
                 }}
+                disabled={quizData.attempts > 8}
               >
                 Retake Quiz
               </button>

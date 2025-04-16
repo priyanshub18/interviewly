@@ -12,20 +12,24 @@ import {
 } from "recharts";
 
 // Dummy data representing progress over time
-const progressData = [
-  { attempt: 1, timeTaken: 120, errors: 8 },
-  { attempt: 2, timeTaken: 105, errors: 6 },
-  { attempt: 3, timeTaken: 90, errors: 5 },
-  { attempt: 4, timeTaken: 78, errors: 4 },
-  { attempt: 5, timeTaken: 85, errors: 3 },
-  { attempt: 6, timeTaken: 70, errors: 2 },
-  { attempt: 7, timeTaken: 65, errors: 2 },
-  { attempt: 8, timeTaken: 62, errors: 1 },
-  { attempt: 9, timeTaken: 60, errors: 1 },
-  { attempt: 10, timeTaken: 58, errors: 0 },
-];
+function parseTimeToSeconds(timeStr: string): number {
+  const [minutes, seconds] = timeStr.split(":").map(Number);
+  return (minutes || 0) * 60 + (seconds || 0);
+}
 
-export default function ProgressChart() {
+function generateProgressData(quizResult: any) {
+  if (!quizResult?.attemptsHistory) return [];
+
+  return quizResult.attemptsHistory.map((attempt: any, index: number) => ({
+    attempt: index + 1,
+    timeTaken: parseTimeToSeconds(attempt.timeSpent),
+    errors: attempt.incorrectAnswers || 0,
+  }));
+}
+
+export default function ProgressChart( {quizData}) {
+  const progressData = generateProgressData(quizData);
+
   const [currentTheme, setCurrentTheme] = useState({
     card: { bg: "bg-white dark:bg-gray-800" },
     text: {
