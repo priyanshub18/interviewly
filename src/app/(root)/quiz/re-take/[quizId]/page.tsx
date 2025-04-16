@@ -311,6 +311,19 @@ export default function QuizPage() {
     }
   };
 
+  function getQuizTitle(quizConfig) {
+    if (!quizConfig || quizConfig.trim() === "") {
+      return "Quiz";
+    }
+
+    const normalized = quizConfig.toLowerCase();
+
+    if (normalized.includes("quiz")) {
+      return quizConfig;
+    }
+
+    return `${quizConfig} Quiz`;
+  }
   const saveQuizToDB = async () => {
     if (!user || !quiz.questions) return;
 
@@ -364,7 +377,7 @@ export default function QuizPage() {
       const uniqueQuizId = quiz.quizId;
       const req_body = {
         quizId: uniqueQuizId,
-        title: `${quizConfig.topic || "Quiz"}`,
+        title: `${getQuizTitle(quizConfig.topic)}`,
         category: quizConfig.topic || "General",
         description: `A ${quizConfig.difficulty} level quiz on ${quizConfig.topic || "various topics"} with ${quiz.questions.length} questions`,
         totalQuestions: quiz.questions.length,
