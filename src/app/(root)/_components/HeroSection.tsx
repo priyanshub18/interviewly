@@ -1,5 +1,4 @@
-"use client";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
 import {
   Code,
   Calendar,
@@ -8,391 +7,595 @@ import {
   Users,
   Mic,
   Coffee,
-  ArrowRight,
-  ChevronDown,
   ArrowDown,
+  Sparkles,
+  Zap,
+  Target,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
 
-const StickyHeroSection = ({
+const Enhanced3DHeroSection = ({
   appName = "Interviewly",
   tagline = "Unlock Your Interview Potential",
   primaryblue = "#3b82f6",
 }) => {
-  const commonIconSize = 24;
-  const numberOfDots = 30;
-
   const [scrollY, setScrollY] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Track scroll position
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+    setIsLoaded(true);
+
+    const handleScroll = () => setScrollY(window.scrollY);
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20,
+      });
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
-  const taglineVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  };
-  const router = useRouter();
-  const icons = [Calendar, Camera, MessageSquare, Users];
+  const calculateOpacity = () => Math.max(0, 1 - scrollY / 1000);
 
-  const appNameVariants = {
-    initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.2 } },
-    hover: { scale: 1.05, transition: { duration: 0.3 } },
-  };
-
-  const featuresVariants = {
-    initial: { opacity: 0 },
-    animate: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.8 },
-    },
-  };
-
-  const featureItemVariants = {
-    initial: { opacity: 0, x: -20 },
-    animate: { opacity: 1, x: 0, transition: { duration: 0.5 } },
-  };
-
-  // Calculate opacity based on scroll position
-  const calculateOpacity = () => {
-    const opacity = Math.max(0, 1 - scrollY / 1000);
-    return opacity;
-  };
-
-  // Features data
   const features = [
     {
       title: "AI-Powered Interview Prep",
       description:
         "Generate personalized interview questions, simulate mock interviews, and get instant feedback using cutting-edge AI.",
+      icon: Sparkles,
+      gradient: "from-purple-500 to-pink-500",
+      color: "#8b5cf6",
     },
     {
       title: "Screen Sharing & Interview Mode",
       description:
         "Seamlessly conduct mock or real interviews with built-in screen sharing, timed questions, and evaluation tools.",
+      icon: Zap,
+      gradient: "from-blue-500 to-cyan-500",
+      color: "#3b82f6",
     },
     {
       title: "Sending Mail to Candidates",
       description:
         "Send personalized emails to candidates with their reminders, interview notes, and performance metrics.",
+      icon: Target,
+      gradient: "from-green-500 to-emerald-500",
+      color: "#10b981",
     },
-
     {
       title: "Session Review Mechanism",
       description:
         "Revisit your interview recordings, AI-generated transcripts, and performance reviews to improve iteratively.",
+      icon: Users,
+      gradient: "from-orange-500 to-red-500",
+      color: "#f97316",
+    },
+  ];
+
+  const floatingIcons = [
+    { Icon: Code, color: "#3b82f6", position: { bottom: "24%", right: "16%" } },
+    {
+      Icon: Calendar,
+      color: "#8b5cf6",
+      position: { bottom: "36%", right: "32%" },
+    },
+    {
+      Icon: Camera,
+      color: "#06b6d4",
+      position: { bottom: "48%", left: "25%" },
+    },
+    {
+      Icon: MessageSquare,
+      color: "#10b981",
+      position: { bottom: "16%", left: "12%" },
+    },
+    { Icon: Users, color: "#f59e0b", position: { bottom: "32%", left: "50%" } },
+    { Icon: Mic, color: "#ef4444", position: { bottom: "40%", right: "25%" } },
+    {
+      Icon: Coffee,
+      color: "#f59e0b",
+      position: { bottom: "24%", left: "24%" },
     },
   ];
 
   return (
-    <>
-      {/* Sticky container */}
-      <div className="fixed top-0 left-0 w-full h-screen z-0 pointer-events-none">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative h-full">
-          {/* Main Content at Top - fades as you scroll */}
-          <div
-            className="text-center pt-20 md:pt-24 relative z-10"
-            style={{ opacity: calculateOpacity() }}
+    <div
+      className="fixed top-0 left-0 w-full h-screen z-0 pointer-events-none overflow-hidden"
+      style={{ perspective: "1200px" }}
+    >
+      {/* Animated 3D Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
+        {/* Moving mesh gradient */}
+        <div
+          className="absolute inset-0 opacity-20 transition-transform duration-100"
+          style={{
+            background: `
+              radial-gradient(circle at 20% 80%, #1a1a1a 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, #2a2a2a 0%, transparent 50%),
+              radial-gradient(circle at 40% 40%, #333333 0%, transparent 50%)
+            `,
+            transform: `translate(${mousePosition.x * 0.5}px, ${mousePosition.y * 0.5}px)`,
+          }}
+        />
+
+        {/* Animated grid */}
+        <div
+          className="absolute inset-0 opacity-10 transition-transform duration-100"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
+            `,
+            backgroundSize: "60px 60px",
+            transform: `translate(${mousePosition.x * 0.3}px, ${mousePosition.y * 0.3}px) rotateX(${mousePosition.y * 0.1}deg)`,
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative h-full">
+        {/* Main Content with 3D Transform */}
+        <div
+          className="text-center pt-20 md:pt-24 relative z-10 transition-all duration-300"
+          style={{
+            opacity: calculateOpacity(),
+            transform: `
+              translateZ(80px) 
+              rotateX(${mousePosition.y * 0.05}deg) 
+              rotateY(${mousePosition.x * 0.05}deg)
+            `,
+            transformStyle: "preserve-3d",
+          }}
+        >
+          {/* Tagline with 3D effect */}
+          <h2
+            className={`text-xl md:text-2xl font-semibold text-gray-300 mb-4 transition-all duration-1000 ${
+              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{
+              textShadow: "0 4px 20px rgba(59, 130, 246, 0.4)",
+              transform: "translateZ(30px)",
+            }}
           >
-            <motion.h2
-              className="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-2"
-              initial="initial"
-              animate="animate"
-              variants={taglineVariants}
-            >
-              {tagline}
-            </motion.h2>
-            <motion.h1
-              className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-12"
-              initial="initial"
-              animate="animate"
-              variants={appNameVariants}
-              whileHover="hover"
-              style={{ cursor: "default", color: primaryblue }}
-            >
-              {appName}
-            </motion.h1>
+            {tagline}
+          </h2>
 
-            {/* Add CTA buttons */}
-            <motion.div
-              className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.5 }}
+          {/* App Name with Enhanced 3D */}
+          <h1
+            className={`text-5xl md:text-6xl lg:text-7xl font-extrabold mb-12 text-white cursor-default transition-all duration-1000 hover:scale-105 ${
+              isLoaded
+                ? "opacity-100 translate-y-0 rotate-0"
+                : "opacity-0 translate-y-12 -rotate-12"
+            }`}
+            style={{
+              background: `linear-gradient(135deg, #000000, #1a1a1a, #333333)`,
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textShadow: "0 12px 48px rgba(0, 0, 0, 0.6)",
+              transform: "translateZ(60px)",
+              filter: "drop-shadow(0 0 30px rgba(0, 0, 0, 0.4))",
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.transform =
+                "translateZ(60px) rotateY(5deg) scale(1.02)";
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.transform =
+                "translateZ(60px) rotateY(0deg) scale(1)";
+            }}
+          >
+            {appName}
+          </h1>
+
+          {/* Enhanced 3D CTA Button */}
+          <div
+            className={`flex justify-center items-center mb-16 transition-all duration-1200 delay-300 ${
+              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transform: "translateZ(40px)" }}
+          >
+            <button
+              className="relative group bg-gradient-to-r from-gray-900 via-black to-gray-900 text-white font-bold py-5 px-12 rounded-2xl shadow-2xl flex items-center justify-center transition-all duration-500 pointer-events-auto overflow-hidden hover:shadow-black/50"
+              style={{
+                boxShadow:
+                  "0 15px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+                transform: "translateZ(20px)",
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.transform =
+                  "translateZ(30px) rotateY(8deg) scale(1.05)";
+                (e.target as HTMLElement).style.boxShadow =
+                  "0 25px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2)";
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.transform =
+                  "translateZ(20px) rotateY(0deg) scale(1)";
+                (e.target as HTMLElement).style.boxShadow =
+                  "0 15px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)";
+              }}
             >
-              <button
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105 pointer-events-auto"
-                onClick={() => router.push("/home")}
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+              <span className="relative z-10 flex items-center text-lg">
+                Scroll More to Know
+                <ArrowDown size={20} className="ml-3 animate-bounce" />
+              </span>
+            </button>
+          </div>
+
+          {/* Enhanced 3D Feature Cards */}
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto mt-12 px-4"
+            style={{
+              transform: "translateZ(30px)",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className={`relative group cursor-pointer transition-all duration-700 ${
+                  isLoaded
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-12"
+                }`}
+                style={{
+                  transformStyle: "preserve-3d",
+                  transform: `translateZ(${index * 15}px)`,
+                  transitionDelay: `${index * 200 + 800}ms`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = `translateZ(${index * 15 + 40}px) rotateY(8deg) rotateX(5deg) scale(1.03)`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = `translateZ(${index * 15}px) rotateY(0deg) rotateX(0deg) scale(1)`;
+                }}
               >
-                Scroll More to Know <ArrowDown size={16} className="ml-2" />
-              </button>
-            </motion.div>
+                {/* 3D Card Container */}
+                <div className="relative bg-black/5 backdrop-blur-xl border border-white/5 rounded-3xl shadow-2xl p-8 transition-all duration-500 group-hover:bg-black/10 group-hover:border-white/10 overflow-hidden">
+                  {/* Animated gradient background */}
+                  <div
+                    className="absolute inset-0 opacity-5 group-hover:opacity-15 transition-opacity duration-500 rounded-3xl"
+                    style={{
+                      background: `linear-gradient(135deg, ${feature.color}20, ${feature.color}10)`,
+                    }}
+                  />
 
-            {/* Add feature highlights in the middle */}
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12 px-4"
-              variants={featuresVariants}
-              initial="initial"
-              animate="animate"
-            >
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="relative bg-white/10 dark:bg-white/5 border border-white/20 dark:border-gray-700 rounded-2xl shadow-xl p-6 backdrop-blur-md transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] group"
-                  variants={featureItemVariants}
-                >
-                  <div className="flex items-start">
-                    <div className="bg-blue-100 dark:bg-blue-800/40 p-4 rounded-xl mr-4 shadow-md group-hover:shadow-blue-400/40 transition-all duration-300">
-                      <div className="text-blue-500 dark:text-blue-400 drop-shadow-[0_0_6px_rgba(59,130,246,0.5)]">
-                        {React.createElement(icons[index % 4], {
-                          size: 28,
-                          className:
-                            "transition-transform duration-300 group-hover:scale-110",
-                        })}
-                      </div>
+                  {/* Glowing border effect */}
+                  <div
+                    className="absolute -inset-0.5 opacity-0 group-hover:opacity-40 rounded-3xl blur-lg transition-opacity duration-500"
+                    style={{
+                      background: `linear-gradient(135deg, ${feature.color}, ${feature.color}80)`,
+                    }}
+                  />
+
+                  <div className="relative flex items-start z-10">
+                    {/* Enhanced 3D Icon */}
+                    <div
+                      className="p-6 rounded-2xl mr-6 shadow-lg relative overflow-hidden transition-all duration-500 hover:scale-110"
+                      style={{
+                        background: `linear-gradient(135deg, ${feature.color}, ${feature.color}CC)`,
+                        boxShadow: `0 15px 40px ${feature.color}40, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+                        transform: "translateZ(25px)",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.transform =
+                          "translateZ(35px) rotateY(15deg) rotateX(10deg)";
+                        (e.target as HTMLElement).style.boxShadow = `0 20px 60px ${feature.color}60, inset 0 1px 0 rgba(255, 255, 255, 0.3)`;
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.transform =
+                          "translateZ(25px) rotateY(0deg) rotateX(0deg)";
+                        (e.target as HTMLElement).style.boxShadow = `0 15px 40px ${feature.color}40, inset 0 1px 0 rgba(255, 255, 255, 0.2)`;
+                      }}
+                    >
+                      {/* Icon shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                      <feature.icon
+                        size={36}
+                        className="text-white relative z-10 drop-shadow-lg"
+                      />
                     </div>
-                    <div className="text-left">
-                      <h3 className="font-semibold text-xl text-gray-900 dark:text-white mb-1">
+
+                    <div className="text-left flex-1">
+                      <h3 className="font-bold text-2xl text-white mb-3 group-hover:text-blue-100 transition-all duration-300">
                         {feature.title}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                      <p className="text-gray-300 group-hover:text-gray-200 text-base leading-relaxed transition-colors duration-300">
                         {feature.description}
                       </p>
                     </div>
                   </div>
 
-                  {/* Optional Glow Border */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400/30 to-purple-500/30 opacity-0 group-hover:opacity-100 rounded-2xl blur-md pointer-events-none transition-opacity duration-500" />
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Scroll indicator */}
-          </div>
-
-          {/* Icons positioned at the bottom */}
-          <div className="absolute bottom-0 left-0 right-0 h-1/2 md:h-2/5 overflow-visible">
-            {/* Animated Icons - all positioned in lower part */}
-            <motion.div
-              className="absolute bottom-24 right-16 md:right-24"
-              animate={{ y: [0, -10, 0], rotate: [-3, 3, -3] }}
-              transition={{
-                duration: 7,
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-full p-3 shadow-md">
-                <Code size={commonIconSize} className="text-primary-500" />
+                  {/* Floating particles inside cards */}
+                  {[...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 rounded-full opacity-30 animate-pulse"
+                      style={{
+                        top: `${20 + Math.random() * 60}%`,
+                        left: `${20 + Math.random() * 60}%`,
+                        backgroundColor: feature.color,
+                        animationDelay: `${Math.random() * 3}s`,
+                        animationDuration: `${2 + Math.random() * 2}s`,
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-36 right-32 md:right-48"
-              animate={{ y: [-5, 5, -5], rotate: [5, -5, 5] }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                repeatType: "reverse",
-                delay: 1,
-              }}
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-full p-4 shadow-md">
-                <Calendar size={commonIconSize} className="text-blue-400" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-48 left-1/4 md:left-1/3"
-              animate={{ y: [-8, 8, -8], rotate: [-7, 7, -7] }}
-              transition={{
-                duration: 9,
-                repeat: Infinity,
-                repeatType: "reverse",
-                delay: 0.5,
-              }}
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-full p-3 shadow-md">
-                <Camera size={commonIconSize} className="text-blue-400" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-16 left-12 md:left-16"
-              animate={{ y: [4, -4, 4], rotate: [2, -2, 2] }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                repeatType: "reverse",
-                delay: 1.5,
-              }}
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-full p-3 shadow-md">
-                <MessageSquare
-                  size={commonIconSize}
-                  className="text-green-400"
-                />
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-32 left-1/2 -translate-x-1/2"
-              animate={{ y: [-3, 10, -3], x: [5, -5, 5], rotate: [-2, 2, -2] }}
-              transition={{
-                duration: 10,
-                repeat: Infinity,
-                repeatType: "reverse",
-                delay: 2,
-              }}
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-full p-4 shadow-md">
-                <Users size={commonIconSize} className="text-blue-400" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-40 right-1/4 md:right-1/3"
-              animate={{ y: [6, -10, 6], rotate: [3, -3, 3] }}
-              transition={{
-                duration: 8.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-                delay: 0.7,
-              }}
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-full p-3 shadow-md">
-                <Mic size={commonIconSize} className="text-red-400" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-24 left-24 md:left-40"
-              animate={{ y: [-5, 8, -5], rotate: [-4, 4, -4] }}
-              transition={{
-                duration: 7.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-                delay: 1.2,
-              }}
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-full p-3 shadow-md">
-                <Coffee size={commonIconSize} className="text-amber-400" />
-              </div>
-            </motion.div>
-
-            {/* Floating dots confined to bottom section */}
-            {[...Array(numberOfDots)].map((_, i) => {
-              const startTop = 50 + Math.random() * 40;
-              const startLeft = Math.random() * 100;
-              const size = 3 + Math.random() * 5;
-              const hue = Math.random() * 360;
-              const opacity = 0.4 + Math.random() * 0.3;
-              const duration = 15 + Math.random() * 15;
-              const yOffset =
-                Math.random() > 0.5 ? -Math.random() * 40 : Math.random() * 40;
-              const xOffset =
-                Math.random() > 0.5 ? -Math.random() * 30 : Math.random() * 30;
-
-              return (
-                <motion.div
-                  key={`dot-${i}`}
-                  className="absolute rounded-full"
-                  style={{
-                    bottom: `${startTop}%`,
-                    left: `${startLeft}%`,
-                    width: `${size}px`,
-                    height: `${size}px`,
-                    backgroundColor: `hsl(${hue}, 60%, 70%)`,
-                    opacity: opacity,
-                  }}
-                  animate={{
-                    y: [yOffset * 0.5, yOffset, yOffset * 0.5],
-                    x: [xOffset * 0.5, xOffset, xOffset * 0.5],
-                  }}
-                  transition={{
-                    duration: duration,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                  }}
-                />
-              );
-            })}
-          </div>
-
-          {/* Background gradient circles in bottom area */}
-          <div className="absolute bottom-1/4 left-10 w-48 h-48 rounded-full bg-primary-400/10 blur-2xl" />
-          <div className="absolute bottom-1/3 right-10 w-64 h-64 rounded-full bg-blue-400/10 blur-2xl" />
-          <div className="absolute bottom-20 left-1/4 w-56 h-56 rounded-full bg-blue-400/10 blur-2xl" />
-
-          {/* Subtle grid pattern */}
-          <div className="absolute inset-0 opacity-5 pointer-events-none">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, gray 1px, transparent 1px), linear-gradient(to bottom, gray 1px, transparent 1px)",
-                backgroundSize: "50px 50px",
-              }}
-            />
+            ))}
           </div>
         </div>
 
-        {/* Animated particles - confined to bottom half */}
-        <div className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none overflow-hidden">
-          {[...Array(30)].map((_, i) => {
-            const startTop = Math.random() * 80;
-            const startLeft = Math.random() * 100;
-            const size = 1 + Math.random() * 3;
-            const opacity = 0.15 + Math.random() * 0.25;
-            const duration = 20 + Math.random() * 25;
-            const yOffset =
-              Math.random() > 0.5 ? -Math.random() * 60 : Math.random() * 60;
-            const xOffset =
-              Math.random() > 0.5 ? -Math.random() * 40 : Math.random() * 40;
-            let backgroundColor;
-            if (i % 3 === 0)
-              backgroundColor = "#6366f1"; // indigo
-            else if (i % 3 === 1)
-              backgroundColor = "#a855f7"; // purple
-            else backgroundColor = "#3b82f6"; // blue
+        {/* Enhanced 3D Floating Icons */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/2 md:h-2/5 overflow-visible">
+          {floatingIcons.map((item, index) => (
+            <div
+              key={index}
+              className="absolute transition-all duration-500 hover:scale-125"
+              style={{
+                ...item.position,
+                transform: `translateZ(${30 + index * 10}px)`,
+                animation: `float${index} ${4 + index}s ease-in-out infinite`,
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.transform = `translateZ(${50 + index * 10}px) rotateY(25deg) scale(1.2)`;
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.transform = `translateZ(${30 + index * 10}px) rotateY(0deg) scale(1)`;
+              }}
+            >
+              <div
+                className="bg-white/10 backdrop-blur-lg rounded-2xl p-5 shadow-2xl border border-white/20 cursor-pointer transition-all duration-300 hover:bg-white/20 hover:border-white/30"
+                style={{
+                  boxShadow: `0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px ${item.color}30, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
+                }}
+              >
+                <item.Icon
+                  size={28}
+                  style={{ color: item.color }}
+                  className="drop-shadow-lg"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Enhanced 3D Floating Particles */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(40)].map((_, i) => {
+            const colors = [
+              "#3b82f6",
+              "#8b5cf6",
+              "#06b6d4",
+              "#10b981",
+              "#f59e0b",
+              "#ef4444",
+            ];
+            const color = colors[i % colors.length];
+            const size = 2 + Math.random() * 4;
+            const duration = 8 + Math.random() * 12;
 
             return (
-              <motion.div
-                key={`particle-${i}`}
-                className="absolute rounded-full"
+              <div
+                key={i}
+                className="absolute rounded-full opacity-40"
                 style={{
-                  bottom: `${startTop}%`,
-                  left: `${startLeft}%`,
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
                   width: `${size}px`,
                   height: `${size}px`,
-                  backgroundColor: backgroundColor,
-                  opacity: opacity,
-                }}
-                animate={{
-                  y: [yOffset * 0.5, yOffset, yOffset * 0.5],
-                  x: [xOffset * 0.5, xOffset, xOffset * 0.5],
-                }}
-                transition={{
-                  duration: duration,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  delay: Math.random() * 5,
+                  backgroundColor: color,
+                  boxShadow: `0 0 ${size * 3}px ${color}`,
+                  transform: `translateZ(${Math.random() * 100}px)`,
+                  animation: `particle${i % 6} ${duration}s linear infinite`,
                 }}
               />
             );
           })}
         </div>
+
+        {/* Enhanced 3D Background Blobs */}
+        <div
+          className="absolute bottom-1/4 left-10 w-80 h-80 rounded-full bg-black/15 blur-3xl animate-pulse"
+          style={{ transform: "translateZ(-200px)" }}
+        />
+        <div
+          className="absolute bottom-1/3 right-10 w-96 h-96 rounded-full bg-gray-900/15 blur-3xl animate-pulse"
+          style={{ transform: "translateZ(-250px)", animationDelay: "1s" }}
+        />
+        <div
+          className="absolute bottom-20 left-1/4 w-88 h-88 rounded-full bg-black/15 blur-3xl animate-pulse"
+          style={{ transform: "translateZ(-180px)", animationDelay: "2s" }}
+        />
       </div>
-    </>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes float0 {
+          0%,
+          100% {
+            transform: translateY(0px) translateZ(30px) rotateZ(0deg);
+          }
+          50% {
+            transform: translateY(-15px) translateZ(40px) rotateZ(5deg);
+          }
+        }
+        @keyframes float1 {
+          0%,
+          100% {
+            transform: translateY(-5px) translateZ(40px) rotateZ(-2deg);
+          }
+          50% {
+            transform: translateY(-20px) translateZ(50px) rotateZ(3deg);
+          }
+        }
+        @keyframes float2 {
+          0%,
+          100% {
+            transform: translateY(-8px) translateZ(50px) rotateZ(3deg);
+          }
+          50% {
+            transform: translateY(-25px) translateZ(60px) rotateZ(-4deg);
+          }
+        }
+        @keyframes float3 {
+          0%,
+          100% {
+            transform: translateY(4px) translateZ(60px) rotateZ(-1deg);
+          }
+          50% {
+            transform: translateY(-12px) translateZ(70px) rotateZ(2deg);
+          }
+        }
+        @keyframes float4 {
+          0%,
+          100% {
+            transform: translateY(-3px) translateZ(70px) rotateZ(4deg);
+          }
+          50% {
+            transform: translateY(-18px) translateZ(80px) rotateZ(-3deg);
+          }
+        }
+        @keyframes float5 {
+          0%,
+          100% {
+            transform: translateY(6px) translateZ(80px) rotateZ(-3deg);
+          }
+          50% {
+            transform: translateY(-14px) translateZ(90px) rotateZ(5deg);
+          }
+        }
+        @keyframes float6 {
+          0%,
+          100% {
+            transform: translateY(-5px) translateZ(90px) rotateZ(2deg);
+          }
+          50% {
+            transform: translateY(-22px) translateZ(100px) rotateZ(-2deg);
+          }
+        }
+
+        @keyframes particle0 {
+          0% {
+            transform: translateY(100vh) translateX(0) translateZ(0px)
+              rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.4;
+          }
+          90% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateY(-20px) translateX(20px) translateZ(50px)
+              rotate(360deg);
+            opacity: 0;
+          }
+        }
+        @keyframes particle1 {
+          0% {
+            transform: translateY(100vh) translateX(0) translateZ(20px)
+              rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.4;
+          }
+          90% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateY(-20px) translateX(-30px) translateZ(70px)
+              rotate(-360deg);
+            opacity: 0;
+          }
+        }
+        @keyframes particle2 {
+          0% {
+            transform: translateY(100vh) translateX(0) translateZ(40px)
+              rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.4;
+          }
+          90% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateY(-20px) translateX(15px) translateZ(90px)
+              rotate(180deg);
+            opacity: 0;
+          }
+        }
+        @keyframes particle3 {
+          0% {
+            transform: translateY(100vh) translateX(0) translateZ(10px)
+              rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.4;
+          }
+          90% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateY(-20px) translateX(-20px) translateZ(60px)
+              rotate(-180deg);
+            opacity: 0;
+          }
+        }
+        @keyframes particle4 {
+          0% {
+            transform: translateY(100vh) translateX(0) translateZ(30px)
+              rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.4;
+          }
+          90% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateY(-20px) translateX(25px) translateZ(80px)
+              rotate(270deg);
+            opacity: 0;
+          }
+        }
+        @keyframes particle5 {
+          0% {
+            transform: translateY(100vh) translateX(0) translateZ(50px)
+              rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.4;
+          }
+          90% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateY(-20px) translateX(-15px) translateZ(100px)
+              rotate(-270deg);
+            opacity: 0;
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 
-export default StickyHeroSection;
+export default Enhanced3DHeroSection;

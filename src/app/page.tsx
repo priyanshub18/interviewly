@@ -18,16 +18,30 @@ import {
   MoveRight,
   UserCircle,
   Users,
+  Sparkles,
+  Zap,
+  Shield,
+  Star,
+  ArrowRight,
+  Play,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { cloneElement, useEffect, useState } from "react";
 import FeatureCard from "../components/FeatureCard";
 import TrustedCompanies from "../components/TrustedCompanies";
 import StickyHeroSection from "./(root)/_components/HeroSection";
+import { useTheme } from "next-themes";
+import Enhanced3DHeroSection from "./(root)/_components/HeroSection";
+
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
-
   const { user } = useUser();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,47 +55,29 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Prevent flash of wrong theme
+  if (!mounted) {
+    return null;
+  }
+
   const numberOfDots = 20;
   const navigate = useRouter();
   const tagline = "Unlock Your Interview Potential";
   const appName = "Interviewly";
-  const primaryblue = "#2563eb"; // Tailwind blue-600
-  const accentblue = "#3b82f6";
 
-  const taglineVariants = {
-    initial: { x: -50, opacity: 0 },
-    animate: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.8, ease: "easeInOut" },
-    },
-  };
-
-  const appNameVariants = {
-    initial: { opacity: 0, scale: 0.8 },
-    animate: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        delay: 0.5,
-        type: "spring",
-        stiffness: 150,
-        damping: 15,
-      },
-    },
-    hover: { scale: 1.05, transition: { duration: 0.2 } },
-  };
-  const commonIconSize = 24;
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden w-full">
-      {/* Navbar */}
-      {/* <BackgroundAnimation /> */}
+    <div className="min-h-screen overflow-hidden w-full">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 "></div>
+      </div>
 
-      <StickyHeroSection />
+      <Enhanced3DHeroSection />
 
       <div className="h-screen relative z-10 bg-transparent" />
-      {/* Scroll Down Indicator */}
+
+      {/* Enhanced Scroll Indicator */}
       <motion.div
         className="fixed bottom-12 left-1/2 transform -translate-x-1/2 z-40"
         initial={{ opacity: 0 }}
@@ -97,21 +93,22 @@ export default function Home() {
         style={{ display: isScrolled ? "none" : "block" }}
       >
         <div className="flex flex-col items-center">
-          <span className="text-foreground/70 text-sm mb-2 font-medium">
-            Scroll Down
+          <span className="text-white/70 text-sm mb-2 font-medium">
+            Discover More
           </span>
-          <div className="bg-primary/20 backdrop-blur-sm p-2 rounded-full">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-full shadow-lg backdrop-blur-sm">
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
             >
-              <ChevronDown size={24} className="text-primary" />
+              <ChevronDown size={20} className="text-white" />
             </motion.div>
           </div>
         </div>
       </motion.div>
-      {/* Hero Section */}
-      <div className="relative z-10 bg-white dark:bg-gray-900 min-h-screen pt-12 px-4 sm:px-6 lg:px-8">
+
+      {/* Enhanced Hero Section */}
+      <div className="relative z-10 bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm min-h-screen pt-12 px-4 sm:px-6 lg:px-8">
         <section className="pt-20 pb-20 md:pt-40 md:pb-28" id="hero">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row items-center justify-between gap-12">
@@ -121,31 +118,44 @@ export default function Home() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
               >
+                {/* Enhanced Badge */}
+                <motion.div
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-500/30 rounded-full px-4 py-2 mb-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.6 }}
+                >
+                  <Sparkles size={16} className="text-blue-400" />
+                  <span className="text-sm text-blue-300 font-medium">
+                    AI-Powered Interview Platform
+                  </span>
+                </motion.div>
+
                 <motion.h1
-                  className="text-4xl md:text-6xl font-bold text-foreground mb-6"
+                  className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">
-                    Seamless
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-400">
+                    Revolutionary
                   </span>{" "}
-                  Technical Interviews, Reimagined
+                  Technical Interviews
                 </motion.h1>
 
                 <motion.p
-                  className="text-lg md:text-xl text-foreground/70 mb-8"
+                  className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
                 >
-                  Connect with candidates through crystal-clear video calls,
-                  real-time code collaboration, and intelligent evaluation
-                  tools—all in one platform.
+                  Experience next-generation technical interviews with
+                  AI-powered insights, crystal-clear video calls, and seamless
+                  code collaboration—all in one beautifully designed platform.
                 </motion.p>
 
                 <motion.div
-                  className="flex flex-wrap gap-3"
+                  className="flex flex-wrap gap-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
@@ -154,33 +164,75 @@ export default function Home() {
                     <SignInButton>
                       <Button
                         size="lg"
-                        className="rounded-2xl px-8"
+                        className="relative overflow-hidden rounded-2xl px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-xl hover:shadow-blue-500/25 transition-all duration-300 group"
                         onClick={() => {}}
                       >
-                        Sign Up
-                        <LogIn />
+                        <span className="relative z-10 flex items-center">
+                          Start Free Trial
+                          <motion.div
+                            className="ml-2"
+                            whileHover={{ x: 5 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Zap size={18} />
+                          </motion.div>
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       </Button>
                     </SignInButton>
                   ) : (
                     <Button
                       size="lg"
-                      className="rounded-2xl px-8"
+                      className="relative overflow-hidden rounded-2xl px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-xl hover:shadow-blue-500/25 transition-all duration-300 group"
                       onClick={() => {
                         navigate.push("/home");
                       }}
                     >
-                      Get Started
-                      <MoveRight />
+                      <span className="relative z-10 flex items-center">
+                        Get Started
+                        <motion.div
+                          className="ml-2"
+                          whileHover={{ x: 5 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <ArrowRight size={18} />
+                        </motion.div>
+                      </span>
                     </Button>
                   )}
 
-                  {/* <Button
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full px-8"
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="rounded-2xl px-8 border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-blue-500 transition-all duration-300 group"
+                  >
+                    <Play
+                      size={18}
+                      className="mr-2 group-hover:text-blue-400"
+                    />
+                    Watch Demo
+                  </Button>
+                </motion.div>
+
+                {/* Stats */}
+                <motion.div
+                  className="flex gap-8 mt-12"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.6 }}
                 >
-                  Watch Demo
-                </Button> */}
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white">50K+</div>
+                    <div className="text-sm text-slate-400">Interviews</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white">500+</div>
+                    <div className="text-sm text-slate-400">Companies</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white">99.9%</div>
+                    <div className="text-sm text-slate-400">Uptime</div>
+                  </div>
                 </motion.div>
               </motion.div>
 
@@ -191,9 +243,9 @@ export default function Home() {
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
                 <div className="relative">
-                  {/* 3D Effect for App Screenshot */}
+                  {/* Enhanced 3D Interview UI */}
                   <motion.div
-                    className="bg-gradient-to-tr from-primary/20 to-blue-500/20 rounded-2xl p-2 shadow-xl"
+                    className="relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-slate-700/50"
                     initial={{ rotateY: 15, rotateX: -10 }}
                     animate={{ rotateY: 0, rotateX: 0 }}
                     transition={{
@@ -208,70 +260,119 @@ export default function Home() {
                       transition: { duration: 0.5 },
                     }}
                   >
-                    <div className="bg-background rounded-xl overflow-hidden shadow-lg">
-                      {/* Fake interview UI */}
-                      <div className="bg-gray-800 p-4 flex items-center justify-between">
+                    {/* Glowing border effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-3xl blur-xl"></div>
+
+                    <div className="relative bg-slate-900/90 rounded-2xl overflow-hidden shadow-lg border border-slate-700/50">
+                      {/* Enhanced Header */}
+                      <div className="bg-gradient-to-r from-slate-800 to-slate-700 p-4 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full bg-red-500"></div>
                           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                           <div className="w-3 h-3 rounded-full bg-green-500"></div>
                         </div>
-                        <div className="text-white text-xs">
+                        <div className="text-white text-xs font-medium flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                           Senior Developer Interview - InterViewly
                         </div>
-                        <div></div>
+                        <div className="flex items-center gap-2">
+                          <Shield size={16} className="text-green-400" />
+                          <span className="text-xs text-green-400">Secure</span>
+                        </div>
                       </div>
+
                       <div className="grid grid-cols-5 h-64">
-                        <div className="col-span-3 border-r border-gray-200 p-4">
-                          <div className="bg-gray-100 dark:bg-gray-800 rounded p-2 text-xs font-mono h-full overflow-hidden">
-                            <div className="text-green-600 dark:text-green-400">
-                              // Write a function to find duplicates in an array
+                        {/* Enhanced Code Editor */}
+                        <div className="col-span-3 border-r border-slate-700 p-4 bg-slate-900">
+                          <div className="bg-slate-800 rounded-lg p-3 text-xs font-mono h-full overflow-hidden border border-slate-700">
+                            <div className="text-green-400 mb-2">
+                              // AI-Suggested: Optimized algorithm
                             </div>
-                            <div className="text-blue-600 dark:text-blue-400 mt-2">
+                            <div className="text-blue-400 mb-1">
                               function findDuplicates(array) {"{"}
                             </div>
-                            <div className="ml-4">const seen = new Set();</div>
-                            <div className="ml-4">
+                            <div className="ml-4 text-slate-300">
+                              const seen = new Set();
+                            </div>
+                            <div className="ml-4 text-slate-300">
                               const duplicates = new Set();
                             </div>
-                            <div className="ml-4"></div>
-                            <div className="ml-4">
-                              for (const item of array) {"{"}
+                            <div className="ml-4 mt-2">
+                              <span className="text-purple-400">for</span>
+                              <span className="text-slate-300"> (</span>
+                              <span className="text-orange-400">const</span>
+                              <span className="text-slate-300"> item </span>
+                              <span className="text-purple-400">of</span>
+                              <span className="text-slate-300">
+                                {" "}
+                                array) {"{"}
+                              </span>
                             </div>
-                            <div className="ml-8">
-                              if (seen.has(item)) {"{"}
+                            <div className="ml-8 text-slate-300">
+                              <span className="text-purple-400">if</span>
+                              <span className="text-slate-300">
+                                {" "}
+                                (seen.has(item)) {"{"}
+                              </span>
                             </div>
-                            <div className="ml-12">duplicates.add(item);</div>
-                            <div className="ml-8">
-                              {"}"} else {"{"}
+                            <div className="ml-12 text-slate-300">
+                              duplicates.add(item);
                             </div>
-                            <div className="ml-12">seen.add(item);</div>
-                            <div className="ml-8">{"}"}</div>
-                            <div className="ml-4">{"}"}</div>
-                            <div className="ml-4"></div>
-                            <div className="ml-4">return [...duplicates];</div>
-                            <div className="text-blue-600 dark:text-blue-400">
-                              {"}"}
+                            <div className="ml-8 text-slate-300">
+                              {"}"}{" "}
+                              <span className="text-purple-400">else</span>{" "}
+                              {"{"}
+                            </div>
+                            <div className="ml-12 text-slate-300">
+                              seen.add(item);
+                            </div>
+                            <div className="ml-8 text-slate-300">{"}"}</div>
+                            <div className="ml-4 text-slate-300">{"}"}</div>
+                            <div className="ml-4 mt-2 text-purple-400">
+                              return [...duplicates];
+                            </div>
+                            <div className="text-blue-400">{"}"}</div>
+                            {/* AI Suggestion */}
+                            <div className="mt-2 p-2 bg-purple-500/10 border border-purple-500/20 rounded text-purple-300 text-xs">
+                              ✨ AI: Consider using Map for better performance
                             </div>
                           </div>
                         </div>
-                        <div className="col-span-2 grid grid-rows-2">
-                          <div className="p-2 border-b border-gray-200">
-                            <div className="bg-gray-200 dark:bg-gray-700 rounded-lg h-full w-full flex items-center justify-center">
-                              <Avatar className="w-12 h-12">
-                                <AvatarFallback className="bg-primary">
-                                  <UserCircle size={24} />
+
+                        {/* Enhanced Video Section */}
+                        <div className="col-span-2 grid grid-rows-2 bg-slate-800">
+                          <div className="p-2 border-b border-slate-700 relative">
+                            <div className="bg-gradient-to-br from-slate-700 to-slate-600 rounded-lg h-full w-full flex items-center justify-center relative overflow-hidden">
+                              <Avatar className="w-12 h-12 border-2 border-purple-400">
+                                <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500">
+                                  <UserCircle
+                                    size={24}
+                                    className="text-white"
+                                  />
                                 </AvatarFallback>
                               </Avatar>
+                              {/* Speaking indicator */}
+                              <div className="absolute bottom-2 left-2 flex items-center gap-1">
+                                <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                                <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse delay-75"></div>
+                                <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse delay-150"></div>
+                              </div>
                             </div>
                           </div>
                           <div className="p-2">
-                            <div className="bg-gray-200 dark:bg-gray-700 rounded-lg h-full w-full flex items-center justify-center">
-                              <Avatar className="w-12 h-12">
-                                <AvatarFallback className="bg-blue-500">
-                                  <UserCircle size={24} />
+                            <div className="bg-gradient-to-br from-slate-700 to-slate-600 rounded-lg h-full w-full flex items-center justify-center relative overflow-hidden">
+                              <Avatar className="w-12 h-12 border-2 border-blue-400">
+                                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-cyan-500">
+                                  <UserCircle
+                                    size={24}
+                                    className="text-white"
+                                  />
                                 </AvatarFallback>
                               </Avatar>
+                              {/* Mute indicator */}
+                              <div className="absolute top-2 right-2">
+                                <Mic size={12} className="text-slate-400" />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -279,24 +380,26 @@ export default function Home() {
                     </div>
                   </motion.div>
 
-                  {/* Floating elements */}
+                  {/* Enhanced Floating Elements */}
                   <motion.div
-                    className="absolute -top-8 -right-2 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg"
+                    className="absolute -top-8 -right-2 bg-gradient-to-br from-purple-500 to-pink-500 p-3 rounded-xl shadow-lg backdrop-blur-sm"
                     animate={{
                       y: [0, -10, 0],
+                      rotate: [0, 5, 0],
                     }}
                     transition={{
                       repeat: Infinity,
                       duration: 3,
                     }}
                   >
-                    <Code size={24} className="text-primary" />
+                    <Code size={24} className="text-white" />
                   </motion.div>
 
                   <motion.div
-                    className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg"
+                    className="absolute -bottom-4 -left-4 bg-gradient-to-br from-blue-500 to-cyan-500 p-3 rounded-xl shadow-lg backdrop-blur-sm"
                     animate={{
                       y: [0, 10, 0],
+                      // rotation: [0, -5, 0],
                     }}
                     transition={{
                       repeat: Infinity,
@@ -304,43 +407,32 @@ export default function Home() {
                       delay: 1,
                     }}
                   >
-                    <Camera size={24} className="text-blue-500" />
+                    <Camera size={24} className="text-white" />
+                  </motion.div>
+
+                  <motion.div
+                    className="absolute top-1/2 -left-8 bg-gradient-to-br from-green-500 to-emerald-500 p-2 rounded-lg shadow-lg backdrop-blur-sm"
+                    animate={{
+                      x: [0, -10, 0],
+                      scale: [1, 1.1, 1],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2.5,
+                      delay: 0.5,
+                    }}
+                  >
+                    <Sparkles size={20} className="text-white" />
                   </motion.div>
                 </div>
               </motion.div>
             </div>
           </div>
         </section>
-        {/* Trusted By Section */}
-        {/* <section className="py-16 bg-gradient-to-br from-gray-100/70 to-white dark:from-gray-900 dark:to-gray-800 border-y border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
-              Trusted by Leading Companies
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
-              Empowering innovation with global tech leaders
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16">
-            {["Google", "Microsoft", "Amazon", "Meta", "Spotify"].map(
-              (company, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-white dark:bg-gray-900/60 shadow-md hover:shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl px-8 py-5 transition-all duration-300 cursor-pointer"
-                  whileHover={{ scale: 1.08 }}
-                >
-                  <div className="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">
-                    {company}
-                  </div>
-                </motion.div>
-              ),
-            )}
-          </div>
-        </div>
-      </section> */}
+
         <TrustedCompanies />
-        {/* Features Section */}
+
+        {/* Enhanced Features Section */}
         <section className="py-20 md:py-32" id="features">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -350,10 +442,23 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <motion.div
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-500/30 rounded-full px-4 py-2 mb-6"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <Star size={16} className="text-blue-400" />
+                <span className="text-sm text-blue-300 font-medium">
+                  Powerful Features
+                </span>
+              </motion.div>
+
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
                 Everything You Need for Technical Interviews
               </h2>
-              <p className="text-foreground/70 text-lg max-w-3xl mx-auto">
+              <p className="text-slate-300 text-lg max-w-3xl mx-auto">
                 Our platform streamlines the entire interview process from
                 scheduling to evaluation, saving you time and helping you find
                 the best talent.
@@ -361,47 +466,57 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 bg-white dark:bg-gray-900/60 p-8 rounded-xl shadow-lg"
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: false, amount: 0.3 }}
             >
-              <FeatureCard
+              <EnhancedFeatureCard
                 icon={<Camera />}
                 title="Crystal-Clear Video"
                 description="High-definition video calls with minimal latency, perfect for face-to-face interviews regardless of location."
+                gradient="from-purple-500 to-pink-500"
               />
-              <FeatureCard
+              <EnhancedFeatureCard
                 icon={<Code />}
                 title="Live Code Editor"
                 description="Real-time collaborative code editor with syntax highlighting for over 30 programming languages."
+                gradient="from-blue-500 to-cyan-500"
               />
-              <FeatureCard
-                icon={<CheckCircle />}
-                title="Smart Evaluation"
-                description="AI-powered insights and customizable scoring rubrics to objectively evaluate candidate performance."
+              <EnhancedFeatureCard
+                icon={<Sparkles />}
+                title="AI-Powered Insights"
+                description="Intelligent analysis of candidate performance with automated scoring and detailed feedback reports."
+                gradient="from-green-500 to-emerald-500"
               />
-              <FeatureCard
+              <EnhancedFeatureCard
                 icon={<Calendar />}
-                title="Seamless Scheduling"
+                title="Smart Scheduling"
                 description="Automated scheduling with calendar integration and time zone detection to eliminate booking hassles."
+                gradient="from-orange-500 to-red-500"
               />
-              <FeatureCard
+              <EnhancedFeatureCard
                 icon={<Users />}
                 title="Panel Interviews"
                 description="Host multi-interviewer sessions with role-based permissions and private feedback channels."
+                gradient="from-violet-500 to-purple-500"
               />
-              <FeatureCard
-                icon={<MessageSquare />}
-                title="Interview Recordings"
-                description="Automatically record, transcribe and index interviews for easy reference and team collaboration."
+              <EnhancedFeatureCard
+                icon={<Shield />}
+                title="Enterprise Security"
+                description="Bank-level security with end-to-end encryption, SSO integration, and compliance certifications."
+                gradient="from-teal-500 to-blue-500"
               />
             </motion.div>
           </div>
         </section>
-        {/* How It Works */}
-        <section className="py-20 bg-gray-50 dark:bg-gray-800/50" id="about">
+
+        {/* Enhanced How It Works Section */}
+        <section
+          className="py-20 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm"
+          id="about"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               className="text-center mb-16"
@@ -410,52 +525,57 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
                 How InterViewly Works
               </h2>
-              <p className="text-foreground/70 text-lg max-w-3xl mx-auto">
+              <p className="text-slate-300 text-lg max-w-3xl mx-auto">
                 Our streamlined process makes technical interviews efficient and
                 effective
               </p>
             </motion.div>
 
             <div className="relative">
-              {/* Connection line */}
-              <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-primary/20 hidden md:block"></div>
+              {/* Enhanced Connection line */}
+              <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-indigo-500 to-blue-500 hidden md:block rounded-full"></div>
 
               <div className="space-y-12 md:space-y-0">
-                <StepItem
+                <EnhancedStepItem
                   number="01"
                   title="Schedule Interview"
                   description="Send automatic invitations with custom interview details and let candidates pick from your available time slots."
                   isLeft={true}
+                  gradient="from-blue-500 to-indigo-500"
                 />
 
-                <StepItem
+                <EnhancedStepItem
                   number="02"
                   title="Conduct Interview"
                   description="Join the video interview with access to code editor, virtual whiteboard, and customizable question templates."
                   isLeft={false}
+                  gradient="from-blue-500 to-cyan-500"
                 />
 
-                <StepItem
+                <EnhancedStepItem
                   number="03"
-                  title="Evaluate & Collaborate"
-                  description="Rate candidates on predefined criteria, add notes, and share results with your team for collaborative decision-making."
+                  title="AI Analysis"
+                  description="Get instant AI-powered insights on candidate performance, technical skills, and communication abilities."
                   isLeft={true}
+                  gradient="from-green-500 to-emerald-500"
                 />
 
-                <StepItem
+                <EnhancedStepItem
                   number="04"
-                  title="Review & Analyze"
-                  description="Access interview recordings, transcripts, and performance metrics to make data-driven hiring decisions."
+                  title="Review & Decide"
+                  description="Access detailed reports, team feedback, and data-driven recommendations to make informed hiring decisions."
                   isLeft={false}
+                  gradient="from-orange-500 to-red-500"
                 />
               </div>
             </div>
           </div>
         </section>
-        {/* Testimonials */}
+
+        {/* Enhanced Testimonials */}
         <section className="py-20 md:py-32">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -465,52 +585,58 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
                 What Our Users Say
               </h2>
-              <p className="text-foreground/70 text-lg max-w-3xl mx-auto">
+              <p className="text-slate-300 text-lg max-w-3xl mx-auto">
                 Join thousands of companies that have transformed their
                 technical interview process
               </p>
             </motion.div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <TestimonialCard
-                quote="InterViewly has cut our hiring time in half. The coding environment is flawless and candidates love the experience."
+              <EnhancedTestimonialCard
+                quote="InterViewly has revolutionized our hiring process. The AI insights are incredibly accurate and the candidate experience is outstanding."
                 author="Sarah Chen"
                 role="CTO, TechVision"
+                avatar="SC"
+                gradient="from-purple-500 to-pink-500"
               />
-              <TestimonialCard
-                quote="The collaborative features and detailed evaluation tools have revolutionized how we assess technical talent."
+              <EnhancedTestimonialCard
+                quote="The collaborative features and detailed evaluation tools have helped us make better hiring decisions 3x faster."
                 author="Michael Rivera"
                 role="Engineering Manager, DataSync"
+                avatar="MR"
+                gradient="from-blue-500 to-cyan-500"
               />
-              <TestimonialCard
-                quote="We've increased our technical hire quality by 40% since switching to InterViewly. The insights are invaluable."
+              <EnhancedTestimonialCard
+                quote="We've increased our technical hire quality by 60% since switching to InterViewly. The platform is a game-changer."
                 author="Aisha Johnson"
                 role="HR Director, CloudNative"
+                avatar="AJ"
+                gradient="from-green-500 to-emerald-500"
               />
             </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section
-          className="py-20 bg-gradient-to-br from-primary/10 via-blue-500/10 to-primary/5"
-          id="about"
-        >
+        {/* Enhanced CTA Section */}
+        <section className="py-20 -mx-8 bg-gradient-to-br from-blue-900/50 via-indigo-900/30 to-blue-900/50 backdrop-blur-sm">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              className="bg-gradient-to-br from-primary to-blue-600 rounded-3xl p-1 shadow-xl"
+              className="relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-3xl p-1 shadow-2xl border border-slate-700/50"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true, margin: "-100px" }}
             >
-              <div className="bg-background rounded-3xl p-8 md:p-12">
+              {/* Glowing border */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-indigo-500/30 to-blue-500/30 rounded-3xl blur-xl"></div>
+
+              <div className="relative bg-slate-900/90 rounded-3xl p-8 md:p-12">
                 <div className="text-center">
                   <motion.h2
-                    className="text-3xl md:text-4xl font-bold mb-6"
+                    className="text-3xl md:text-4xl font-bold mb-6 text-white"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
@@ -520,132 +646,266 @@ export default function Home() {
                   </motion.h2>
 
                   <motion.p
-                    className="text-lg text-foreground/70 mb-8 max-w-3xl mx-auto"
+                    className="text-lg text-slate-300 mb-8 max-w-3xl mx-auto"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                     viewport={{ once: true }}
                   >
-                    Join thousands of companies that have streamlined their
-                    hiring process, improved candidate experience, and made
-                    better technical hires with InterViewly.
+                    Join thousands of companies already using InterViewly to
+                    hire better, faster, and smarter.
                   </motion.p>
 
                   <motion.div
-                    className="flex flex-wrap justify-center gap-4"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.6 }}
                     viewport={{ once: true }}
                   >
-                    <Button size="lg" className="rounded-full px-8">
-                      Start Your Free 14-Day Trial
-                    </Button>
+                    {user == null ? (
+                      <SignInButton>
+                        <Button
+                          size="lg"
+                          className="relative overflow-hidden rounded-2xl px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-xl hover:shadow-blue-500/25 transition-all duration-300 group"
+                        >
+                          <span className="relative z-10 flex items-center">
+                            Start Your Free Trial
+                            <motion.div
+                              className="ml-2"
+                              whileHover={{ x: 5 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <ArrowRight size={18} />
+                            </motion.div>
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </Button>
+                      </SignInButton>
+                    ) : (
+                      <Button
+                        size="lg"
+                        className="relative overflow-hidden rounded-2xl px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-xl hover:shadow-blue-500/25 transition-all duration-300 group"
+                        onClick={() => navigate.push("/home")}
+                      >
+                        <span className="relative z-10 flex items-center">
+                          Get Started Now
+                          <motion.div
+                            className="ml-2"
+                            whileHover={{ x: 5 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <ArrowRight size={18} />
+                          </motion.div>
+                        </span>
+                      </Button>
+                    )}
+
                     <Button
                       variant="outline"
                       size="lg"
-                      className="rounded-full px-8"
+                      className="rounded-2xl px-8 border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-blue-500 transition-all duration-300"
                     >
-                      Request Demo
+                      Schedule Demo
                     </Button>
                   </motion.div>
 
-                  <motion.p
-                    className="text-sm text-foreground/50 mt-4"
+                  <motion.div
+                    className="mt-8 flex items-center justify-center gap-6 text-sm text-slate-400"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.8 }}
                     viewport={{ once: true }}
                   >
-                    No credit card required. Cancel anytime.
-                  </motion.p>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle size={16} className="text-green-400" />
+                      <span>No credit card required</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle size={16} className="text-green-400" />
+                      <span>14-day free trial</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle size={16} className="text-green-400" />
+                      <span>Cancel anytime</span>
+                    </div>
+                  </motion.div>
                 </div>
               </div>
             </motion.div>
           </div>
         </section>
-        {/* Footer */}
 
-        <footer
-          className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pt-16 pb-8"
-          id="contact"
-        >
+        {/* Enhanced Footer */}
+        <footer className="bg-slate-900 border-t -mx-8 border-slate-800 pt-16 pb-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
-              <div className="col-span-2 lg:col-span-1">
-                <div className="font-medium text-lg flex items-center gap-2 mb-4">
-                  <Camera size={24} className="text-primary" />
-                  <span className="text-foreground font-bold">InterViewly</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="col-span-2 md:col-span-1">
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg mr-3"></div>
+                  <span className="text-xl font-bold text-white">
+                    InterViewly
+                  </span>
                 </div>
-                <p className="text-foreground/70 mb-4">
-                  Transforming the technical interview experience for companies
-                  and candidates alike.
+                <p className="text-slate-400 text-sm mb-4">
+                  Revolutionizing technical interviews with AI-powered insights
+                  and seamless collaboration.
                 </p>
                 <div className="flex space-x-4">
-                  <SocialIcon icon={<Coffee size={18} />} />
-                  <SocialIcon icon={<Mic size={18} />} />
-                  <SocialIcon icon={<MessageSquare size={18} />} />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-400 hover:text-white"
+                  >
+                    Twitter
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-400 hover:text-white"
+                  >
+                    LinkedIn
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-400 hover:text-white"
+                  >
+                    GitHub
+                  </Button>
                 </div>
               </div>
 
               <div>
-                <h3 className="font-medium mb-4">Product</h3>
-                <FooterLinks
-                  links={[
-                    "Features",
-                    "Pricing",
-                    "Use Cases",
-                    "Security",
-                    "API",
-                  ]}
-                />
+                <h3 className="text-white font-semibold mb-4">Product</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Features
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Pricing
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Integrations
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      API
+                    </a>
+                  </li>
+                </ul>
               </div>
 
               <div>
-                <h3 className="font-medium mb-4">Company</h3>
-                <FooterLinks
-                  links={["About Us", "Careers", "Blog", "Press", "Contact"]}
-                />
+                <h3 className="text-white font-semibold mb-4">Company</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      About
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Careers
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Blog
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Contact
+                    </a>
+                  </li>
+                </ul>
               </div>
 
               <div>
-                <h3 className="font-medium mb-4">Resources</h3>
-                <FooterLinks
-                  links={[
-                    "Documentation",
-                    "Help Center",
-                    "Community",
-                    "Webinars",
-                    "Guides",
-                  ]}
-                />
-              </div>
-
-              <div>
-                <h3 className="font-medium mb-4">Legal</h3>
-                <FooterLinks
-                  links={[
-                    "Privacy Policy",
-                    "Terms of Service",
-                    "Cookies",
-                    "GDPR",
-                    "Compliance",
-                  ]}
-                />
+                <h3 className="text-white font-semibold mb-4">Support</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Help Center
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Documentation
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Privacy Policy
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Terms of Service
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
 
-            <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-              <p className="text-foreground/50 text-sm">
-                © 2025 InterViewly By Priyanshu Bhardwaj. All Rights Reserved.
+            <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between">
+              <p className="text-slate-400 text-sm">
+                © 2024 InterViewly. All rights reserved.
               </p>
-              <div className="flex items-center gap-2 mt-4 md:mt-0">
-                <Button variant="ghost" size="sm" className="text-xs">
-                  English (US)
-                </Button>
-                <Button variant="ghost" size="sm" className="text-xs">
-                  USD ($)
-                </Button>
+              <div className="flex items-center gap-4 mt-4 md:mt-0">
+                <div className="flex items-center gap-2">
+                  <Shield size={16} className="text-green-400" />
+                  <span className="text-slate-400 text-sm">
+                    SOC 2 Compliant
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star size={16} className="text-yellow-400" />
+                  <span className="text-slate-400 text-sm">4.9/5 Rating</span>
+                </div>
               </div>
             </div>
           </div>
@@ -655,120 +915,120 @@ export default function Home() {
   );
 }
 
-function StepItem({
-  number,
-  title,
-  description,
-  isLeft,
-}: {
-  number: string;
-  title: string;
-  description: string;
-  isLeft: boolean;
-}) {
-  return (
-    <div className="md:flex items-center">
-      {/* Left Section (Text if isLeft, Empty if not) */}
-      <div className="md:w-5/12">
-        {isLeft && (
-          <motion.div
-            className="bg-background rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-800 md:text-right"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: false }}
-          >
-            <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="text-foreground/70">{description}</p>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Center Number Circle */}
-      <motion.div
-        className="md:w-2/12 flex justify-center my-4 md:my-0"
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        viewport={{ once: true }}
-      >
-        <div className="bg-primary text-blue-500 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold shadow-lg">
-          {number}
-        </div>
-      </motion.div>
-
-      {/* Right Section (Text if !isLeft, Empty if isLeft) */}
-      <div className="md:w-5/12">
-        {!isLeft && (
-          <motion.div
-            className="bg-background rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-800"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: false }}
-          >
-            <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="text-foreground/70">{description}</p>
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function TestimonialCard({
-  quote,
-  author,
-  role,
-}: {
-  quote: string;
-  author: string;
-  role: string;
-}) {
+// Enhanced Feature Card Component
+function EnhancedFeatureCard({ icon, title, description, gradient }) {
   return (
     <motion.div
-      className="bg-background rounded-xl p-6 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-all duration-300"
+      className="group relative"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ y: -5 }}
-      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      whileHover={{ y: -8 }}
     >
-      <div className="text-yellow-500 mb-4">{"★★★★★"}</div>
-      <p className="text-foreground/80 mb-6 italic">"{quote}"</p>
-      <div>
-        <p className="font-medium">{author}</p>
-        <p className="text-foreground/60 text-sm">{role}</p>
+      <div className="relative bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-purple-500/30 transition-all duration-300 h-full">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <div
+          className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${gradient} mb-4 relative z-10`}
+        >
+          {cloneElement(icon, { size: 24, className: "text-white" })}
+        </div>
+
+        <h3 className="text-xl font-semibold text-white mb-3 relative z-10">
+          {title}
+        </h3>
+        <p className="text-slate-300 leading-relaxed relative z-10">
+          {description}
+        </p>
+
+        <motion.div
+          className="absolute top-4 right-4 opacity-0 group-hover:opacity-100"
+          initial={{ scale: 0.8 }}
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.2 }}
+        >
+          <MoveRight size={20} className="text-purple-400" />
+        </motion.div>
       </div>
     </motion.div>
   );
 }
 
-function SocialIcon({ icon }: { icon: React.ReactNode }) {
+// Enhanced Step Item Component
+function EnhancedStepItem({ number, title, description, isLeft, gradient }) {
   return (
-    <motion.a
-      href="#"
-      className="bg-gray-200 dark:bg-gray-800 p-2 rounded-full text-foreground/70 hover:text-primary transition-colors duration-300"
-      whileHover={{ scale: 1.1 }}
+    <motion.div
+      className={`relative flex items-center ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} gap-8 md:gap-16`}
+      initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
     >
-      {icon}
-    </motion.a>
+      <div className="md:w-1/2">
+        <div className="relative bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+          <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+          <p className="text-slate-300 leading-relaxed">{description}</p>
+        </div>
+      </div>
+
+      <div className="relative z-10 flex-shrink-0">
+        <div
+          className={`w-16 h-16 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg`}
+        >
+          <span className="text-white font-bold text-lg">{number}</span>
+        </div>
+        {/* Connection dot */}
+        <div className="absolute inset-0 w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 animate-pulse"></div>
+      </div>
+
+      <div className="md:w-1/2 hidden md:block"></div>
+    </motion.div>
   );
 }
 
-function FooterLinks({ links }: { links: string[] }) {
+// Enhanced Testimonial Card Component
+function EnhancedTestimonialCard({ quote, author, role, avatar, gradient }) {
   return (
-    <ul className="space-y-2">
-      {links.map((link, index) => (
-        <li key={index}>
-          <a
-            href="#"
-            className="text-foreground/60 hover:text-foreground text-sm transition-colors duration-200"
-          >
-            {link}
-          </a>
-        </li>
-      ))}
-    </ul>
+    <motion.div
+      className="group relative"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      whileHover={{ y: -5 }}
+    >
+      <div className="relative bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-purple-500/30 transition-all duration-300 h-full">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <div className="relative z-10">
+          <div className="mb-4">
+            <MessageSquare size={24} className="text-purple-400" />
+          </div>
+
+          <blockquote className="text-slate-300 mb-6 italic leading-relaxed">
+            "{quote}"
+          </blockquote>
+
+          <div className="flex items-center gap-3">
+            <Avatar className="w-12 h-12">
+              <AvatarFallback
+                className={`bg-gradient-to-br ${gradient} text-white font-semibold`}
+              >
+                {avatar}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="text-white font-semibold">{author}</div>
+              <div className="text-slate-400 text-sm">{role}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Star size={16} className="text-yellow-400 fill-current" />
+        </div>
+      </div>
+    </motion.div>
   );
 }
