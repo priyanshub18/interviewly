@@ -235,7 +235,7 @@ export default function QuizHistory() {
       className={`mt-16 ${currentTheme.bg} transition-colors duration-500 min-h-screen`}
     >
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Header with title */} 
+        {/* Header with title */}
         <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
           {/* Quiz Badge */}
           <motion.div
@@ -263,7 +263,10 @@ export default function QuizHistory() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-            Practice With <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">Smart Quizzes</span>
+            Practice With{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
+              Smart Quizzes
+            </span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -273,117 +276,115 @@ export default function QuizHistory() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
           >
-            Sharpen your skills with AI-generated quizzes. Track your progress, earn badges, and get instant feedback to boost your learning journey.
+            Sharpen your skills with AI-generated quizzes. Track your progress,
+            earn badges, and get instant feedback to boost your learning
+            journey.
           </motion.p>
-
-          {/* Create New Quiz Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="mb-2"
-          >
-            <Button
-              onClick={() => router.push('/quiz/create')}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-3 rounded-full shadow-lg flex items-center gap-2 text-lg"
-              size="lg"
-            >
-              <PlusCircle className="w-6 h-6" />
-              Create New Quiz
-            </Button>
-          </motion.div>
         </div>
-        {/* Search and Filter Bar */}
+        {/* Search, Filter, and Create Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-10"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-            <div className="w-full md:w-1/2 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="w-5 h-5 text-gray-400" />
+          <div
+            className={`flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-6 rounded-2xl shadow-md border ${darkMode ? "bg-slate-900 border-blue-900/30" : "bg-white border-blue-100"}`}
+          >
+            {/* Left: Search + Filters */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-1">
+              {/* Search Bar */}
+              <div className="w-full sm:w-64 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="w-5 h-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  aria-label="Search quizzes"
+                  className={`pl-10 pr-4 py-3 w-full rounded-xl ${currentTheme.input} border outline-none focus:ring-2 focus:ring-indigo-500 transition-all focus:border-indigo-500`}
+                  placeholder="Search quizzes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
-              <input
-                type="text"
-                className={`pl-10 pr-4 py-3 w-full rounded-xl ${currentTheme.input} border outline-none focus:ring-2 focus:ring-indigo-500 transition-all`}
-                placeholder="Search quizzes..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              {/* Filter Buttons */}
+              <div className="flex flex-wrap gap-2">
+                <button
+                  aria-label="Show all quizzes"
+                  onClick={() => setSelectedFilter("all")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                    selectedFilter === "all"
+                      ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
+                      : darkMode
+                        ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                  }`}
+                >
+                  All Time
+                </button>
+                <button
+                  aria-label="Show this week's quizzes"
+                  onClick={() => setSelectedFilter("week")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                    selectedFilter === "week"
+                      ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
+                      : darkMode
+                        ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                  }`}
+                >
+                  This Week
+                </button>
+                <button
+                  aria-label="Show high score quizzes"
+                  onClick={() => setSelectedFilter("high-scores")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                    selectedFilter === "high-scores"
+                      ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
+                      : darkMode
+                        ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                  }`}
+                >
+                  High Scores
+                </button>
+                <button
+                  aria-label="Show quizzes that need improvement"
+                  onClick={() => setSelectedFilter("needs-improvement")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                    selectedFilter === "needs-improvement"
+                      ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
+                      : darkMode
+                        ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                  }`}
+                >
+                  Needs Improvement
+                </button>
+              </div>
             </div>
-
-            <div className="flex gap-2 flex-wrap justify-end w-full md:w-auto">
+            {/* Right: Create Button */}
+            <div className="flex justify-end w-full md:w-auto">
               <button
-                onClick={() => setSelectedFilter("all")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  selectedFilter === "all"
-                    ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
-                    : darkMode
-                      ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                      : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
-                }`}
+                aria-label="Create new quiz"
+                onClick={() => router.push("/quiz/create")}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-3 rounded-xl shadow-xl flex items-center gap-2 text-base md:text-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 border-2 border-blue-500/30"
+                style={{ minWidth: 160 }}
               >
-                All Time
-              </button>
-              <button
-                onClick={() => setSelectedFilter("week")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  selectedFilter === "week"
-                    ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
-                    : darkMode
-                      ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                      : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
-                }`}
-              >
-                This Week
-              </button>
-              <button
-                onClick={() => setSelectedFilter("month")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  selectedFilter === "month"
-                    ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
-                    : darkMode
-                      ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                      : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
-                }`}
-              >
-                This Month
-              </button>
-              <button
-                onClick={() => setSelectedFilter("high-scores")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  selectedFilter === "high-scores"
-                    ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
-                    : darkMode
-                      ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                      : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
-                }`}
-              >
-                High Scores
-              </button>
-              <button
-                onClick={() => setSelectedFilter("needs-improvement")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  selectedFilter === "needs-improvement"
-                    ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
-                    : darkMode
-                      ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                      : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
-                }`}
-              >
-                Needs Improvement
+                <PlusCircle className="w-6 h-6" />
+                <span className="hidden sm:inline">Create Quiz</span>
+                <span className="sm:hidden">New Quiz</span>
               </button>
             </div>
           </div>
-
           {/* Results counter */}
-          <p className={`${currentTheme.text.secondary} text-sm`}>
-            Showing {filteredQuizzes.length}{" "}
-            {filteredQuizzes.length === 1 ? "quiz" : "quizzes"}
-            {searchQuery ? ` matching "${searchQuery}"` : null}
-          </p>
+          <div className="flex justify-between items-center mt-3 px-2">
+            <p className={`${currentTheme.text.secondary} text-sm`}>
+              Showing {filteredQuizzes.length}{" "}
+              {filteredQuizzes.length === 1 ? "quiz" : "quizzes"}
+              {searchQuery ? ` matching "${searchQuery}"` : null}
+            </p>
+          </div>
         </motion.div>
         {/* Loading State */}
         {isLoading && (
