@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
-
+import Flashcard from "./_components/FlashCard";
 export default function FlashcardManagement() {
   const { user } = useUser();
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -226,47 +226,49 @@ export default function FlashcardManagement() {
       className={` mt-16 ${currenttheme2.bg} transition-colors duration-500`}
     >
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Header with title and theme2 toggle */}
-        <div className="flex justify-between items-center mb-12">
+        {/* Header styled like LandingPart.tsx */}
+        <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
+          {/* Premium Badge */}
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            className="inline-flex items-center gap-3 bg-black/80 border border-blue-600/40 rounded-full px-6 py-3 mb-6 backdrop-blur-xl shadow-lg shadow-blue-600/10"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center"
+            transition={{ delay: 0.1, duration: 0.6 }}
           >
-            <motion.div
-              whileHover={{
-                rotate: [0, -10, 10, -5, 5, 0],
-                transition: { duration: 0.5 },
-              }}
-              className="mr-3 bg-blue-600 text-white p-3 rounded-2xl"
-            >
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                ></path>
-              </svg>
-            </motion.div>
-            <div>
-              <h1
-                className={`text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent`}
-              >
-                Flashcards For Your Preparation
-              </h1>
-              <p className={`${currenttheme2.text.secondary} text-lg`}>
-                Master knowledge with style
-              </p>
+            <div className="relative">
+              <Sparkles size={18} className="text-blue-400" />
+              <div className="absolute inset-0 animate-ping">
+                <Sparkles size={18} className="text-blue-400 opacity-20" />
+              </div>
             </div>
+            <span className="text-sm text-blue-300 font-semibold tracking-wide">
+              Keep your cards ready
+            </span>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
           </motion.div>
+
+          {/* Premium Title */}
+          <motion.h1
+            className="text-4xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-400 to-blue-600 bg-clip-text text-transparent mb-4 leading-tight tracking-tight text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            Flashcards{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
+              for your interview
+            </span>
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            className="text-lg md:text-xl text-blue-300 mb-2 leading-relaxed max-w-2xl text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            Use AI to generate flashcards for your interview.
+          </motion.p>
         </div>
 
         {/* Search and Filter Bar */}
@@ -812,324 +814,5 @@ export default function FlashcardManagement() {
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-function Flashcard({ card, index, theme2 }) {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  // Card variant
-  const frontCardStyle = `${theme2.card.front} ${theme2.card.textFront}`;
-  const backCardStyle = `${theme2.card.back} ${theme2.card.textBack}`;
-
-  // Dynamic height based on expanded state
-  const cardHeight = isExpanded ? "h-80" : "h-64";
-
-  // Handle expand toggle separately from flip
-  const handleExpandClick = (e) => {
-    e.stopPropagation(); // Prevent triggering the flip
-    setIsExpanded(!isExpanded);
-  };
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
-      className={`perspective-3d ${isExpanded ? "min-h-64" : "h-64"}`}
-      whileHover={{
-        translateY: -8,
-        transition: { type: "spring", stiffness: 300 },
-      }}
-    >
-      <motion.div
-        className="relative w-full h-full rounded-2xl cursor-pointer preserve-3d"
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{
-          duration: 0.6,
-          type: "spring",
-          stiffness: 200,
-          damping: 20,
-        }}
-        onClick={() => setIsFlipped(!isFlipped)}
-      >
-        {/* Front of Card */}
-        <motion.div
-          className={`absolute inset-0 p-6 rounded-2xl ${frontCardStyle} backface-hidden flex flex-col justify-between ${isExpanded ? "min-h-64" : "h-64"}`}
-        >
-          <div className="flex flex-col h-full">
-            <div className="flex justify-between items-start mb-2">
-              <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-medium backdrop-blur-sm">
-                {card.category}
-              </span>
-
-              <motion.button
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white/80"
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.8 }}
-                onClick={handleExpandClick}
-              >
-                {isExpanded ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 15l7-7 7 7"
-                    ></path>
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    ></path>
-                  </svg>
-                )}
-              </motion.button>
-            </div>
-
-            <h3 className="text-xl font-bold mb-3">{card.title}</h3>
-            <div className="flex items-start mb-4 flex-grow overflow-hidden">
-              <svg
-                className="w-5 h-5 mr-2 flex-shrink-0 text-white/80 mt-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-              </svg>
-              <p className="text-lg">
-                {isExpanded
-                  ? card.question
-                  : card.question.length > 100
-                    ? `${card.question.substring(0, 100)}...`
-                    : card.question}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center mt-2">
-            {!isExpanded && card.question.length > 100 && (
-              <motion.button
-                className="flex items-center px-3 py-1.5 bg-white/10 rounded-lg backdrop-blur-sm text-sm"
-                whileHover={{ scale: 1.05 }}
-                onClick={handleExpandClick}
-              >
-                Show more
-                <svg
-                  className="w-4 h-4 ml-1.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </motion.button>
-            )}
-
-            <motion.div
-              className={`flex items-center px-3 py-1.5 bg-white/20 rounded-lg backdrop-blur-sm text-sm ml-auto`}
-              whileHover={{ scale: 1.05 }}
-            >
-              Tap to reveal
-              <svg
-                className="w-4 h-4 ml-1.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                ></path>
-              </svg>
-            </motion.div>
-          </div>
-
-          {/* Decorative elements */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-2xl pointer-events-none">
-            <motion.div
-              className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full opacity-20 bg-white"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.2, 0.3, 0.2],
-              }}
-              transition={{ duration: 5, repeat: Infinity }}
-            />
-            <motion.div
-              className="absolute -top-2 -left-2 w-16 h-16 rounded-full opacity-10 bg-white"
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.1, 0.2, 0.1],
-              }}
-              transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-            />
-          </div>
-        </motion.div>
-
-        {/* Back of Card */}
-        <motion.div
-          className={`absolute inset-0 p-6 rounded-2xl ${backCardStyle} backface-hidden flex flex-col justify-between ${isExpanded ? "min-h-64" : "h-64"} ${isFlipped ? "" : "hidden"}`}
-          style={{ transform: "rotateY(180deg)" }}
-        >
-          <div className="flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
-              <h3 className={`text-xl font-bold ${theme2.card.accent}`}>
-                {card.title}
-              </h3>
-              <div className="flex space-x-2">
-                <span
-                  className={`px-3 py-1 bg-indigo-500/10 ${theme2.card.accent} rounded-full text-xs font-medium`}
-                >
-                  Answer
-                </span>
-                <motion.button
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-indigo-300"
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.8 }}
-                  onClick={handleExpandClick}
-                >
-                  {isExpanded ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 15l7-7 7 7"
-                      ></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 9l-7 7-7-7"
-                      ></path>
-                    </svg>
-                  )}
-                </motion.button>
-              </div>
-            </div>
-
-            <div className="bg-indigo-500/5 rounded-xl p-4 border border-indigo-500/10 overflow-auto flex-grow h-12">
-              <p className="text-lg">
-                {isExpanded
-                  ? card.answer
-                  : card.answer.length > 80
-                    ? `${card.answer.substring(0, 80)}...`
-                    : card.answer}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center mt-4">
-            <span className="text-xs text-indigo-300/80">#{card.id}</span>
-
-            {!isExpanded && card.answer.length > 80 && (
-              <motion.button
-                className={`flex items-center ${theme2.card.accent}  px-3 py-1.5 bg-indigo-500/5 rounded-lg text-sm mr-auto ml-2`}
-                whileHover={{ scale: 1.05 }}
-                onClick={handleExpandClick}
-              >
-                Show more
-                <svg
-                  className="w-4 h-4 ml-1.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </motion.button>
-            )}
-
-            <motion.div
-              className={`flex items-center ${theme2.card.accent} px-3 py-1.5 rounded-lg text-sm`}
-              whileHover={{ scale: 1.05 }}
-            >
-              Tap to flip back
-              <svg
-                className="w-4 h-4 ml-1.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                ></path>
-              </svg>
-            </motion.div>
-          </div>
-
-          {/* Decorative elements */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-2xl pointer-events-none">
-            <motion.div
-              className="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-5 bg-indigo-200"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.05, 0.1, 0.05],
-              }}
-              transition={{ duration: 6, repeat: Infinity }}
-            />
-          </div>
-        </motion.div>
-      </motion.div>
-    </motion.div>
   );
 }
