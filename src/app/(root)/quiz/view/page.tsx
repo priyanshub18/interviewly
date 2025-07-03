@@ -11,6 +11,7 @@ import {
   Award,
   Loader,
   PlusCircle,
+  Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
@@ -234,53 +235,64 @@ export default function QuizHistory() {
       className={`mt-16 ${currentTheme.bg} transition-colors duration-500 min-h-screen`}
     >
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Header with title */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-wrap items-center justify-between mb-12 gap-4"
-        >
-          {/* Left: Icon + Title */}
-          <div className="flex items-center gap-4">
-            <motion.div
-              whileHover={{
-                rotate: [0, -10, 10, -5, 5, 0],
-                transition: { duration: 0.5 },
-              }}
-              className="bg-blue-600 text-white p-3 rounded-2xl"
-            >
-              <BarChart3 className="w-8 h-8" />
-            </motion.div>
-
-            <div>
-              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-                Your Quizzes
-              </h1>
-              <p className={`${currentTheme.text.secondary} text-lg`}>
-                Track your progress and performance
-              </p>
-            </div>
-          </div>
-
-          {/* Right: Button */}
+        {/* Header with title */} 
+        <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
+          {/* Quiz Badge */}
           <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="shrink-0"
+            className="inline-flex items-center gap-3 bg-black/80 border border-blue-600/40 rounded-full px-6 py-3 mb-6 backdrop-blur-xl shadow-lg shadow-blue-600/10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+          >
+            <div className="relative">
+              <Sparkles size={18} className="text-blue-400" />
+              <div className="absolute inset-0 animate-ping">
+                <Sparkles size={18} className="text-blue-400 opacity-20" />
+              </div>
+            </div>
+            <span className="text-sm text-blue-300 font-semibold tracking-wide">
+              AI-Powered Quiz Generator
+            </span>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
+          </motion.div>
+
+          {/* Quiz Title */}
+          <motion.h1
+            className="text-4xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-400 to-blue-600 bg-clip-text text-transparent mb-4 leading-tight tracking-tight text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            Practice With <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">Smart Quizzes</span>
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            className="text-lg md:text-xl text-blue-300 mb-6 leading-relaxed max-w-2xl text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            Sharpen your skills with AI-generated quizzes. Track your progress, earn badges, and get instant feedback to boost your learning journey.
+          </motion.p>
+
+          {/* Create New Quiz Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            className="mb-2"
           >
             <Button
-              variant="ghost"
-              className="hover:opacity-90 transition-all duration-300"
-              style={{ backgroundColor: "#2563eb", color: "white" }}
-              onClick={() => router.push("/quiz/create")}
+              onClick={() => router.push('/quiz/create')}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-3 rounded-full shadow-lg flex items-center gap-2 text-lg"
+              size="lg"
             >
-              <PlusCircle className="mr-2" />
-              Create Another Quiz
+              <PlusCircle className="w-6 h-6" />
+              Create New Quiz
             </Button>
           </motion.div>
-        </motion.div>
-
+        </div>
         {/* Search and Filter Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -373,7 +385,6 @@ export default function QuizHistory() {
             {searchQuery ? ` matching "${searchQuery}"` : null}
           </p>
         </motion.div>
-
         {/* Loading State */}
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-20">
@@ -383,7 +394,6 @@ export default function QuizHistory() {
             </p>
           </div>
         )}
-
         {/* Error State for Convex Query */}
         {quizSummariesResult instanceof Error && (
           <div className="flex flex-col items-center justify-center py-20">
@@ -399,7 +409,6 @@ export default function QuizHistory() {
             </Button>
           </div>
         )}
-
         {/* Quiz History List */}
         {!isLoading && !(quizSummariesResult instanceof Error) && (
           <div className="space-y-6">
@@ -536,7 +545,6 @@ export default function QuizHistory() {
             </AnimatePresence>
           </div>
         )}
-
         {/* Empty State */}
         {!isLoading &&
           !(quizSummariesResult instanceof Error) &&
