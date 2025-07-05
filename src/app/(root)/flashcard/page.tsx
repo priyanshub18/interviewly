@@ -399,6 +399,20 @@ export default function FlashcardManagement() {
                 card={card}
                 index={index}
                 theme2={currenttheme2}
+                onDelete={(deletedCard) => {
+                  setFlashcards(prev => prev.filter(c => 
+                    !(c.title === deletedCard.title && c.question === deletedCard.question)
+                  ));
+                  toast.success("Flashcard deleted successfully");
+                }}
+                onEdit={(oldCard, newData) => {
+                  setFlashcards(prev => prev.map(c => 
+                    c.title === oldCard.title && c.question === oldCard.question
+                      ? { ...c, ...newData }
+                      : c
+                  ));
+                  toast.success("Flashcard updated successfully");
+                }}
               />
             ))}
           </AnimatePresence>

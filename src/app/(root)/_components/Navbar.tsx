@@ -156,6 +156,18 @@ export default function InterviewlyNavbar() {
                       onClick={() => handleNavigation("/flashcard")}
                       active={isActive("/flashcard")}
                     />
+                    <GlassNavLink
+                      text="Jobs"
+                      icon={<Briefcase className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/jobs")}
+                      active={isActive("/jobs")}
+                    />
+                    <GlassNavLink
+                      text="My Applications"
+                      icon={<Mail className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/my-applications")}
+                      active={isActive("/my-applications")}
+                    />
                   </>
                 )}
 
@@ -178,6 +190,24 @@ export default function InterviewlyNavbar() {
                       icon={<Code className="w-4 h-4" />}
                       onClick={() => handleNavigation("/all-problems")}
                       active={isActive("/all-problems")}
+                    />
+                    {/* <GlassNavLink
+                      text="Jobs"
+                      icon={<Briefcase className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/jobs")}
+                      active={isActive("/jobs")}
+                    /> */}
+                    <GlassNavLink
+                      text="Post Job"
+                      icon={<PlusCircle className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/post-job")}
+                      active={isActive("/post-job")}
+                    />
+                    <GlassNavLink
+                      text="Manage Jobs"
+                      icon={<Settings className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/manage-jobs")}
+                      active={isActive("/manage-jobs")}
                     />
                   </>
                 )}
@@ -320,6 +350,16 @@ export default function InterviewlyNavbar() {
                       icon={<TbCards className="w-4 h-4" />}
                       onClick={() => handleNavigation("/flashcard")}
                     />
+                    <MobileNavLink
+                      text="Jobs"
+                      icon={<Briefcase className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/jobs")}
+                    />
+                    <MobileNavLink
+                      text="My Applications"
+                      icon={<Mail className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/my-applications")}
+                    />
                   </>
                 )}
                 {isInterviewer && (
@@ -338,6 +378,21 @@ export default function InterviewlyNavbar() {
                       text="Problems"
                       icon={<Code className="w-4 h-4" />}
                       onClick={() => handleNavigation("/all-problems")}
+                    />
+                    {/* <MobileNavLink
+                      text="Jobs"
+                      icon={<Briefcase className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/jobs")}
+                    /> */}
+                    <MobileNavLink
+                      text="Post Job"
+                      icon={<PlusCircle className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/post-job")}
+                    />
+                    <MobileNavLink
+                      text="Manage Jobs"
+                      icon={<Settings className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/manage-jobs")}
                     />
                   </>
                 )}
