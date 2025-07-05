@@ -91,7 +91,7 @@ export default function GlassmorphicNavbar() {
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl opacity-75 animate-pulse"></div>
                 </div>
                 <span className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                  InterViewly
+                  Interviewly
                 </span>
               </div>
 

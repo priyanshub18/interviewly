@@ -33,7 +33,7 @@ const Footer = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl opacity-75 animate-pulse"></div>
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                InterViewly
+                Interviewly
               </span>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed mb-6">
@@ -157,7 +157,7 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="flex items-center space-x-6">
               <p className="text-slate-400 text-sm">
-                © 2024 InterViewly. All rights reserved.
+                © 2024 Interviewly. All rights reserved.
               </p>
               <div className="hidden md:flex items-center space-x-4">
                 <span className="text-slate-500">•</span>

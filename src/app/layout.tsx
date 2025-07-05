@@ -21,6 +21,12 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Interviewly",
   description: "All-In one for Technical Interviews",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.ico', type: 'image/x-icon' },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -31,6 +37,10 @@ export default function RootLayout({
   return (
     <ConvexClerkProvider>
       <html lang="en" suppressHydrationWarning>
+        <head>
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >

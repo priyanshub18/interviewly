@@ -264,7 +264,7 @@ const LandingPart = () => {
                     </div>
                     <div className="text-white text-sm font-bold flex items-center gap-3">
                       <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse shadow-lg shadow-blue-600/50"></div>
-                      Senior Developer Interview - InterViewly
+                      Senior Developer Interview - Interviewly
                     </div>
                     <div className="flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-full">
                       <Shield size={14} className="text-blue-400" />

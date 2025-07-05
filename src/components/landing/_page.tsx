@@ -244,7 +244,7 @@ const testimonials = [
     name: "Sarah Johnson",
     role: "CTO",
     company: "TechCorp",
-    content: "InterViewly has transformed our hiring process. The AI insights are incredibly accurate and the platform is so easy to use.",
+    content: "Interviewly has transformed our hiring process. The AI insights are incredibly accurate and the platform is so easy to use.",
     rating: 5
   },
   {
@@ -351,7 +351,7 @@ export default function EnhancedLandingPage() {
                 <VideoIcon size={18} className="text-white" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                InterViewly
+                Interviewly
               </span>
             </motion.div>
             
@@ -695,7 +695,7 @@ export default function EnhancedLandingPage() {
               What Our <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Users Say</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              Join thousands of companies that trust InterViewly
+              Join thousands of companies that trust Interviewly
             </p>
           </motion.div>
           
@@ -721,7 +721,7 @@ export default function EnhancedLandingPage() {
               Ready to <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Transform</span> Your Interviews?
             </h2>
             <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
-              Join thousands of companies already using InterViewly to hire better, faster, and smarter.
+              Join thousands of companies already using Interviewly to hire better, faster, and smarter.
             </p>
             
             <motion.div
@@ -781,7 +781,7 @@ export default function EnhancedLandingPage() {
                 <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                   <VideoIcon size={18} className="text-white" />
                 </div>
-                <span className="text-xl font-bold">InterViewly</span>
+                <span className="text-xl font-bold">Interviewly</span>
               </div>
               <p className="text-white/60 text-sm mb-6">
                 Revolutionizing technical interviews with AI-powered insights and seamless collaboration.
@@ -818,7 +818,7 @@ export default function EnhancedLandingPage() {
           
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between">
             <p className="text-white/60 text-sm">
-              © 2024 InterViewly. All rights reserved.
+              © 2024 Interviewly. All rights reserved.
             </p>
             <div className="flex items-center gap-6 mt-4 md:mt-0">
               <div className="flex items-center gap-2 text-sm text-white/60">
