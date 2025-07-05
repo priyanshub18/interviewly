@@ -127,4 +127,65 @@ export default defineSchema({
   })
     .index("by_userId", ["userId"])
     .index("by_quizId", ["quizId"]),
+
+  jobs: defineTable({
+    title: v.string(),
+    company: v.string(),
+    location: v.string(),
+    type: v.union(
+      v.literal("Full-time"),
+      v.literal("Part-time"),
+      v.literal("Contract"),
+      v.literal("Internship"),
+      v.literal("Remote")
+    ),
+    description: v.string(),
+    requirements: v.array(v.string()),
+    responsibilities: v.array(v.string()),
+    salary: v.optional(v.string()),
+    experienceLevel: v.union(
+      v.literal("Entry"),
+      v.literal("Mid"),
+      v.literal("Senior"),
+      v.literal("Lead"),
+      v.literal("Executive")
+    ),
+    skills: v.array(v.string()),
+    postedBy: v.string(), // clerkId of the admin/interviewer
+    status: v.union(
+      v.literal("Active"),
+      v.literal("Closed"),
+      v.literal("Draft")
+    ),
+    postedAt: v.number(),
+    deadline: v.optional(v.number()),
+    applicationsCount: v.number(),
+  })
+    .index("by_posted_by", ["postedBy"])
+    .index("by_status", ["status"])
+    .index("by_type", ["type"])
+    .index("by_experience_level", ["experienceLevel"])
+    .index("by_posted_at", ["postedAt"]),
+
+  jobApplications: defineTable({
+    jobId: v.id("jobs"),
+    applicantId: v.string(), // clerkId of the applicant
+    coverLetter: v.string(),
+    resume: v.optional(v.string()), // URL to resume file
+    status: v.union(
+      v.literal("Pending"),
+      v.literal("Under Review"),
+      v.literal("Shortlisted"),
+      v.literal("Rejected"),
+      v.literal("Hired")
+    ),
+    appliedAt: v.number(),
+    reviewedAt: v.optional(v.number()),
+    reviewedBy: v.optional(v.string()), // clerkId of the reviewer
+    notes: v.optional(v.string()),
+  })
+    .index("by_job_id", ["jobId"])
+    .index("by_applicant_id", ["applicantId"])
+    .index("by_status", ["status"])
+    .index("by_applied_at", ["appliedAt"]),
 });
