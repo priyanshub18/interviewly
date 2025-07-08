@@ -18,21 +18,55 @@ type User = Doc<"users">;
 
 export const groupInterviews = (interviews: Interview[]) => {
   if (!interviews) return {};
+  const now = new Date();
+  const grouped = interviews.reduce((acc: any, interview: Interview) => {
+    const startTime = new Date(interview.startTime);
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // +1 hour
 
+    if (now >= startTime && now <= endTime) {
+      acc.live = [...(acc.live || []), interview];
+    } else if (interview.status === "completed") {
+      acc.completed = [...(acc.completed || []), interview];
+    } else if (startTime > now) {
+      acc.upcoming = [...(acc.upcoming || []), interview];
+    } else {
+      acc.completed = [...(acc.completed || []), interview];
+    }
+    return acc;
+  }, {});
+
+  // Sort each group by latest first
+  if (grouped.live) {
+    grouped.live.sort((a: Interview, b: Interview) => 
+      new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    );
+  }
+  if (grouped.completed) {
+    grouped.completed.sort((a: Interview, b: Interview) => 
+      new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    );
+  }
+  if (grouped.upcoming) {
+    grouped.upcoming.sort((a: Interview, b: Interview) => 
+      new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    );
+  }
+
+  return grouped;
+};
+
+export const groupCandidateInterviews = (interviews: Interview[]) => {
+  if (!interviews) return {};
   return interviews.reduce((acc: any, interview: Interview) => {
-    const date = new Date(interview.startTime);
-    const now = new Date();
-
     if (interview.status === "succeeded") {
-      acc.succeeded = [...(acc.succeeded || []), interview];
+      acc.passed = [...(acc.passed || []), interview];
     } else if (interview.status === "failed") {
       acc.failed = [...(acc.failed || []), interview];
-    } else if (isBefore(date, now)) {
+    } else if (interview.status === "completed") {
       acc.completed = [...(acc.completed || []), interview];
-    } else if (isAfter(date, now)) {
+    } else {
       acc.upcoming = [...(acc.upcoming || []), interview];
     }
-
     return acc;
   }, {});
 };
@@ -90,14 +124,14 @@ export const getMeetingStatus = (interview: Interview) => {
   const interviewStartTime = interview.startTime;
   const endTime = addHours(interviewStartTime, 1);
 
+  if (isWithinInterval(now, { start: interviewStartTime, end: endTime }))
+    return "live";
   if (
     interview.status === "completed" ||
     interview.status === "failed" ||
     interview.status === "succeeded"
   )
     return "completed";
-  if (isWithinInterval(now, { start: interviewStartTime, end: endTime }))
-    return "live";
   if (isBefore(now, interviewStartTime)) return "upcoming";
   return "completed";
 };

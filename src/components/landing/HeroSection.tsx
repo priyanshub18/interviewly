@@ -233,21 +233,6 @@ const FloatingIcons = () => {
   );
 };
 
-// Scroll Down Indicator
-const ScrollDownIndicator = () => (
-  <motion.div 
-    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-2 animate-pulse"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 3, duration: 0.8 }}
-  >
-    <p className="text-blue-400 text-sm font-medium">Scroll to explore more</p>
-    <div className="w-6 h-10 border-2 border-blue-500 rounded-full flex justify-center animate-bounce">
-      <div className="w-1 h-3 bg-blue-500 rounded-full mt-2" />
-    </div>
-  </motion.div>
-);
-
 // Main App Component
 export default function App() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -303,7 +288,7 @@ export default function App() {
       <div className="absolute inset-0 bg-black/20 z-5" />
 
       {/* Main Content */}
-      <motion.div 
+      <motion.div
         className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4"
         variants={containerVariants}
         initial="hidden"
@@ -330,7 +315,7 @@ export default function App() {
         </motion.div>
 
         {/* Enhanced Subheading */}
-        <motion.div 
+        <motion.div
           className="mb-8 max-w-4xl"
           variants={subtitleVariants as any}
         >
@@ -343,7 +328,7 @@ export default function App() {
         </motion.div>
 
         {/* Feature Tags */}
-        <motion.div 
+        <motion.div
           className="flex flex-wrap justify-center gap-3 mb-12"
           variants={containerVariants}
         >
@@ -358,10 +343,10 @@ export default function App() {
               key={tag}
               className="px-4 py-2 bg-blue-600/20 border border-blue-500/30 rounded-full text-blue-400 text-sm font-medium backdrop-blur-sm hover:bg-blue-600/30 transition-all duration-300"
               variants={tagVariants as any}
-              whileHover={{ 
-                scale: 1.05, 
+              whileHover={{
+                scale: 1.05,
                 backgroundColor: "rgba(37, 99, 235, 0.3)",
-                transition: { duration: 0.2 }
+                transition: { duration: 0.2 },
               }}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -408,7 +393,7 @@ export default function App() {
       </motion.div>
 
       {/* Scroll Indicator */}
-      <ScrollDownIndicator />
+      {/* <ScrollDownIndicator /> */}
     </div>
   );
 }

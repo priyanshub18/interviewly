@@ -37,6 +37,13 @@ import { useRouter } from "next/navigation";
 import ProblemSelection from "./ProblemPicker";
 import { sendScheduledEmail } from "@/lib/SendVerificationMail";
 import axios from "axios";
+import { useMutation as useConvexMutation } from "convex/react";
+import { api as convexApi } from "../../../../../convex/_generated/api";
+import { getTargetForType } from "../../../../../convex/activities";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getCandidateInfo, getInterviewerInfo, groupInterviews } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import { Badge } from "@/components/ui/badge";
 const SAMPLE_PROBLEMS = [
   {
     id: "two-sum",
@@ -105,7 +112,50 @@ function InterviewScheduleUI() {
   useEffect(() => {
     //console.log(formData);
   }, [formData]);
+
+  // Check for localStorage data when component mounts
+  useEffect(() => {
+    const savedInterviewData = localStorage.getItem("scheduledInterviewData");
+    if (savedInterviewData) {
+      try {
+        const data = JSON.parse(savedInterviewData);
+
+        // Check if data is not too old (24 hours)
+        const isDataValid = Date.now() - data.timestamp < 24 * 60 * 60 * 1000;
+
+        if (isDataValid && data.candidateId) {
+          // Auto-fill the form with saved data
+          setFormData((prev) => ({
+            ...prev,
+            title: `Interview for ${data.jobTitle} at ${data.jobCompany}`,
+            description: `Interview for the ${data.jobTitle} position at ${data.jobCompany}. ${data.jobDescription ? `\n\nJob Description: ${data.jobDescription.substring(0, 200)}...` : ""}`,
+            candidateId: data.candidateId,
+          }));
+
+          // Auto-open the dialog
+          setOpen(true);
+
+          // Clear the localStorage data
+          localStorage.removeItem("scheduledInterviewData");
+
+          toast.success(`Auto-filled interview form for ${data.candidateName}`);
+        } else {
+          // Clear invalid or old data
+          localStorage.removeItem("scheduledInterviewData");
+        }
+      } catch (error) {
+        console.error("Error parsing localStorage data:", error);
+        localStorage.removeItem("scheduledInterviewData");
+      }
+    }
+
+    // Cleanup function to clear localStorage when component unmounts
+    return () => {
+      localStorage.removeItem("scheduledInterviewData");
+    };
+  }, []);
   const router = useRouter();
+  const createActivity = useConvexMutation(convexApi.activities.createActivity);
   const scheduleMeeting = async () => {
     if (!client || !user) return;
     if (!formData.candidateId || formData.interviewerIds.length === 0) {
@@ -118,6 +168,19 @@ function InterviewScheduleUI() {
     try {
       const { title, description, date, time, candidateId, interviewerIds } =
         formData;
+      //check if the time is in the past and give toast that it is not possible
+      const currentTime = new Date();
+      const meetingTime = new Date(date);
+      meetingTime.setHours(
+        parseInt(time.split(":")[0]),
+        parseInt(time.split(":")[1]),
+        0,
+      );
+      if (meetingTime < currentTime) {
+        toast.error("Cannot schedule an interview in the past");
+
+        return;
+      }
       const [hours, minutes] = time.split(":");
       const meetingDate = new Date(date);
       meetingDate.setHours(parseInt(hours), parseInt(minutes), 0);
@@ -158,8 +221,24 @@ function InterviewScheduleUI() {
       } else {
         toast.error("Failed to Send Mail!. Check your internet connection");
       }
+      // Create activity for candidate
+      await createActivity({
+        type: "meeting_scheduled",
+        target: getTargetForType("meeting_scheduled"),
+        title: "Interview Scheduled",
+        description: `Your interview for '${title}' has been scheduled on ${meetingDate.toLocaleString()}`,
+        userId: candidateId,
+        relatedUserId: user.id,
+        metadata: {
+          jobTitle: title,
+          notes: description,
+        },
+      });
       setOpen(false);
       toast.success("Meeting scheduled successfully!");
+
+      // Clear any remaining localStorage data
+      localStorage.removeItem("scheduledInterviewData");
 
       setFormData({
         title: "",
@@ -240,302 +319,350 @@ function InterviewScheduleUI() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 100 },
+      transition: { type: "spring" as const, stiffness: 100 },
     },
   };
 
+  const { theme } = useTheme();
+
+  // Group interviews by status
+  const grouped = groupInterviews(interviews);
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
+
+  // Tab state for interview groups
+  const tabOptions = [
+    { key: 'live', label: 'Live' },
+    { key: 'upcoming', label: 'Upcoming' },
+    { key: 'completed', label: 'Past' },
+  ];
+  // Default to 'Live' if any, else 'Upcoming'
+  const defaultTab = grouped.live && grouped.live.length > 0 ? 'live' : 'upcoming';
+  const [selectedTab, setSelectedTab] = useState(defaultTab);
+  // Keep tab in sync if live interviews appear/disappear
+  useEffect(() => {
+    if (grouped.live && grouped.live.length > 0) setSelectedTab('live');
+    else if (selectedTab === 'live') setSelectedTab('upcoming');
+  }, [grouped.live?.length]);
+
+  // Wizard step state
+  const [step, setStep] = useState(1);
+  const totalSteps = 2;
+  const goNext = () => setStep((s) => Math.min(s + 1, totalSteps));
+  const goBack = () => setStep((s) => Math.max(s - 1, 1));
+  const resetWizard = () => setStep(1);
+
   return (
     <div className="container max-w-7xl mx-auto p-6 space-y-8 bg-background mt-20">
+      {/* ENHANCED HEADER */}
       <motion.div
-        className="flex items-center justify-between"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="relative flex flex-col items-center justify-center mb-16"
       >
-        {/* HEADER INFO */}
-        <div>
-          <h1 className="text-4xl font-bold ">Interviews</h1>
-          <p className="text-muted-foreground mt-1 hover:text-blue-500">
-            Schedule and manage interviews
-          </p>
-        </div>
-
-        {/* DIALOG */}
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <PlusCircleIcon className="mr-2 h-5 w-5" />
-                Schedule Interview
-              </Button>
-            </motion.div>
-          </DialogTrigger>
-
-          <DialogContent className="sm:max-w-[800px] h-[calc(100vh-200px)] overflow-auto border-blue-200 dark:border-blue-600 p-6">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-blue-700 dark:text-blue-400">
-                Schedule Interview
-              </DialogTitle>
-            </DialogHeader>
-
-            <motion.div
-              className="py-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* TWO COLUMN LAYOUT */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* LEFT COLUMN - Basic Info */}
-                <div className="space-y-5">
-                  {/* INTERVIEW TITLE */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Title<span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      placeholder="Interview title"
-                      value={formData.title}
-                      onChange={(e) =>
-                        setFormData({ ...formData, title: e.target.value })
-                      }
-                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 "
+        {/* Badge */}
+        <motion.div
+          className="inline-flex items-center gap-3 bg-black/80 border border-blue-600/40 rounded-full px-6 py-3 mb-6 backdrop-blur-xl shadow-lg shadow-blue-600/10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
+          <span className="text-sm text-blue-300 font-semibold tracking-wide">
+            Interview Management
+          </span>
+          <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
+        </motion.div>
+        {/* Title */}
+        <motion.h1
+          className="text-4xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-400 to-blue-600 bg-clip-text text-transparent mb-4 leading-tight tracking-tight text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+        >
+          Manage & Schedule <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">Interviews</span>
+        </motion.h1>
+        {/* Subtitle */}
+        <motion.p
+          className="text-lg md:text-xl text-blue-300 mb-2 leading-relaxed max-w-2xl text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        >
+          Organize, schedule, and track interviews with ease. Empower your hiring process with a seamless experience.
+        </motion.p>
+        {/* Schedule Button */}
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="mt-6">
+          <Button
+            size="lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+            onClick={() => { setOpen(true); resetWizard(); }}
+          >
+            <PlusCircleIcon className="mr-2 h-5 w-5" />
+            Schedule Interview
+          </Button>
+        </motion.div>
+      </motion.div>
+      {/* SCHEDULE DIALOG (WIZARD) */}
+      <Dialog
+        open={open}
+        onOpenChange={(newOpen) => {
+          setOpen(newOpen);
+          if (!newOpen) {
+            // Clear localStorage when dialog is closed
+            localStorage.removeItem("scheduledInterviewData");
+            resetWizard();
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-[600px] h-[calc(100vh-200px)] overflow-auto border-blue-200 dark:border-blue-600 p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-blue-700 dark:text-blue-400">
+              Schedule Interview
+            </DialogTitle>
+          </DialogHeader>
+          {/* Stepper */}
+          <div className="flex items-center justify-center gap-4 my-6">
+            {[1, 2].map((s) => (
+              <div key={s} className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg border-2 transition-all duration-200 ${step === s ? 'bg-blue-600 text-white border-blue-600 scale-110' : 'bg-blue-100 text-blue-600 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300'}`}>{s}</div>
+                {s !== 2 && <div className="w-10 h-1 bg-blue-200 dark:bg-blue-700 mx-2 rounded" />}
+              </div>
+            ))}
+          </div>
+          {/* Wizard Steps */}
+          <motion.div
+            className="py-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {step === 1 && (
+              <div className="space-y-6">
+                {/* INTERVIEW TITLE */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Title<span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    placeholder="Interview title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 "
+                  />
+                </div>
+                {/* INTERVIEW DESC */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Description</label>
+                  <Textarea
+                    placeholder="Interview description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 "
+                  />
+                </div>
+                {/* CANDIDATE */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Candidate<span className="text-red-500">*</span>
+                  </label>
+                  <Select
+                    value={formData.candidateId}
+                    onValueChange={(candidateId) => setFormData({ ...formData, candidateId })}
+                  >
+                    <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
+                      <SelectValue placeholder="Select candidate" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {candidates.map((candidate) => (
+                        <SelectItem key={candidate.clerkId} value={candidate.clerkId}>
+                          <UserInfo user={candidate} />
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {/* DATE */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Date<span className="text-red-500">*</span>
+                  </label>
+                  <div className="border border-blue-200 rounded-md p-2">
+                    <Calendar
+                      mode="single"
+                      selected={formData.date}
+                      onSelect={(date) => date && setFormData({ ...formData, date })}
+                      disabled={(date) => date < new Date()}
+                      className="mx-auto"
                     />
                   </div>
-
-                  {/* INTERVIEW DESC */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Description</label>
-                    <Textarea
-                      placeholder="Interview description"
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          description: e.target.value,
-                        })
-                      }
-                      rows={3}
-                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 "
-                    />
-                  </div>
-
-                  {/* CANDIDATE */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Candidate<span className="text-red-500">*</span>
-                    </label>
-                    <Select
-                      value={formData.candidateId}
-                      onValueChange={(candidateId) =>
-                        setFormData({ ...formData, candidateId })
-                      }
-                    >
-                      <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
-                        <SelectValue placeholder="Select candidate" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {candidates.map((candidate) => (
-                          <SelectItem
-                            key={candidate.clerkId}
-                            value={candidate.clerkId}
-                          >
-                            <UserInfo user={candidate} />
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* TIME SLOT */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Time<span className="text-red-500">*</span>
-                    </label>
-                    <Select
-                      value={formData.time}
-                      onValueChange={(time) =>
-                        setFormData({ ...formData, time })
-                      }
-                    >
-                      <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
-                        <SelectValue placeholder="Select time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {TIME_SLOTS.map((time) => (
-                          <SelectItem key={time} value={time}>
-                            {time}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium">
-                      Problems<span className="text-red-500">*</span>
-                    </label>
-                    <Button
-                      className="bg-blue-600 hover:bg-blue-700 transition-all font-medium text-white p-2"
-                      onClick={() => router.push("/create-problem")}
-                    >
-                      <ArrowUpRight className="w-4 h-4 mr-1" />
-                      Create
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="border border-blue-200 rounded-md p-3 min-h-24 flex flex-wrap gap-2 mb-2">
-                      {selectedProblems.length > 0 ? (
-                        selectedProblems.map((problem) => (
-                          <motion.div
-                            key={problem.q_id}
-                            className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded-md text-sm"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            whileHover={{ scale: 1.05 }}
+                </div>
+                {/* TIME SLOT */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Time<span className="text-red-500">*</span>
+                  </label>
+                  <Select
+                    value={formData.time}
+                    onValueChange={(time) => setFormData({ ...formData, time })}
+                  >
+                    <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
+                      <SelectValue placeholder="Select time" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TIME_SLOTS.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+            {step === 2 && (
+              <div className="space-y-6">
+                {/* PROBLEMS */}
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium">
+                    Problems<span className="text-red-500">*</span>
+                  </label>
+                  <Button
+                    className="bg-blue-600 hover:bg-blue-700 transition-all font-medium text-white p-2"
+                    onClick={() => router.push("/create-problem")}
+                  >
+                    <ArrowUpRight className="w-4 h-4 mr-1" />
+                    Create
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <div className="border border-blue-200 rounded-md p-3 min-h-24 flex flex-wrap gap-2 mb-2">
+                    {selectedProblems.length > 0 ? (
+                      selectedProblems.map((problem) => (
+                        <motion.div
+                          key={problem.q_id}
+                          className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded-md text-sm"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <ProblemInfo problem={problem} />
+                          <motion.button
+                            onClick={() => removeProblem(problem.q_id)}
+                            className="hover:text-destructive transition-colors"
+                            whileHover={{ rotate: 90 }}
                             transition={{ duration: 0.2 }}
                           >
+                            <XIcon className="h-4 w-4" />
+                          </motion.button>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No Problems selected
+                      </p>
+                    )}
+                  </div>
+                  {/* Add Problems Dropdown */}
+                  {availableProblems.length > 0 && (
+                    <Select onValueChange={addProblem}>
+                      <SelectTrigger className="border-blue-200 focus:ring-blue-400">
+                        <SelectValue placeholder="Add problem" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableProblems.map((problem) => (
+                          <SelectItem key={problem.q_id} value={problem.q_id}>
                             <ProblemInfo problem={problem} />
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                {/* INTERVIEWERS */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Interviewer<span className="text-red-500">*</span>
+                  </label>
+                  {/* Selected Interviewers */}
+                  <div className="border border-blue-200 rounded-md p-3 min-h-24 flex flex-wrap gap-2 mb-2">
+                    {selectedInterviewers.length > 0 ? (
+                      selectedInterviewers.map((interviewer) => (
+                        <motion.div
+                          key={interviewer.clerkId}
+                          className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded-md text-sm"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <UserInfo user={interviewer} />
+                          {interviewer.clerkId !== user?.id && (
                             <motion.button
-                              onClick={() => removeProblem(problem.q_id)}
+                              onClick={() => removeInterviewer(interviewer.clerkId)}
                               className="hover:text-destructive transition-colors"
                               whileHover={{ rotate: 90 }}
                               transition={{ duration: 0.2 }}
                             >
                               <XIcon className="h-4 w-4" />
                             </motion.button>
-                          </motion.div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground">
-                          No Problems selected
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Add Problems Dropdown */}
-                    {availableProblems.length > 0 && (
-                      <Select onValueChange={addProblem}>
-                        <SelectTrigger className="border-blue-200 focus:ring-blue-400">
-                          <SelectValue placeholder="Add problem" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableProblems.map((problem) => (
-                            <SelectItem key={problem.q_id} value={problem.q_id}>
-                              <ProblemInfo problem={problem} />
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                          )}
+                        </motion.div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No interviewers selected
+                      </p>
                     )}
                   </div>
-                </div>
-
-                {/* RIGHT COLUMN - Date & Interviewers */}
-                <div className="space-y-5">
-                  {/* CALENDAR */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Date<span className="text-red-500">*</span>
-                    </label>
-                    <div className="border border-blue-200  rounded-md p-2">
-                      <Calendar
-                        mode="single"
-                        selected={formData.date}
-                        onSelect={(date) =>
-                          date && setFormData({ ...formData, date })
-                        }
-                        disabled={(date) => date < new Date()}
-                        className="mx-auto"
-                      />
-                    </div>
-                  </div>
-
-                  {/* INTERVIEWERS */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Interviewer<span className="text-red-500">*</span>
-                    </label>
-
-                    {/* Selected Interviewers */}
-                    <div className="border border-blue-200  rounded-md p-3 min-h-24 flex flex-wrap gap-2 mb-2">
-                      {selectedInterviewers.length > 0 ? (
-                        selectedInterviewers.map((interviewer) => (
-                          <motion.div
-                            key={interviewer.clerkId}
-                            className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded-md text-sm"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
-                          >
+                  {/* Add Interviewers Dropdown */}
+                  {availableInterviewers.length > 0 && (
+                    <Select onValueChange={addInterviewer}>
+                      <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
+                        <SelectValue placeholder="Add interviewer" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableInterviewers.map((interviewer) => (
+                          <SelectItem key={interviewer.clerkId} value={interviewer.clerkId}>
                             <UserInfo user={interviewer} />
-                            {interviewer.clerkId !== user?.id && (
-                              <motion.button
-                                onClick={() =>
-                                  removeInterviewer(interviewer.clerkId)
-                                }
-                                className="hover:text-destructive transition-colors"
-                                whileHover={{ rotate: 90 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <XIcon className="h-4 w-4" />
-                              </motion.button>
-                            )}
-                          </motion.div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground">
-                          No interviewers selected
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Add Interviewers Dropdown */}
-                    {availableInterviewers.length > 0 && (
-                      <Select onValueChange={addInterviewer}>
-                        <SelectTrigger className="border-blue-200 focus:ring-blue-400 ">
-                          <SelectValue placeholder="Add interviewer" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableInterviewers.map((interviewer) => (
-                            <SelectItem
-                              key={interviewer.clerkId}
-                              value={interviewer.clerkId}
-                            >
-                              <UserInfo user={interviewer} />
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               </div>
-
-              {/* ACTION BUTTONS */}
-              <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-blue-100 dark:border-blue-900/50">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+            )}
+            {/* ACTION BUTTONS */}
+            <div className="flex justify-between gap-3 pt-6 mt-4 border-t border-blue-100 dark:border-blue-900/50">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (step === 1) setOpen(false);
+                    else goBack();
+                  }}
+                  className="border-blue-200 hover:bg-blue-50 dark:border-blue-900 dark:hover:bg-blue-900/30"
                 >
+                  {step === 1 ? "Cancel" : "Back"}
+                </Button>
+              </motion.div>
+              {step < totalSteps && (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
-                    variant="outline"
-                    onClick={() => setOpen(false)}
-                    className="border-blue-200 hover:bg-blue-50 dark:border-blue-900 dark:hover:bg-blue-900/30"
+                    onClick={goNext}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Cancel
+                    Next
                   </Button>
                 </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+              )}
+              {step === totalSteps && (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
                     onClick={scheduleMeeting}
                     disabled={isCreating}
@@ -551,73 +678,144 @@ function InterviewScheduleUI() {
                     )}
                   </Button>
                 </motion.div>
-              </div>
-            </motion.div>
-          </DialogContent>
-        </Dialog>
-      </motion.div>
-
-      {/* LOADING STATE & MEETING CARDS */}
-      {!interviews ? (
-        <div className="flex justify-center py-12">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-          >
-            <Loader2Icon className="size-8 text-blue-500" />
+              )}
+            </div>
           </motion.div>
-        </div>
-      ) : interviews.length > 0 ? (
-        <motion.div
-          className="space-y-4"
-          variants={containerVariants}
-          //   initial="hidden"
-          animate="visible"
-        >
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {interviews.map((interview) => (
-              <motion.div
-                key={interview._id}
-                variants={itemVariants}
-                whileHover={{
-                  scale: 1.03,
-                  boxShadow:
-                    "0 10px 25px -5px rgba(124, 58, 237, 0.1), 0 8px 10px -6px rgba(124, 58, 237, 0.1)",
-                }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                <MeetingCard interview={interview} />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      ) : (
-        <motion.div
-          className="text-center py-20 text-muted-foreground"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <CalendarIcon className="mx-auto h-12 w-12 text-blue-300 dark:text-blue-700 mb-4" />
-          <p className="text-lg font-medium">No interviews scheduled</p>
-          <p className="mt-2">
-            Click "Schedule Interview" to create your first interview
-          </p>
-          <motion.div
-            className="mt-6"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              onClick={() => setOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+        </DialogContent>
+      </Dialog>
+      {/* TABS FOR INTERVIEW GROUPS */}
+      <div className="flex justify-center gap-4 mb-8">
+        {tabOptions.map((tab) => {
+          const isActive = selectedTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setSelectedTab(tab.key)}
+              className={`px-6 py-2 rounded-full font-semibold transition-all border-2 focus:outline-none
+                ${isActive
+                  ? tab.key === 'live'
+                    ? 'bg-green-600 text-white border-green-600 shadow-lg scale-105'
+                    : tab.key === 'upcoming'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-lg scale-105'
+                      : 'bg-gray-500 text-white border-gray-500 shadow-lg scale-105'
+                  : 'bg-background text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'}
+              `}
+              style={{ minWidth: 120 }}
             >
-              <PlusCircleIcon className="mr-2 h-5 w-5" />
-              Schedule Interview
-            </Button>
-          </motion.div>
-        </motion.div>
-      )}
+              {tab.label}
+              {tab.key === 'live' && grouped.live && grouped.live.length > 0 && (
+                <span className="ml-2 inline-block w-2 h-2 bg-green-300 rounded-full animate-pulse" />
+              )}
+              {tab.key === 'upcoming' && grouped.upcoming && grouped.upcoming.length > 0 && (
+                <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">{grouped.upcoming.length}</span>
+              )}
+              {tab.key === 'completed' && grouped.completed && grouped.completed.length > 0 && (
+                <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">{grouped.completed.length}</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {/* INTERVIEW GROUPS (TABBED) */}
+      <div className="space-y-12">
+        {/* UPCOMING */}
+        {selectedTab === 'upcoming' && grouped.upcoming && grouped.upcoming.length > 0 && (
+          <motion.section
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="border-l-4 pl-4 border-blue-500 dark:border-blue-400"
+          >
+            <motion.div className="flex items-center gap-2 mb-6" variants={itemVariants}>
+              <h2 className="text-2xl font-semibold">Upcoming Interviews</h2>
+              <Badge className="bg-blue-600 hover:bg-blue-700">
+                {grouped.upcoming.length}
+              </Badge>
+            </motion.div>
+            <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" variants={containerVariants}>
+              {grouped.upcoming.map((interview, idx) => (
+                <MeetingCard
+                  key={interview._id}
+                  interview={interview}
+                  candidateInfo={getCandidateInfo(users, interview.candidateId)}
+                  interviewerInfos={interview.interviewerIds?.map((id) => getInterviewerInfo(users, id))}
+                />
+              ))}
+            </motion.div>
+          </motion.section>
+        )}
+        {/* LIVE (if any) */}
+        {selectedTab === 'live' && grouped.live && grouped.live.length > 0 && (
+          <motion.section
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="border-l-4 pl-4 border-green-500 dark:border-green-400"
+          >
+            <motion.div className="flex items-center gap-2 mb-6" variants={itemVariants}>
+              <h2 className="text-2xl font-semibold">Live Interviews</h2>
+              <Badge className="bg-green-600 hover:bg-green-700">
+                {grouped.live.length}
+              </Badge>
+            </motion.div>
+            <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" variants={containerVariants}>
+              {grouped.live.map((interview, idx) => (
+                <MeetingCard
+                  key={interview._id}
+                  interview={interview}
+                  candidateInfo={getCandidateInfo(users, interview.candidateId)}
+                  interviewerInfos={interview.interviewerIds?.map((id) => getInterviewerInfo(users, id))}
+                />
+              ))}
+            </motion.div>
+          </motion.section>
+        )}
+        {/* COMPLETED/PAST */}
+        {selectedTab === 'completed' && grouped.completed && grouped.completed.length > 0 && (
+          <motion.section
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="border-l-4 pl-4 border-gray-400 dark:border-gray-600"
+          >
+            <motion.div className="flex items-center gap-2 mb-6" variants={itemVariants}>
+              <h2 className="text-2xl font-semibold">Past Interviews</h2>
+              <Badge className="bg-gray-400 hover:bg-gray-600">
+                {grouped.completed.length}
+              </Badge>
+            </motion.div>
+            <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" variants={containerVariants}>
+              {(showAllCompleted ? grouped.completed : grouped.completed.slice(0, 6)).map((interview, idx) => (
+                <MeetingCard
+                  key={interview._id}
+                  interview={interview}
+                  candidateInfo={getCandidateInfo(users, interview.candidateId)}
+                  interviewerInfos={interview.interviewerIds?.map((id) => getInterviewerInfo(users, id))}
+                />
+              ))}
+            </motion.div>
+            {grouped.completed.length > 6 && (
+              <div className="flex justify-center mt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAllCompleted((v) => !v)}
+                  className="border-blue-200 dark:border-blue-900"
+                >
+                  {showAllCompleted ? "Show Less" : `Show All (${grouped.completed.length})`}
+                </Button>
+              </div>
+            )}
+          </motion.section>
+        )}
+        {/* EMPTY STATE */}
+        {((selectedTab === 'upcoming' && (!grouped.upcoming || grouped.upcoming.length === 0)) ||
+          (selectedTab === 'live' && (!grouped.live || grouped.live.length === 0)) ||
+          (selectedTab === 'completed' && (!grouped.completed || grouped.completed.length === 0))) && (
+          <div className="text-center text-gray-400 py-16 text-lg font-semibold">
+            No interviews found for this tab.
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -142,7 +142,7 @@ export async function POST(req: Request) {
     const { problem_number, problem_description } = requestBody;
 
     // Validate required fields
-    if (!problem_number || !problem_description) {
+    if (!problem_description) {
       return new Response(
         JSON.stringify({
           error: "Missing required fields",
@@ -184,10 +184,15 @@ export async function POST(req: Request) {
       };
 
       const prompt = `You are given a LeetCode problem with the following details:
-• LeetCode Problem Number: ${problem_number}
-• LeetCode Problem Title: ${problem_description} Give problem number more priority than problem title.
+• LeetCode Problem Title: ${problem_description}
+• (Optional) LeetCode Problem Number: ${problem_number}
 
-Your task is to create a JSON object that follows this interface:
+Your tasks:
+1. Give higher priority to the problem title than the problem number.
+2. If the given problem number is incorrect or missing, try to determine the correct one based on the title.
+3. If the problem does not exist or the title is invalid, generate a realistic and original dummy LeetCode-style problem using the given title as inspiration.
+
+Return the result as a valid JSON object matching the structure below:
 
 interface Example {
   input: string;
@@ -202,18 +207,18 @@ interface CodeSnippet {
 
 interface LeetCodeProblem {
   id: string;           // kebab-case identifier based on title
-  number: number;       // The LeetCode problem number
+  number: number;       // The LeetCode problem number (use a high dummy number like 9999+ if it’s fictional)
   title: string;        // The title of the problem
   description: string;  // Detailed problem description
   difficulty: "Easy" | "Medium" | "Hard";  // Problem difficulty
   examples: Example[];  // Array of input/output examples with optional explanations
   constraints: string[]; // Array of constraints
-  starterCode: CodeSnippet[]; // Array of code snippets in different languages
-}
+  starterCode: CodeSnippet[]; // Starter code in JavaScript, Python, Java, and C++ (minimum)
 
-Include starter code for JavaScript, Python, Java, and C++ at minimum.
-Format your response as a pure JSON object, without any extra explanation.`;
-
+Important:
+- You must return only a valid JSON object.
+- Do not include any explanation, text, or markdown around the JSON.
+- Make the dummy data as believable and LeetCode-style as possible if needed.`;
       try {
         const chatSession = model.startChat({
           generationConfig,

@@ -378,7 +378,7 @@ const LandingPart = () => {
               </motion.div>
 
               {/* Enhanced Premium Floating Elements */}
-              <motion.div
+              {/* <motion.div
                 className="absolute -top-6 -right-6 bg-gradient-to-br from-blue-600 to-blue-700 p-4 rounded-2xl shadow-2xl shadow-blue-600/30 backdrop-blur-sm border border-blue-500/50"
                 animate={{
                   y: [0, -15, 0],
@@ -420,7 +420,7 @@ const LandingPart = () => {
                 }}
               >
                 <Sparkles size={24} className="text-white" />
-              </motion.div>
+              </motion.div> */}
 
               {/* Additional premium floating elements */}
               <motion.div
