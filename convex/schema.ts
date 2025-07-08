@@ -59,6 +59,8 @@ export default defineSchema({
       }),
     ),
   }).index("by_qid", ["q_id", "number"]),
+
+  
   flashcards: defineTable({
     user: v.string(),
     categories: v.optional(v.array(v.string())),
@@ -188,4 +190,43 @@ export default defineSchema({
     .index("by_applicant_id", ["applicantId"])
     .index("by_status", ["status"])
     .index("by_applied_at", ["appliedAt"]),
+
+  // New activities table for notifications
+  activities: defineTable({
+    type: v.union(
+      v.literal("application_submitted"),
+      v.literal("application_reviewed"),
+      v.literal("application_shortlisted"),
+      v.literal("application_rejected"),
+      v.literal("application_hired"),
+      v.literal("application_withdrawn"),
+      v.literal("job_posted"),
+      v.literal("job_closed"),
+      v.literal("meeting_scheduled")
+    ),
+    target: v.union(v.literal("user"), v.literal("admin")),
+    title: v.string(),
+    description: v.string(),
+    userId: v.string(), // clerkId of the user who should see this activity
+    relatedUserId: v.optional(v.string()), // clerkId of the user who triggered this activity
+    jobId: v.optional(v.id("jobs")),
+    applicationId: v.optional(v.id("jobApplications")),
+    metadata: v.optional(v.object({
+      jobTitle: v.optional(v.string()),
+      companyName: v.optional(v.string()),
+      applicantName: v.optional(v.string()),
+      oldStatus: v.optional(v.string()),
+      newStatus: v.optional(v.string()),
+      notes: v.optional(v.string()),
+    })),
+    isRead: v.boolean(),
+    createdAt: v.number(),
+    emailSent: v.boolean(),
+  })
+    .index("by_user_id", ["userId"])
+    .index("by_type", ["type"])
+    .index("by_created_at", ["createdAt"])
+    .index("by_is_read", ["isRead"])
+    .index("by_job_id", ["jobId"])
+    .index("by_application_id", ["applicationId"]),
 });

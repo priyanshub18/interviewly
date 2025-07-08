@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getTargetForType } from "./activities";
 
 // Create a new job (Admin/Interviewer only)
 export const createJob = mutation({
@@ -209,9 +210,51 @@ export const applyForJob = mutation({
       await ctx.db.patch(args.jobId, {
         applicationsCount: job.applicationsCount + 1,
       });
+
+      // Get applicant details for notification
+      const applicant = await ctx.db
+        .query("users")
+        .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+        .first();
+
+      // Create activity notification for job poster
+      const activityResult = await ctx.db.insert("activities", {
+        type: "application_submitted",
+        target: getTargetForType("application_submitted"),
+        title: "New Application Received",
+        description: `A new application has been submitted for the ${job.title} position at ${job.company}`,
+        userId: job.postedBy,
+        relatedUserId: identity.subject,
+        jobId: args.jobId,
+        applicationId: application,
+        metadata: {
+          jobTitle: job.title,
+          companyName: job.company,
+          applicantName: applicant?.name || "Unknown Applicant",
+          notes: "",
+        },
+        isRead: false,
+        createdAt: Date.now(),
+        emailSent: false,
+      });
+
+      // Return activity data for email sending
+      return {
+        application,
+        activityData: {
+          user: applicant ? { name: applicant.name, email: applicant.email } : null,
+          metadata: {
+            jobTitle: job.title,
+            companyName: job.company,
+            applicantName: applicant?.name || "Unknown Applicant",
+            notes: "",
+          },
+          type: "application_submitted",
+        },
+      };
     }
 
-    return application;
+    return { application };
   },
 });
 
@@ -319,12 +362,72 @@ export const updateApplicationStatus = mutation({
       throw new Error("You can only update applications for jobs you posted");
     }
 
-    return await ctx.db.patch(args.applicationId, {
+    const oldStatus = application.status;
+    const newStatus = args.status;
+
+    // Update the application
+    await ctx.db.patch(args.applicationId, {
       status: args.status,
       notes: args.notes,
       reviewedAt: Date.now(),
       reviewedBy: identity.subject,
     });
+
+    // Get applicant details for notification
+    const applicant = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", application.applicantId))
+      .first();
+
+    // Determine activity type based on status change
+    let activityType: "application_reviewed" | "application_shortlisted" | "application_rejected" | "application_hired" = "application_reviewed";
+    
+    if (newStatus === "Shortlisted") {
+      activityType = "application_shortlisted";
+    } else if (newStatus === "Rejected") {
+      activityType = "application_rejected";
+    } else if (newStatus === "Hired") {
+      activityType = "application_hired";
+    }
+
+    // Create activity notification for applicant
+    const activityResult = await ctx.db.insert("activities", {
+      type: activityType,
+      target: getTargetForType(activityType),
+      title: `Application ${newStatus}`,
+      description: `Your application for ${job.title} at ${job.company} has been ${newStatus.toLowerCase()}`,
+      userId: application.applicantId,
+      relatedUserId: identity.subject,
+      jobId: application.jobId,
+      applicationId: args.applicationId,
+      metadata: {
+        jobTitle: job.title,
+        companyName: job.company,
+        applicantName: applicant?.name || "Unknown Applicant",
+        oldStatus: oldStatus,
+        newStatus: newStatus,
+        notes: args.notes || "",
+      },
+      isRead: false,
+      createdAt: Date.now(),
+      emailSent: false,
+    });
+
+    return { 
+      success: true,
+      activityData: {
+        user: applicant ? { name: applicant.name, email: applicant.email } : null,
+        metadata: {
+          jobTitle: job.title,
+          companyName: job.company,
+          applicantName: applicant?.name || "Unknown Applicant",
+          oldStatus: oldStatus,
+          newStatus: newStatus,
+          notes: args.notes || "",
+        },
+        type: activityType,
+      },
+    };
   },
 });
 
@@ -471,11 +574,41 @@ export const withdrawApplication = mutation({
       throw new Error("You can only withdraw your own application");
     }
 
-    // Decrement applicationsCount on the job
+    // Get job details before deleting application
     const job = await ctx.db.get(application.jobId);
+    
+    // Decrement applicationsCount on the job
     if (job && job.applicationsCount > 0) {
       await ctx.db.patch(application.jobId, {
         applicationsCount: job.applicationsCount - 1,
+      });
+    }
+
+    // Create activity notification for job poster
+    if (job) {
+      const applicant = await ctx.db
+        .query("users")
+        .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+        .first();
+
+      await ctx.db.insert("activities", {
+        type: "application_withdrawn",
+        target: getTargetForType("application_withdrawn"),
+        title: "Application Withdrawn",
+        description: `An application has been withdrawn for the ${job.title} position at ${job.company}`,
+        userId: job.postedBy,
+        relatedUserId: identity.subject,
+        jobId: application.jobId,
+        applicationId: args.applicationId,
+        metadata: {
+          jobTitle: job.title,
+          companyName: job.company,
+          applicantName: applicant?.name || "Unknown Applicant",
+          notes: "",
+        },
+        isRead: false,
+        createdAt: Date.now(),
+        emailSent: false,
       });
     }
 
