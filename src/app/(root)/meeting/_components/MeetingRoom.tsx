@@ -24,13 +24,14 @@ import {
 import { Button } from "@/components/ui/button";
 import EndCallButton from "../_components/EndCallButton";
 import CodeEditor from "../_components/CodeEditor";
-
+import { useUserRoles } from "../../../../hooks/useUserRoles";
 // import CodeEditor from "./CodeEditor";
 
 function MeetingRoom({ questions }: { questions: any }) {
   const router = useRouter();
   const [layout, setLayout] = useState<"grid" | "speaker">("speaker");
   const [showParticipants, setShowParticipants] = useState(false);
+  const { isInterviewer } = useUserRoles();
   const { useCallCallingState } = useCallStateHooks();
   const [mounted, setMounted] = useState(false);
 
@@ -129,7 +130,15 @@ function MeetingRoom({ questions }: { questions: any }) {
                   whileHover={{ y: -2 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <CallControls onLeave={() => router.push("/home")} />
+                  <CallControls
+                    onLeave={() => {
+                      if (isInterviewer) {
+                        router.push("/dashboard");
+                      } else {
+                        router.push("/");
+                      }
+                    }}
+                  />
 
                   <div className="h-8 w-px bg-gray-200/20 mx-1"></div>
 

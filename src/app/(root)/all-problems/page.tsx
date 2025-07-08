@@ -189,21 +189,49 @@ export default function ProblemViewer() {
     <div className={`min-h-screen transition-colors duration-300 mt-16`}>
       <div className="max-w-6xl mx-auto p-6">
         {/* Header with theme toggle */}
-        <motion.div
-          className="flex justify-between items-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
+          <motion.div
+            className="inline-flex items-center gap-3 bg-black/80 border border-blue-600/40 rounded-full px-6 py-3 mb-6 backdrop-blur-xl shadow-lg shadow-blue-600/10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+          >
+            <div className="relative">
+              <Code size={18} className="text-blue-400" />
+              <div className="absolute inset-0 animate-ping">
+                <Code size={18} className="text-blue-400 opacity-20" />
+              </div>
+            </div>
+            <span className="text-sm text-blue-300 font-semibold tracking-wide">
+              Create your own problems
+            </span>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
+          </motion.div>
           <motion.h1
-            className={`text-4xl font-bold ${theme === "light" ? "text-gray-900" : "text-white"}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-4xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-400 to-blue-600 bg-clip-text text-transparent mb-4 leading-tight tracking-tight text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
           >
             Coding Problems
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
+              {" "}
+              for interview
+            </span>
           </motion.h1>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <motion.p
+            className="text-lg md:text-xl text-blue-300 mb-2 leading-relaxed max-w-2xl text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            Craft problem to test the interviewer's skills.
+          </motion.p>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-4"
+          >
             <Button
               variant="ghost"
               className="hover:opacity-90 transition-all duration-300"
@@ -214,64 +242,63 @@ export default function ProblemViewer() {
               Add Problem
             </Button>
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* Search and filters */}
         <motion.div
-          className="flex flex-col md:flex-row gap-4 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-10"
         >
-          <div className="relative flex-grow">
-            <motion.input
-              type="text"
-              placeholder="Search problems..."
-              className={`w-full pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 ${
-                theme === "light"
-                  ? "bg-white border border-gray-300 text-gray-900"
-                  : "bg-gray-800 border border-gray-700 text-white placeholder-gray-400"
-              }`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              whileFocus={{ scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-            />
-            <Search
-              className={`absolute left-3 top-3.5 h-5 w-5 ${theme === "light" ? "text-gray-500" : "text-gray-400"}`}
-            />
-          </div>
-          <div className="flex gap-2">
-            <motion.select
-              className={`px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 ${
-                theme === "light"
-                  ? "bg-white border border-gray-300 text-gray-900"
-                  : "bg-gray-800 border border-gray-700 text-white"
-              }`}
-              value={difficultyFilter}
-              onChange={(e) => setDifficultyFilter(e.target.value)}
-              whileFocus={{ scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-            >
-              <option value="All">All Difficulties</option>
-              <option value="Easy">Easy</option>
-              <option value="Medium">Medium</option>
-              <option value="Hard">Hard</option>
-            </motion.select>
-            {/* Added theme toggle button */}
-
-            {/* <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className={`p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 ${
-                theme === "light"
-                  ? "bg-white border-gray-300 text-gray-900"
-                  : "bg-gray-800 border-gray-700 text-white"
-              }`}
-            >
-              {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-            </motion.button> */}
+          <div className={`bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800 rounded-2xl shadow-lg px-6 py-6 flex flex-col gap-4`}>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="w-full md:w-1/2 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="w-5 h-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search problems..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`pl-10 pr-4 py-3 w-full rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all ${theme === "light" ? "bg-white border-blue-300 text-blue-800" : "bg-slate-900 border-slate-700 text-blue-200"}`}
+                />
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  setSearchQuery("");
+                  setDifficultyFilter("All");
+                }}
+                className={`px-4 py-3 rounded-xl font-medium flex items-center shadow-lg w-full md:w-auto justify-center ${theme === "light" ? "bg-white hover:bg-gray-50 text-blue-800 border border-blue-200 shadow-sm" : "bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"}`}
+              >
+                Clear Filters
+              </motion.button>
+            </div>
+            {/* Difficulty filter chips */}
+            <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
+              {["All", "Easy", "Medium", "Hard"].map((level) => (
+                <motion.button
+                  key={level}
+                  onClick={() => setDifficultyFilter(level)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                    difficultyFilter === level
+                      ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
+                      : theme === "light"
+                      ? "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {level === "All" ? "All Difficulties" : level}
+                </motion.button>
+              ))}
+            </div>
+            {/* Results counter */}
+            <p className={`${theme === "light" ? "text-blue-600" : "text-blue-200"} text-sm pt-2 border-t border-blue-100 dark:border-blue-900`}>Showing {filteredProblems.length} problems{difficultyFilter !== "All" ? ` of ${difficultyFilter} difficulty` : null}{searchQuery ? ` matching "${searchQuery}"` : null}</p>
           </div>
         </motion.div>
 
@@ -287,7 +314,7 @@ export default function ProblemViewer() {
               <motion.div
                 key={problem.q_id}
                 custom={index}
-                variants={cardVariants}
+                variants={cardVariants as any}
                 whileHover="hover"
                 onClick={() => handleCardClick(problem)}
                 className={`rounded-xl shadow-lg overflow-hidden cursor-pointer transition-all duration-300 transform ${
@@ -365,7 +392,7 @@ export default function ProblemViewer() {
                 className={`rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col ${
                   theme === "light" ? "bg-white" : "bg-gray-900"
                 }`}
-                variants={modalVariants}
+                variants={modalVariants as any}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div

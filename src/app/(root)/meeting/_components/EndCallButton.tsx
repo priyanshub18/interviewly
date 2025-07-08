@@ -34,7 +34,7 @@ function EndCallButton() {
         status: "completed",
       });
 
-      router.push("/home");
+      router.push("/dashboard");
       toast.success("Meeting ended for everyone");
     } catch (error) {
       //console.log(error);

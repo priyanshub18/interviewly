@@ -181,46 +181,19 @@ export default function JobsPage() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-10"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-            <div className="w-full md:w-1/2 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="w-5 h-5 text-gray-400" />
+          <div className="bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800 rounded-2xl shadow-lg px-6 py-6 flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="w-full md:w-1/2 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="w-5 h-5 text-gray-400" />
+                </div>
+                <Input
+                  placeholder="Search jobs..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`pl-10 pr-4 py-3 w-full rounded-xl ${currenttheme2.input} border outline-none focus:ring-2 focus:ring-indigo-500 transition-all`}
+                />
               </div>
-              <Input
-                placeholder="Search jobs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={`pl-10 pr-4 py-3 w-full rounded-xl ${currenttheme2.input} border outline-none focus:ring-2 focus:ring-indigo-500 transition-all`}
-              />
-            </div>
-
-            <div className="flex gap-3 w-full md:w-auto">
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className={`${currenttheme2.button.secondary} px-4 py-3 rounded-xl font-medium shadow-lg`}>
-                  <SelectValue placeholder="Job Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {jobTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type === "all" ? "All Types" : type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Select value={selectedExperience} onValueChange={setSelectedExperience}>
-                <SelectTrigger className={`${currenttheme2.button.secondary} px-4 py-3 rounded-xl font-medium shadow-lg`}>
-                  <SelectValue placeholder="Experience Level" />
-                </SelectTrigger>
-                <SelectContent>
-                  {experienceLevels.map((level) => (
-                    <SelectItem key={level} value={level}>
-                      {level === "all" ? "All Levels" : level}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
@@ -230,20 +203,52 @@ export default function JobsPage() {
                   setSelectedExperience("all");
                   setOffset(0);
                 }}
-                className={`${currenttheme2.button.secondary} px-4 py-3 rounded-xl font-medium flex items-center shadow-lg`}
+                className={`${currenttheme2.button.secondary} px-4 py-3 rounded-xl font-medium flex items-center shadow-lg w-full md:w-auto justify-center`}
               >
                 Clear Filters
               </motion.button>
             </div>
+            {/* Filter Chips Row */}
+            <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
+              {jobTypes.map((type) => (
+                <motion.button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                    selectedType === type
+                      ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
+                      : darkMode
+                      ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {type === "all" ? "All Types" : type}
+                </motion.button>
+              ))}
+              {/* Experience filter chips */}
+              {experienceLevels.map((level) => (
+                <motion.button
+                  key={level}
+                  onClick={() => setSelectedExperience(level)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                    selectedExperience === level
+                      ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
+                      : darkMode
+                      ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      : "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {level === "all" ? "All Levels" : level}
+                </motion.button>
+              ))}
+            </div>
+            {/* Results counter */}
+            <p className={`${currenttheme2.text.secondary} text-sm pt-2 border-t border-blue-100 dark:border-blue-900`}>Showing {displayJobs?.length || 0} jobs{selectedType !== "all" ? ` of type ${selectedType}` : null}{selectedExperience !== "all" ? ` at ${selectedExperience} level` : null}{searchQuery ? ` matching "${searchQuery}"` : null}</p>
           </div>
-
-          {/* Results counter */}
-          <p className={`${currenttheme2.text.secondary} text-sm`}>
-            Showing {displayJobs?.length || 0} jobs
-            {selectedType !== "all" ? ` of type ${selectedType}` : null}
-            {selectedExperience !== "all" ? ` at ${selectedExperience} level` : null}
-            {searchQuery ? ` matching "${searchQuery}"` : null}
-          </p>
         </motion.div>
 
         {/* Jobs Grid */}
@@ -256,68 +261,51 @@ export default function JobsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.05 * index }}
                 whileHover={{ scale: 1.02 }}
+                className="h-full"
               >
-                <Card className={`hover:shadow-lg transition-all duration-300 ${currenttheme2.card.back}`}>
-                  <CardHeader>
+                <Card className={`h-full hover:shadow-lg transition-all duration-300 ${currenttheme2.card.back} flex flex-col`}> 
+                  <CardHeader className="flex-shrink-0">
                     <div className="flex justify-between items-start mb-2">
                       <Badge className={getStatusColor(job.status)}>{job.status}</Badge>
                       <Badge className={getTypeColor(job.type)}>{job.type}</Badge>
                     </div>
-                    <CardTitle className={`text-lg font-semibold ${currenttheme2.text.primary}`}>
-                      {job.title}
-                    </CardTitle>
+                    <CardTitle className={`text-lg font-semibold ${currenttheme2.text.primary} line-clamp-2`}>{job.title}</CardTitle>
                     <CardDescription className={`flex items-center gap-2 ${currenttheme2.text.secondary}`}>
-                      <Building className="h-4 w-4" />
-                      {job.company}
+                      <Building className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{job.company}</span>
                     </CardDescription>
                     <CardDescription className={`flex items-center gap-2 ${currenttheme2.text.secondary}`}>
-                      <MapPin className="h-4 w-4" />
-                      {job.location}
+                      <MapPin className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{job.location}</span>
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <p className={`${currenttheme2.text.secondary} text-sm mb-4 line-clamp-3`}>
-                      {job.description}
-                    </p>
-                    
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                  <CardContent className="flex flex-col flex-grow">
+                    <p className={`${currenttheme2.text.secondary} text-sm mb-4 line-clamp-3 flex-grow`}>{job.description}</p>
+                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-4 flex-shrink-0">
                       {job.salary && (
                         <div className="flex items-center gap-1">
                           <DollarSign className="h-4 w-4" />
-                          {job.salary}
+                          <span className="truncate">{job.salary}</span>
                         </div>
                       )}
                       <div className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
-                        {job.applicationsCount} applications
+                        <span>{job.applicationsCount} applications</span>
                       </div>
                     </div>
-
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-4 flex-shrink-0">
                       {job.skills.slice(0, 3).map((skill, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {skill}
-                        </Badge>
+                        <Badge key={index} variant="secondary" className="text-xs">{skill}</Badge>
                       ))}
                       {job.skills.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
-                          +{job.skills.length - 3} more
-                        </Badge>
+                        <Badge variant="secondary" className="text-xs">+{job.skills.length - 3} more</Badge>
                       )}
                     </div>
-
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">
-                        Posted {formatDate(job.postedAt)}
-                      </span>
+                    <div className="flex justify-between items-center mt-auto flex-shrink-0">
+                      <span className="text-xs text-gray-500">Posted {formatDate(job.postedAt)}</span>
                       <Link href={`/jobs/${job._id}`}>
-                        <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <Button size="sm" className={currenttheme2.button.primary}>
-                            View Details
-                          </Button>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <Button size="sm" className={currenttheme2.button.primary}>View Details</Button>
                         </motion.div>
                       </Link>
                     </div>
