@@ -452,6 +452,15 @@ export default function MyApplicationsPage() {
                           </div>
                         </div>
 
+                        {/* Remark for Shortlisted */}
+                        {application.status === "Shortlisted" && (
+                          <div className={`p-3 rounded-md ${theme === "dark" ? "bg-blue-900/30 text-blue-200" : "bg-blue-50 text-blue-700"} flex items-center gap-2`}>
+                            <Sparkles className="h-4 w-4 text-blue-400" />
+                            <span>
+                              You might get to have an interview soon. Keep checking your emails.
+                            </span>
+                          </div>
+                        )}
                         {/* Cover Letter Preview */}
                         <div>
                           <h4

@@ -14,7 +14,7 @@ import { X, Plus, ArrowLeft, Sparkles, Briefcase, MapPin, Calendar, DollarSign, 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function PostJobPage() {
   const router = useRouter();
@@ -98,7 +98,8 @@ export default function PostJobPage() {
       });
 
       toast.success("Job posted successfully!");
-      router.push("/jobs");
+      router.push("/manage-jobs");
+      toast.success("Redirecting to manage jobs...");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to post job");
     } finally {
