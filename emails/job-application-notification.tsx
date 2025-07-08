@@ -11,29 +11,55 @@ import {
   Img,
 } from "@react-email/components";
 
-interface InterviewEmailProps {
-  candidateName: string;
-  position: string;
-  interviewDate: string;
-  interviewTime: string;
-  companyName?: string;
-  interviewFormat: string;
+interface JobApplicationEmailProps {
+  recipientName: string;
+  jobTitle: string;
+  companyName: string;
+  applicantName: string;
+  applicationDate: string;
+  applicationType: "new_application" | "status_update";
+  oldStatus?: string;
+  newStatus?: string;
+  notes?: string;
 }
 
-export const InterviewNotification = ({
-  candidateName,
-  position,
-  interviewDate,
-  interviewTime,
-  companyName = "Interviewly",
-  interviewFormat,
-}: InterviewEmailProps) => {
+export const JobApplicationNotification = ({
+  recipientName,
+  jobTitle,
+  companyName,
+  applicantName,
+  applicationDate,
+  applicationType,
+  oldStatus,
+  newStatus,
+  notes,
+}: JobApplicationEmailProps) => {
+  const getEmailContent = () => {
+    if (applicationType === "new_application") {
+      return {
+        title: "New Job Application Received",
+        subtitle: "Someone has applied for your job posting",
+        message: `You have received a new application for the ${jobTitle} position at ${companyName}.`,
+        ctaText: "Review Application",
+        ctaUrl: "https://interviewly-vert.vercel.app/manage-jobs",
+      };
+    } else {
+      return {
+        title: "Application Status Updated",
+        subtitle: `Application status changed from ${oldStatus} to ${newStatus}`,
+        message: `The application for ${jobTitle} at ${companyName} has been updated.`,
+        ctaText: "View Details",
+        ctaUrl: "https://interviewly-vert.vercel.app/my-applications",
+      };
+    }
+  };
+
+  const content = getEmailContent();
+
   return (
     <Html>
       <Head />
-      <Preview>
-        Your Interview Has Been Scheduled - Please Login to Interviewly
-      </Preview>
+      <Preview>{content.title} - {companyName}</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
           {/* Header with Logo */}
@@ -45,79 +71,102 @@ export const InterviewNotification = ({
               </div>
               <Text style={styles.brandText}>Interviewly</Text>
             </div>
-            <Text style={styles.headerTitle}>Interview Scheduled</Text>
-            <Text style={styles.headerSubtitle}>
-              Your next step towards success
-            </Text>
+            <Text style={styles.headerTitle}>{content.title}</Text>
+            <Text style={styles.headerSubtitle}>{content.subtitle}</Text>
           </Section>
 
           <Section style={styles.content}>
-            <Text style={styles.greeting}>Hello, {candidateName} 👋</Text>
+            <Text style={styles.greeting}>Hello, {recipientName} 👋</Text>
 
             <Text style={styles.message}>
-              Great news! Your interview for the <strong>{position}</strong> role has been scheduled. 
-              We're excited to help you showcase your skills and experience.
+              {content.message}
             </Text>
 
-            {/* Interview Details Card */}
+            {/* Application Details Card */}
             <Section style={styles.detailsCard}>
-              <Text style={styles.detailsTitle}>📅 Interview Details</Text>
+              <Text style={styles.detailsTitle}>📋 Application Details</Text>
               
               <div style={styles.detailRow}>
-                <div style={styles.detailLabel}>Date</div>
-                <div style={styles.detailValue}>{interviewDate}</div>
+                <div style={styles.detailLabel}>Job Position</div>
+                <div style={styles.detailValue}>{jobTitle}</div>
               </div>
               
               <div style={styles.detailRow}>
-                <div style={styles.detailLabel}>Time</div>
-                <div style={styles.detailValue}>{interviewTime}</div>
+                <div style={styles.detailLabel}>Company</div>
+                <div style={styles.detailValue}>{companyName}</div>
               </div>
               
               <div style={styles.detailRow}>
-                <div style={styles.detailLabel}>Format</div>
-                <div style={styles.detailValue}>{interviewFormat}</div>
+                <div style={styles.detailLabel}>Applicant</div>
+                <div style={styles.detailValue}>{applicantName}</div>
               </div>
               
               <div style={styles.detailRow}>
-                <div style={styles.detailLabel}>Duration</div>
-                <div style={styles.detailValue}>45 minutes</div>
+                <div style={styles.detailLabel}>Application Date</div>
+                <div style={styles.detailValue}>{applicationDate}</div>
               </div>
+
+              {applicationType === "status_update" && oldStatus && newStatus && (
+                <>
+                  <div style={styles.detailRow}>
+                    <div style={styles.detailLabel}>Previous Status</div>
+                    <div style={styles.detailValue}>{oldStatus}</div>
+                  </div>
+                  
+                  <div style={styles.detailRow}>
+                    <div style={styles.detailLabel}>New Status</div>
+                    <div style={styles.detailValue}>{newStatus}</div>
+                  </div>
+                </>
+              )}
             </Section>
 
-            {/* Security Notice */}
-            <Section style={styles.securityNotice}>
-              <div style={styles.securityIcon}>🔒</div>
-              <Text style={styles.securityText}>
-                <strong>Security Notice:</strong> Please log in to your Interviewly dashboard 
-                at least 15 minutes before your scheduled interview time for a secure connection.
-              </Text>
-            </Section>
+            {/* Notes Section */}
+            {notes && (
+              <Section style={styles.notesSection}>
+                <Text style={styles.notesTitle}>📝 Additional Notes</Text>
+                <div style={styles.notesContent}>
+                  <Text style={styles.notesText}>{notes}</Text>
+                </div>
+              </Section>
+            )}
 
             {/* CTA Button */}
             <Button
-              href="https://interviewly-vert.vercel.app/"
+              href={content.ctaUrl}
               style={styles.ctaButton}
             >
-              🚀 Login to Interviewly Dashboard
+              🚀 {content.ctaText}
             </Button>
 
             <Text style={styles.buttonNote}>
-              Use your existing credentials to securely access your interview portal
+              Click the button above to view the full details in your Interviewly dashboard
             </Text>
 
             {/* Additional Info */}
             <Section style={styles.infoSection}>
-              <Text style={styles.infoTitle}>💡 What to Expect</Text>
+              <Text style={styles.infoTitle}>💡 What's Next?</Text>
               <Text style={styles.infoText}>
-                • Real-time coding challenges and problem-solving<br/>
-                • Interactive whiteboard collaboration<br/>
-                • AI-powered feedback and insights<br/>
-                • Professional interview experience
+                {applicationType === "new_application" ? (
+                  <>
+                    • Review the applicant's cover letter and resume<br/>
+                    • Check their qualifications against job requirements<br/>
+                    • Update application status as you progress<br/>
+                    • Schedule interviews for promising candidates
+                  </>
+                ) : (
+                  <>
+                    • Review the updated application details<br/>
+                    • Check any new notes or feedback<br/>
+                    • Continue with the hiring process<br/>
+                    • Stay updated on further status changes
+                  </>
+                )}
               </Text>
             </Section>
 
             <Text style={styles.supportText}>
-              Need to reschedule or have questions? Contact us at{" "}
+              Need help managing applications? Contact us at{" "}
               <a href="mailto:support@interviewly.com" style={styles.link}>
                 support@interviewly.com
               </a>
@@ -128,13 +177,13 @@ export const InterviewNotification = ({
               <div style={styles.footerContent}>
                 <Text style={styles.signatureText}>Best regards,</Text>
                 <Text style={styles.signatureName}>The Interviewly Team</Text>
-                <Text style={styles.companyName}>{companyName}</Text>
+                <Text style={styles.companyName}>Interviewly</Text>
               </div>
               
               <div style={styles.footerDivider}></div>
               
               <Text style={styles.footerText}>
-                © 2025 {companyName}. All rights reserved.
+                © 2025 Interviewly. All rights reserved.
               </Text>
             </Section>
           </Section>
@@ -144,7 +193,7 @@ export const InterviewNotification = ({
   );
 };
 
-export default InterviewNotification;
+export default JobApplicationNotification;
 
 const styles = {
   body: {
@@ -272,22 +321,27 @@ const styles = {
     fontWeight: "600",
     color: "#1e293b",
   },
-  securityNotice: {
+  notesSection: {
     backgroundColor: "#fef3c7",
     padding: "20px",
     borderRadius: "12px",
     marginBottom: "30px",
     border: "1px solid #f59e0b",
-    display: "flex",
-    alignItems: "flex-start",
-    gap: "12px",
   },
-  securityIcon: {
-    fontSize: "20px",
-    flexShrink: "0",
-    marginTop: "2px",
+  notesTitle: {
+    fontSize: "18px",
+    fontWeight: "700",
+    color: "#92400e",
+    marginBottom: "16px",
+    marginTop: "0",
   },
-  securityText: {
+  notesContent: {
+    backgroundColor: "#ffffff",
+    padding: "16px",
+    borderRadius: "8px",
+    border: "1px solid #f59e0b",
+  },
+  notesText: {
     fontSize: "15px",
     color: "#92400e",
     margin: "0",
@@ -382,4 +436,4 @@ const styles = {
     textAlign: "center" as const,
     margin: "0",
   },
-};
+}; 
