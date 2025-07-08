@@ -21,6 +21,8 @@ import {
   ChevronDown,
   Sparkles,
   ArrowRight,
+  Bell,
+  MapPin,
 } from "lucide-react";
 import { TbCards } from "react-icons/tb";
 import { useTheme } from "next-themes";
@@ -33,6 +35,12 @@ import {
   useUser,
 } from "@clerk/nextjs";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import NotificationBell from "@/components/NotificationBell";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 export default function InterviewlyNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -57,6 +65,14 @@ export default function InterviewlyNavbar() {
   };
 
   const isActive = (path) => {
+    if (path === "prepare") {
+      return (
+        pathname.startsWith("/prepare-interview") ||
+        pathname.startsWith("/quiz/view") ||
+        pathname.startsWith("/flashcard") ||
+        pathname.startsWith("/make-resume")
+      );
+    }
     if (path === "/" && pathname === "/") return true;
     if (path !== "/" && pathname.startsWith(path)) return true;
     return false;
@@ -132,30 +148,51 @@ export default function InterviewlyNavbar() {
                       onClick={() => handleNavigation("/home")}
                       active={isActive("/home")}
                     />
-                    <GlassNavLink
-                      text="Prepare"
-                      icon={<BookOpen className="w-4 h-4" />}
-                      onClick={() => handleNavigation("/prepare-interview")}
-                      active={isActive("/prepare-interview")}
-                    />
-                    <GlassNavLink
-                      text="Quiz"
-                      icon={<BookOpenCheck className="w-4 h-4" />}
-                      onClick={() => handleNavigation("/quiz/view")}
-                      active={isActive("/quiz/view")}
-                    />
-                    <GlassNavLink
-                      text="Resume"
-                      icon={<FileText className="w-4 h-4" />}
-                      onClick={() => handleNavigation("/make-resume")}
-                      active={isActive("/make-resume")}
-                    />
-                    <GlassNavLink
-                      text="Flash Cards"
-                      icon={<TbCards className="w-4 h-4" />}
-                      onClick={() => handleNavigation("/flashcard")}
-                      active={isActive("/flashcard")}
-                    />
+                    {/* Prepare Dropdown */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="relative px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 group overflow-hidden text-slate-300 hover:text-white flex items-center space-x-2">
+                          <BookOpen className="w-4 h-4" />
+                          <span>Prepare</span>
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-56 p-4 border border-blue-500/30 shadow-2xl rounded-2xl backdrop-blur-xl">
+                        <div className="flex flex-col gap-2">
+                          <GlassNavLink
+                            text="Roadmap"
+                            icon={<MapPin className="w-4 h-4" />}
+                            onClick={() =>
+                              handleNavigation("/prepare-interview")
+                            }
+                            active={isActive("/prepare-interview")}
+                            customClass="dropdown-link"
+                          />
+                          <GlassNavLink
+                            text="Quiz"
+                            icon={<BookOpenCheck className="w-4 h-4" />}
+                            onClick={() => handleNavigation("/quiz/view")}
+                            active={isActive("/quiz/view")}
+                            customClass="dropdown-link"
+                          />
+                          <GlassNavLink
+                            text="Flash Cards"
+                            icon={<TbCards className="w-4 h-4" />}
+                            onClick={() => handleNavigation("/flashcard")}
+                            active={isActive("/flashcard")}
+                            customClass="dropdown-link"
+                          />
+                          <GlassNavLink
+                            text="Resume"
+                            icon={<FileText className="w-4 h-4" />}
+                            onClick={() => handleNavigation("/make-resume")}
+                            active={isActive("/make-resume")}
+                            customClass="dropdown-link"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    {/* Remove individual Quiz, Flash Cards, Resume links */}
                     <GlassNavLink
                       text="Jobs"
                       icon={<Briefcase className="w-4 h-4" />}
@@ -168,6 +205,12 @@ export default function InterviewlyNavbar() {
                       onClick={() => handleNavigation("/my-applications")}
                       active={isActive("/my-applications")}
                     />
+                    <GlassNavLink
+                      text="Activities"
+                      icon={<Bell className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/activities")}
+                      active={isActive("/activities")}
+                    />
                   </>
                 )}
 
@@ -176,8 +219,8 @@ export default function InterviewlyNavbar() {
                     <GlassNavLink
                       text="Dashboard"
                       icon={<ListChecks className="w-4 h-4" />}
-                      onClick={() => handleNavigation("/home")}
-                      active={isActive("/home")}
+                      onClick={() => handleNavigation("/dashboard")}
+                      active={isActive("/dashboard")}
                     />
                     <GlassNavLink
                       text="Create Interview"
@@ -208,6 +251,12 @@ export default function InterviewlyNavbar() {
                       icon={<Settings className="w-4 h-4" />}
                       onClick={() => handleNavigation("/manage-jobs")}
                       active={isActive("/manage-jobs")}
+                    />
+                    <GlassNavLink
+                      text="Activities"
+                      icon={<Bell className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/admin_activities")}
+                      active={isActive("/admin_activities")}
                     />
                   </>
                 )}
@@ -250,6 +299,9 @@ export default function InterviewlyNavbar() {
               </SignedOut>
 
               <SignedIn>
+                {/* Notification Bell */}
+                <NotificationBell />
+
                 {/* User Profile */}
                 <UserButton
                   appearance={{
@@ -341,14 +393,14 @@ export default function InterviewlyNavbar() {
                       onClick={() => handleNavigation("/quiz/view")}
                     />
                     <MobileNavLink
-                      text="Resume"
-                      icon={<FileText className="w-4 h-4" />}
-                      onClick={() => handleNavigation("/make-resume")}
-                    />
-                    <MobileNavLink
                       text="Flash Cards"
                       icon={<TbCards className="w-4 h-4" />}
                       onClick={() => handleNavigation("/flashcard")}
+                    />
+                    <MobileNavLink
+                      text="Resume"
+                      icon={<FileText className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/make-resume")}
                     />
                     <MobileNavLink
                       text="Jobs"
@@ -359,6 +411,11 @@ export default function InterviewlyNavbar() {
                       text="My Applications"
                       icon={<Mail className="w-4 h-4" />}
                       onClick={() => handleNavigation("/my-applications")}
+                    />
+                    <MobileNavLink
+                      text="Activities"
+                      icon={<Bell className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/activities")}
                     />
                   </>
                 )}
@@ -394,6 +451,11 @@ export default function InterviewlyNavbar() {
                       icon={<Settings className="w-4 h-4" />}
                       onClick={() => handleNavigation("/manage-jobs")}
                     />
+                    <MobileNavLink
+                      text="Activities"
+                      icon={<Bell className="w-4 h-4" />}
+                      onClick={() => handleNavigation("/admin_activities")}
+                    />
                   </>
                 )}
               </SignedIn>
@@ -411,11 +473,13 @@ function GlassNavLink({
   icon,
   onClick,
   active = false,
+  customClass = "",
 }: {
   text: string;
   icon?: React.ReactNode;
   onClick: () => void;
   active?: boolean;
+  customClass?: string;
 }) {
   return (
     <button
@@ -424,19 +488,39 @@ function GlassNavLink({
         active
           ? "text-white bg-blue-500/90 border border-blue-500/50 shadow-lg shadow-blue-500/30"
           : "text-slate-300 hover:text-white"
-      }`}
+      } ${customClass}`}
+      // Add dropdown-specific hover effect
+      style={customClass === "dropdown-link" ? { margin: "2px 0" } : {}}
     >
       {/* Left-to-right fill animation */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-blue-500/30 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
-
+      <div
+        className={`absolute inset-0 bg-gradient-to-r from-blue-600/30 to-blue-500/30 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out ${customClass === "dropdown-link" ? "rounded-xl" : ""}`}
+      ></div>
       {/* Subtle border on hover */}
-      <div className="absolute inset-0 border border-blue-500/0 group-hover:border-blue-500/30 rounded-xl transition-all duration-300"></div>
-
+      <div
+        className={`absolute inset-0 border border-blue-500/0 group-hover:border-blue-500/30 rounded-xl transition-all duration-300 ${customClass === "dropdown-link" ? "" : ""}`}
+      ></div>
       {/* Content */}
       <div className="relative flex items-center space-x-2">
         {icon && icon}
         <span>{text}</span>
       </div>
+      {/* Custom hover effect for dropdown */}
+      {customClass === "dropdown-link" && (
+        <style jsx>{`
+          button.dropdown-link:hover {
+            background: linear-gradient(
+              90deg,
+              rgba(59, 130, 246, 0.15) 0%,
+              rgba(30, 64, 175, 0.12) 100%
+            );
+            color: #fff;
+            transform: scale(1.04);
+            box-shadow: 0 2px 12px 0 rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+          }
+        `}</style>
+      )}
     </button>
   );
 }
