@@ -50,6 +50,7 @@ export default function InterviewlyNavbar() {
   const { user } = useUser();
   const router = useRouter();
   const pathname = usePathname();
+  const [preparePopoverOpen, setPreparePopoverOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -149,49 +150,61 @@ export default function InterviewlyNavbar() {
                       active={isActive("/home")}
                     />
                     {/* Prepare Dropdown */}
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className="relative px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 group overflow-hidden text-slate-300 hover:text-white flex items-center space-x-2">
-                          <BookOpen className="w-4 h-4" />
-                          <span>Prepare</span>
-                          <ChevronDown className="w-4 h-4" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-56 p-4 border border-blue-500/30 shadow-2xl rounded-2xl backdrop-blur-xl">
-                        <div className="flex flex-col gap-2">
-                          <GlassNavLink
-                            text="Roadmap"
-                            icon={<MapPin className="w-4 h-4" />}
-                            onClick={() =>
-                              handleNavigation("/prepare-interview")
-                            }
-                            active={isActive("/prepare-interview")}
-                            customClass="dropdown-link"
-                          />
-                          <GlassNavLink
-                            text="Quiz"
-                            icon={<BookOpenCheck className="w-4 h-4" />}
-                            onClick={() => handleNavigation("/quiz/view")}
-                            active={isActive("/quiz/view")}
-                            customClass="dropdown-link"
-                          />
-                          <GlassNavLink
-                            text="Flash Cards"
-                            icon={<TbCards className="w-4 h-4" />}
-                            onClick={() => handleNavigation("/flashcard")}
-                            active={isActive("/flashcard")}
-                            customClass="dropdown-link"
-                          />
-                          <GlassNavLink
-                            text="Resume"
-                            icon={<FileText className="w-4 h-4" />}
-                            onClick={() => handleNavigation("/make-resume")}
-                            active={isActive("/make-resume")}
-                            customClass="dropdown-link"
-                          />
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+                    <div
+                      onMouseEnter={() => setPreparePopoverOpen(true)}
+                      onMouseLeave={() => setPreparePopoverOpen(false)}
+                      style={{ display: "inline-block" }}
+                    >
+                      <Popover open={preparePopoverOpen} onOpenChange={setPreparePopoverOpen}>
+                        <PopoverTrigger asChild>
+                          <button
+                            className="relative px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 group overflow-hidden text-slate-300 hover:text-white flex items-center space-x-2"
+                            tabIndex={0}
+                            // Accessibility: allow keyboard focus
+                            onFocus={() => setPreparePopoverOpen(true)}
+                            onBlur={() => setPreparePopoverOpen(false)}
+                          >
+                            <BookOpen className="w-4 h-4" />
+                            <span>Prepare</span>
+                            <ChevronDown className="w-4 h-4" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-56 p-4 border border-blue-500/30 shadow-2xl rounded-2xl backdrop-blur-xl">
+                          <div className="flex flex-col gap-2">
+                            <GlassNavLink
+                              text="Roadmap"
+                              icon={<MapPin className="w-4 h-4" />}
+                              onClick={() =>
+                                handleNavigation("/prepare-interview")
+                              }
+                              active={isActive("/prepare-interview")}
+                              customClass="dropdown-link"
+                            />
+                            <GlassNavLink
+                              text="Quiz"
+                              icon={<BookOpenCheck className="w-4 h-4" />}
+                              onClick={() => handleNavigation("/quiz/view")}
+                              active={isActive("/quiz/view")}
+                              customClass="dropdown-link"
+                            />
+                            <GlassNavLink
+                              text="Flash Cards"
+                              icon={<TbCards className="w-4 h-4" />}
+                              onClick={() => handleNavigation("/flashcard")}
+                              active={isActive("/flashcard")}
+                              customClass="dropdown-link"
+                            />
+                            <GlassNavLink
+                              text="Resume"
+                              icon={<FileText className="w-4 h-4" />}
+                              onClick={() => handleNavigation("/make-resume")}
+                              active={isActive("/make-resume")}
+                              customClass="dropdown-link"
+                            />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                     {/* Remove individual Quiz, Flash Cards, Resume links */}
                     <GlassNavLink
                       text="Jobs"

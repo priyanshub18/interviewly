@@ -55,22 +55,6 @@ export const groupInterviews = (interviews: Interview[]) => {
   return grouped;
 };
 
-export const groupCandidateInterviews = (interviews: Interview[]) => {
-  if (!interviews) return {};
-  return interviews.reduce((acc: any, interview: Interview) => {
-    if (interview.status === "succeeded") {
-      acc.passed = [...(acc.passed || []), interview];
-    } else if (interview.status === "failed") {
-      acc.failed = [...(acc.failed || []), interview];
-    } else if (interview.status === "completed") {
-      acc.completed = [...(acc.completed || []), interview];
-    } else {
-      acc.upcoming = [...(acc.upcoming || []), interview];
-    }
-    return acc;
-  }, {});
-};
-
 export const getCandidateInfo = (users: User[], candidateId: string) => {
   const candidate = users?.find((user) => user.clerkId === candidateId);
   return {
@@ -134,4 +118,57 @@ export const getMeetingStatus = (interview: Interview) => {
     return "completed";
   if (isBefore(now, interviewStartTime)) return "upcoming";
   return "completed";
+};
+
+export const getInterviewStatus = (interview: Interview) => {
+  const now = new Date();
+  const interviewStartTime = new Date(interview.startTime);
+  const endTime = new Date(interviewStartTime.getTime() + 60 * 60 * 1000); // +1 hour
+
+  // Check if interview is currently live
+  if (now >= interviewStartTime && now <= endTime) {
+    return "live";
+  }
+
+  // Check if interview is upcoming
+  if (interviewStartTime > now) {
+    return "upcoming";
+  }
+
+  // For past interviews, check the actual status
+  if (interview.status === "failed") {
+    return "failed";
+  }
+  if (interview.status === "succeeded") {
+    return "passed";
+  }
+  if (interview.status === "completed") {
+    return "completed";
+  }
+
+  // Default to completed for past interviews without specific status
+  return "completed";
+};
+
+export const groupInterviewsByStatus = (interviews: Interview[]) => {
+  if (!interviews) return {};
+  
+  const grouped = interviews.reduce((acc: any, interview: Interview) => {
+    const status = getInterviewStatus(interview);
+    
+    if (!acc[status]) {
+      acc[status] = [];
+    }
+    acc[status].push(interview);
+    return acc;
+  }, {});
+
+  // Sort each group by latest first
+  Object.keys(grouped).forEach(status => {
+    grouped[status].sort((a: Interview, b: Interview) => 
+      new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    );
+  });
+
+  return grouped;
 };
