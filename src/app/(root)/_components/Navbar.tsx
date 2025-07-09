@@ -41,6 +41,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import AuthButtons from "@/components/AuthButtons";
 
 export default function InterviewlyNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -155,7 +156,10 @@ export default function InterviewlyNavbar() {
                       onMouseLeave={() => setPreparePopoverOpen(false)}
                       style={{ display: "inline-block" }}
                     >
-                      <Popover open={preparePopoverOpen} onOpenChange={setPreparePopoverOpen}>
+                      <Popover
+                        open={preparePopoverOpen}
+                        onOpenChange={setPreparePopoverOpen}
+                      >
                         <PopoverTrigger asChild>
                           <button
                             className="relative px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 group overflow-hidden text-slate-300 hover:text-white flex items-center space-x-2"
@@ -294,21 +298,7 @@ export default function InterviewlyNavbar() {
 
               <SignedOut>
                 {/* Sign In/Up Buttons */}
-                <div className="flex items-center space-x-2">
-                  <SignInButton mode="modal">
-                    <div className="relative px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-300 group overflow-hidden border border-blue-500/50 hover:border-blue-400/50 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 cursor-pointer">
-                      {/* Shimmer effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out"></div>
-
-                      {/* Content */}
-                      <div className="relative flex items-center space-x-2">
-                        <span>Sign in</span>
-                        {/* <ArrowRight className="w-4 h-4" /> */}
-                        <UserRound className="w-4 h-4" />
-                      </div>
-                    </div>
-                  </SignInButton>
-                </div>
+                <AuthButtons />
               </SignedOut>
 
               <SignedIn>
@@ -316,16 +306,50 @@ export default function InterviewlyNavbar() {
                 <NotificationBell />
 
                 {/* User Profile */}
+                {/* <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-9 h-9 border-2 border-blue-600 shadow-lg shadow-blue-600/30 transition-all duration-300 hover:scale-105",
+                      userButtonPopoverCard:
+                        "bg-black/95 backdrop-blur-2xl border border-blue-600/40 shadow-2xl shadow-blue-600/20 rounded-2xl text-white",
+                      userButtonPopoverActionButton:
+                        "text-blue-400 hover:text-blue-200 hover:bg-blue-600/10 transition-all duration-200 font-semibold",
+                      userButtonPopoverActionButtonText:
+                        "text-blue-400 hover:text-blue-200 transition-all duration-200 font-semibold",
+                      userButtonPopoverFooter:
+                        "bg-black/80 border-t border-blue-600/20 text-slate-400 rounded-b-2xl px-4 py-2",
+                      userButtonPopover:
+                        "rounded-2xl overflow-hidden border border-blue-600/30 shadow-lg shadow-blue-600/10",
+                      userButtonPopoverArrow:
+                        "text-blue-600",
+                      userButtonPopoverHeader:
+                        "bg-black/90 border-b border-blue-600/20 text-white rounded-t-2xl px-4 py-2",
+                      userButtonPopoverUserInfo:
+                        "text-white font-bold",
+                      userButtonPopoverUserEmail:
+                        "text-blue-400 text-xs",
+                      footer: "hidden",
+                    },
+                  }} */}
+                {/* /> */}
                 <UserButton
                   appearance={{
                     elements: {
                       avatarBox: "w-8 h-8",
                       userButtonPopoverCard:
-                        "bg-black/90 backdrop-blur-xl border border-slate-800/50 shadow-2xl shadow-blue-500/10",
+                        "bg-black/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl shadow-blue-600/20",
                       userButtonPopoverActionButton:
-                        "text-slate-300 hover:text-white hover:bg-white/5",
+                        "text-slate-300 hover:text-white hover:bg-blue-600/10 hover:border-blue-600/20",
                       userButtonPopoverActionButtonText:
-                        "text-slate-300 hover:text-white",
+                        "text-black-300 hover:text-white",
+                      userButtonPopoverActionButtonIcon:
+                        "text-slate-400 hover:text-blue-400",
+                      userButtonPopoverFooter: "border-t border-slate-700/50",
+                      userButtonPopoverModeButton:
+                        "text-slate-300 hover:text-white hover:bg-blue-600/10",
+                      userButtonPopoverAvatarBox: "border border-slate-700/50",
+                      userButtonPopoverAvatarImage: "rounded-full",
+                      userButtonPopoverText: "text-slate-300",
                     },
                   }}
                 />
@@ -373,12 +397,21 @@ export default function InterviewlyNavbar() {
                   text="Pricing"
                   onClick={() => handleNavigation("/#pricing")}
                 />
-                <div className="pt-4 border-t border-slate-800/50">
-                  <SignInButton mode="modal">
-                    <button className="w-full px-4 py-3 text-left text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-500 hover:to-blue-600 transition-all duration-300">
-                      Get Started Free
-                    </button>
-                  </SignInButton>
+                <div className="pt-4 border-t border-slate-800/50 flex flex-col gap-2">
+                  <button
+                    onClick={() => handleNavigation("/sign-in")}
+                    className="relative w-full px-4 py-3 text-left text-sm font-semibold text-white bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 rounded-lg shadow-lg border border-blue-500/30 hover:from-blue-500 hover:to-blue-600 transition-all duration-300 group overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    <span className="relative z-10">Sign In</span>
+                    <span className="absolute inset-0 bg-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm animate-pulse"></span>
+                  </button>
+                  <button
+                    onClick={() => handleNavigation("/sign-up")}
+                    className="relative w-full px-4 py-3 text-left text-sm font-semibold text-white bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 rounded-lg shadow-lg border border-blue-400/30 hover:from-blue-400 hover:to-blue-500 transition-all duration-300 group overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  >
+                    <span className="relative z-10">Sign Up</span>
+                    <span className="absolute inset-0 bg-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm animate-pulse"></span>
+                  </button>
                 </div>
               </SignedOut>
 
@@ -561,6 +594,53 @@ function MobileNavLink({
     >
       {icon && icon}
       <span>{text}</span>
+    </button>
+  );
+}
+
+// GradientButton Component
+function GradientButton({
+  children,
+  onClick,
+  variant = "filled",
+  className = "",
+  ...props
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  variant?: "filled" | "outline";
+  className?: string;
+  [key: string]: any;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`relative px-5 py-2 font-semibold rounded-xl overflow-hidden transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+        variant === "filled"
+          ? "bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 text-white border border-blue-500/30 shadow-lg hover:from-blue-500 hover:to-blue-600 hover:scale-105"
+          : "bg-transparent border-2 border-blue-400 text-blue-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 hover:border-blue-500"
+      } ${className}`}
+      {...props}
+    >
+      {/* Animated background for outline variant */}
+      {variant === "outline" && (
+        <span
+          className="absolute inset-0 z-0 bg-gradient-to-r from-blue-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
+          aria-hidden="true"
+        ></span>
+      )}
+      {/* Glow effect for filled variant on hover */}
+      {variant === "filled" && (
+        <span
+          className="absolute inset-0 z-0 bg-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm animate-pulse rounded-xl"
+          aria-hidden="true"
+        ></span>
+      )}
+      <span
+        className={`relative z-10 transition-colors duration-300 ${variant === "outline" ? "group-hover:text-white" : ""}`}
+      >
+        {children}
+      </span>
     </button>
   );
 }
