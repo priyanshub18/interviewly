@@ -49,6 +49,7 @@ function MeetingCard({ interview, candidateInfo, interviewerInfos = [] }) {
   const [isRecordingAvailable, setIsRecordingAvailable] = useState(false);
   const [callRecordingUrl, setCallRecordingUrl] = useState<string | null>(null);
   const [showFullDesc, setShowFullDesc] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<string>("");
 
   useEffect(() => {
     const getCallRecording = async () => {
@@ -76,8 +77,39 @@ function MeetingCard({ interview, candidateInfo, interviewerInfos = [] }) {
     };
     getCallRecording();
   }, [call]);
-
   const status = getMeetingStatus(interview);
+  // Countdown timer for upcoming interviews
+  useEffect(() => {
+    if (status !== "upcoming" || !interview.startTime) return;
+
+    const updateTimeLeft = () => {
+      const now = new Date().getTime();
+      const interviewTime = new Date(interview.startTime).getTime();
+      const difference = interviewTime - now;
+
+      if (difference <= 0) {
+        setTimeLeft("Starting now...");
+        return;
+      }
+
+      const hours = Math.floor(difference / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+      if (hours > 0) {
+        setTimeLeft(`${hours}h ${minutes}m left`);
+      } else if (minutes > 0) {
+        setTimeLeft(`${minutes}m left`);
+      } else {
+        setTimeLeft("Starting now...");
+      }
+    };
+
+    updateTimeLeft();
+    const interval = setInterval(updateTimeLeft, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, [interview.startTime, status]);
+
   console.log("Consoling from MeetingCard.tsx about the status", status);
   const formattedDate = interview?.startTime
     ? format(new Date(interview.startTime), "EEEE, MMMM d · h:mm a")
@@ -95,7 +127,7 @@ function MeetingCard({ interview, candidateInfo, interviewerInfos = [] }) {
     upcoming: {
       badge:
         "bg-blue-100 text-blue-700 border border-blue-200 hover:bg-blue-200",
-      text: "Upcoming",
+      text: timeLeft || "Upcoming",
       icon: <Clock className="h-3 w-3 mr-1" />,
     },
     completed: {
@@ -201,7 +233,7 @@ function MeetingCard({ interview, candidateInfo, interviewerInfos = [] }) {
                   </span>
                 </div>
               </div>
-              
+
               <div>
                 <span className="text-xs font-semibold text-muted-foreground mb-2 block">
                   Interviewers
@@ -240,9 +272,25 @@ function MeetingCard({ interview, candidateInfo, interviewerInfos = [] }) {
               </span>
             </div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Badge className={`flex items-center ${currentStatus.badge}`}>
+              <Badge
+                className={`flex items-center ${currentStatus.badge} ${status === "upcoming" ? "relative" : ""}`}
+              >
                 {currentStatus.icon}
                 {currentStatus.text}
+                {status === "upcoming" && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-blue-400 opacity-20"
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.2, 0, 0.2],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "easeInOut",
+                    }}
+                  />
+                )}
               </Badge>
             </motion.div>
           </div>
