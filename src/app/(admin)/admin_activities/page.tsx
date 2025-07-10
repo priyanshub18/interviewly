@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import theme2 from "@/constants/theme";
 import { Badge } from "@/components/ui/badge";
 import {
   Bell,
@@ -40,9 +41,8 @@ export default function ActivitiesPage() {
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const limit = 10;
   const { theme } = useTheme();
-  const { isInterviewer, isCandidate } = useUserRoles();
+
   const userRole: "user" | "admin" = "admin";
-  const [targetFilter, setTargetFilter] = useState<"user" | "admin">(userRole);
   const router = useRouter();
 
   const activitiesQuery = useQuery(api.activities.getUserActivities, {
@@ -57,57 +57,6 @@ export default function ActivitiesPage() {
   const markAllAsRead = useMutation(api.activities.markAllActivitiesAsRead);
   const deleteActivity = useMutation(api.activities.deleteActivity);
 
-  // theme2 configuration matching other pages
-  const theme2 = {
-    dark: {
-      bg: "",
-      card: {
-        front:
-          "bg-gradient-to-br from-blue-700 to-indigo-800 shadow-lg shadow-blue-500/30",
-        back: "bg-gradient-to-br from-slate-900 to-blue-950 border border-blue-500/40 shadow-lg shadow-blue-500/10",
-        textFront: "text-white",
-        textBack: "text-blue-100",
-        accent: "text-blue-300",
-      },
-      button: {
-        primary:
-          "bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30",
-        secondary:
-          "bg-slate-800 hover:bg-slate-700 text-white border border-slate-700",
-      },
-      text: {
-        primary: "text-white",
-        secondary: "text-blue-200",
-      },
-      input:
-        "bg-slate-900 border-slate-700 text-blue-200 focus:border-blue-500 focus:ring-blue-500",
-      modal: "bg-slate-900 border border-blue-800",
-    },
-    light: {
-      bg: "",
-      card: {
-        front:
-          "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl shadow-blue-200",
-        back: "bg-white border border-blue-200 shadow-xl shadow-blue-100/50",
-        textFront: "text-white",
-        textBack: "text-gray-900",
-        accent: "text-blue-600",
-      },
-      button: {
-        primary:
-          "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200",
-        secondary:
-          "bg-white hover:bg-gray-50 text-blue-800 border border-blue-200 shadow-sm",
-      },
-      text: {
-        primary: "text-gray-900",
-        secondary: "text-blue-600",
-      },
-      input:
-        "bg-white border-blue-300 text-blue-800 focus:border-blue-500 focus:ring-blue-500",
-      modal: "bg-white border border-blue-200",
-    },
-  };
   const currenttheme2 = theme === "dark" ? theme2.dark : theme2.light;
 
   const formatDate = (timestamp: number) => {
@@ -227,8 +176,10 @@ export default function ActivitiesPage() {
     if (activity.jobId) {
       let url = `/admin_jobs/${activity.jobId}`;
       const params = [];
-      if (activity.applicationId) params.push(`applicationId=${activity.applicationId}`);
-      if (activity.relatedUserId) params.push(`userId=${activity.relatedUserId}`);
+      if (activity.applicationId)
+        params.push(`applicationId=${activity.applicationId}`);
+      if (activity.relatedUserId)
+        params.push(`userId=${activity.relatedUserId}`);
       if (params.length > 0) url += `?${params.join("&")}`;
       return url;
     }
@@ -280,7 +231,8 @@ export default function ActivitiesPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
           >
-            Track all admin job management activities and stay informed about updates.
+            Track all admin job management activities and stay informed about
+            updates.
           </motion.p>
         </div>
 
@@ -343,8 +295,7 @@ export default function ActivitiesPage() {
                       <div className="text-2xl font-bold text-green-600">
                         {
                           activitiesQuery.activities.filter(
-                            (activity) =>
-                              activity.type === "job_posted",
+                            (activity) => activity.type === "job_posted",
                           ).length
                         }
                       </div>
@@ -358,7 +309,8 @@ export default function ActivitiesPage() {
                       <div className="text-2xl font-bold text-purple-600">
                         {
                           activitiesQuery.activities.filter(
-                            (activity) => activity.type === "application_reviewed",
+                            (activity) =>
+                              activity.type === "application_reviewed",
                           ).length
                         }
                       </div>
@@ -407,11 +359,7 @@ export default function ActivitiesPage() {
               Unread ({unreadCountQuery || 0})
             </Button>
             <Button
-              variant={
-                selectedFilter === "job_posted"
-                  ? "default"
-                  : "outline"
-              }
+              variant={selectedFilter === "job_posted" ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedFilter("job_posted")}
               className={
@@ -439,11 +387,7 @@ export default function ActivitiesPage() {
               Applications Reviewed
             </Button>
             <Button
-              variant={
-                selectedFilter === "job_closed"
-                  ? "default"
-                  : "outline"
-              }
+              variant={selectedFilter === "job_closed" ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedFilter("job_closed")}
               className={
@@ -488,12 +432,13 @@ export default function ActivitiesPage() {
                         ? "bg-slate-900/50 border-blue-500/20"
                         : "bg-white border-blue-200"
                     } ${!activity.isRead ? "ring-2 ring-blue-500/50" : ""} ${targetUrl ? "cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20" : ""}`}
-                    onClick={e => {
+                    onClick={(e) => {
                       // Prevent navigation if clicking on action buttons
                       if (
                         (e.target as HTMLElement).closest("button") ||
                         (e.target as HTMLElement).closest("a")
-                      ) return;
+                      )
+                        return;
                       if (targetUrl) router.push(targetUrl);
                     }}
                   >
@@ -513,7 +458,9 @@ export default function ActivitiesPage() {
                               >
                                 {activity.title}
                               </h3>
-                              <Badge className={getActivityColor(activity.type)}>
+                              <Badge
+                                className={getActivityColor(activity.type)}
+                              >
                                 {getActivityTypeLabel(activity.type)}
                               </Badge>
                               {!activity.isRead && (

@@ -1,5 +1,5 @@
 import { QuickActionType } from "@/constants";
-import { Card } from "../../../components/ui/card";
+import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
 function ActionCard({

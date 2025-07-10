@@ -129,7 +129,7 @@ export default function JobsPage() {
   return (
     <div className={`mt-16 ${currenttheme2.bg} transition-colors duration-500`}>
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Header styled like flashcard page */}
+     
         <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
           {/* Premium Badge */}
           <motion.div

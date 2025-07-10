@@ -21,8 +21,6 @@ import {
 } from "lucide-react";
 import { set } from "date-fns";
 import toast from "react-hot-toast";
-import HorizontalScrollButtons from "./_components/ScrollButton";
-import PitchBlackInterviewForm from "./_components/CheckingThing";
 
 interface StudyPlanDay {
   day: number;
@@ -52,7 +50,6 @@ export default function InterviewPrepApp() {
   const [activeDayCard, setActiveDayCard] = useState(null);
   const [companyName, setCompanyName] = useState("");
   const [jobLevel, setJobLevel] = useState("");
-  
 
   const interviews = useQuery(api.interviews.getUpcomingInterviews);
 
@@ -733,13 +730,32 @@ export default function InterviewPrepApp() {
                                   placeholder="e.g. Senior Frontend Developer"
                                   className="w-full p-4 pl-12 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
                                   whileFocus={{
-                                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.2)",
+                                    boxShadow:
+                                      "0 0 0 3px rgba(59, 130, 246, 0.2)",
                                   }}
                                 />
                                 <div className="absolute left-4 top-4 text-gray-500">
-                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                    <path
+                                      d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
                                   </svg>
                                 </div>
                               </div>
@@ -753,17 +769,38 @@ export default function InterviewPrepApp() {
                                 <motion.input
                                   type="text"
                                   value={companyName || ""}
-                                  onChange={(e) => setCompanyName(e.target.value)}
+                                  onChange={(e) =>
+                                    setCompanyName(e.target.value)
+                                  }
                                   placeholder="e.g. Google, Microsoft"
                                   className="w-full p-4 pl-12 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
                                   whileFocus={{
-                                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.2)",
+                                    boxShadow:
+                                      "0 0 0 3px rgba(59, 130, 246, 0.2)",
                                   }}
                                 />
                                 <div className="absolute left-4 top-4 text-gray-500">
-                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                    <polyline
+                                      points="9,22 9,12 15,12 15,22"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
                                   </svg>
                                 </div>
                               </div>
@@ -775,21 +812,23 @@ export default function InterviewPrepApp() {
                               Job Level
                             </label>
                             <div className="grid grid-cols-3 gap-3">
-                              {["Junior", "Mid-Level", "Senior"].map((level) => (
-                                <motion.button
-                                  key={level}
-                                  whileHover={{ scale: 1.02 }}
-                                  whileTap={{ scale: 0.98 }}
-                                  onClick={() => setJobLevel(level)}
-                                  className={`p-3 rounded-lg border-2 font-medium transition-all duration-200 ${
-                                    jobLevel === level
-                                      ? "bg-blue-700 border-blue-600 text-white shadow-lg shadow-blue-700/30"
-                                      : "bg-gray-900 border-gray-700 text-gray-400 hover:border-gray-600"
-                                  }`}
-                                >
-                                  {level}
-                                </motion.button>
-                              ))}
+                              {["Junior", "Mid-Level", "Senior"].map(
+                                (level) => (
+                                  <motion.button
+                                    key={level}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => setJobLevel(level)}
+                                    className={`p-3 rounded-lg border-2 font-medium transition-all duration-200 ${
+                                      jobLevel === level
+                                        ? "bg-blue-700 border-blue-600 text-white shadow-lg shadow-blue-700/30"
+                                        : "bg-gray-900 border-gray-700 text-gray-400 hover:border-gray-600"
+                                    }`}
+                                  >
+                                    {level}
+                                  </motion.button>
+                                ),
+                              )}
                             </div>
                           </div>
 
@@ -864,7 +903,8 @@ export default function InterviewPrepApp() {
                                   placeholder="e.g. React, TypeScript, Node.js"
                                   className="w-full p-4 pl-12 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
                                   whileFocus={{
-                                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.2)",
+                                    boxShadow:
+                                      "0 0 0 3px rgba(59, 130, 246, 0.2)",
                                   }}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
@@ -909,7 +949,8 @@ export default function InterviewPrepApp() {
                                     <Code size={48} className="mx-auto" />
                                   </div>
                                   <p className="text-gray-500 text-sm">
-                                    No skills added yet. Start by adding your technical skills above.
+                                    No skills added yet. Start by adding your
+                                    technical skills above.
                                   </p>
                                 </div>
                               ) : (
@@ -930,9 +971,29 @@ export default function InterviewPrepApp() {
                                       }}
                                       className="ml-1 text-blue-400 hover:text-blue-200 transition-colors"
                                     >
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      >
+                                        <line
+                                          x1="18"
+                                          y1="6"
+                                          x2="6"
+                                          y2="18"
+                                        ></line>
+                                        <line
+                                          x1="6"
+                                          y1="6"
+                                          x2="18"
+                                          y2="18"
+                                        ></line>
                                       </svg>
                                     </button>
                                   </motion.div>
@@ -978,9 +1039,29 @@ export default function InterviewPrepApp() {
                                       }
                                       className="bg-gray-900/50 hover:bg-gray-800/50 text-gray-400 hover:text-gray-300 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 border border-gray-700 hover:border-gray-600 transition-all duration-200"
                                     >
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      >
+                                        <line
+                                          x1="12"
+                                          y1="5"
+                                          x2="12"
+                                          y2="19"
+                                        ></line>
+                                        <line
+                                          x1="5"
+                                          y1="12"
+                                          x2="19"
+                                          y2="12"
+                                        ></line>
                                       </svg>
                                       {skill}
                                     </motion.button>
@@ -1024,7 +1105,8 @@ export default function InterviewPrepApp() {
                                   placeholder="e.g. Redux, GraphQL, Testing"
                                   className="w-full p-4 pl-12 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
                                   whileFocus={{
-                                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.2)",
+                                    boxShadow:
+                                      "0 0 0 3px rgba(59, 130, 246, 0.2)",
                                   }}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
@@ -1066,10 +1148,14 @@ export default function InterviewPrepApp() {
                               {requiredSkills.length === 0 ? (
                                 <div className="w-full text-center py-8">
                                   <div className="text-gray-600 mb-2">
-                                    <AlertCircle size={48} className="mx-auto" />
+                                    <AlertCircle
+                                      size={48}
+                                      className="mx-auto"
+                                    />
                                   </div>
                                   <p className="text-gray-500 text-sm">
-                                    No required skills added yet. Add the skills the job requires.
+                                    No required skills added yet. Add the skills
+                                    the job requires.
                                   </p>
                                 </div>
                               ) : (
@@ -1092,9 +1178,29 @@ export default function InterviewPrepApp() {
                                       }
                                       className="ml-1 text-purple-400 hover:text-purple-200 transition-colors"
                                     >
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      >
+                                        <line
+                                          x1="18"
+                                          y1="6"
+                                          x2="6"
+                                          y2="18"
+                                        ></line>
+                                        <line
+                                          x1="6"
+                                          y1="6"
+                                          x2="18"
+                                          y2="18"
+                                        ></line>
                                       </svg>
                                     </button>
                                   </motion.div>
@@ -1112,7 +1218,10 @@ export default function InterviewPrepApp() {
                               className="bg-gray-900/50 border border-gray-700 rounded-xl p-6"
                             >
                               <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                                <AlertCircle size={18} className="text-orange-400" />
+                                <AlertCircle
+                                  size={18}
+                                  className="text-orange-400"
+                                />
                                 Skills Gap Analysis
                               </h3>
                               <div className="space-y-4">
@@ -1229,15 +1338,27 @@ export default function InterviewPrepApp() {
 
                           <div className="mt-6">
                             <div className="bg-blue-700/10 border border-blue-600/30 rounded-xl p-6 flex items-start gap-4">
-                              <AlertCircle className="text-blue-400 flex-shrink-0 mt-1" size={20} />
+                              <AlertCircle
+                                className="text-blue-400 flex-shrink-0 mt-1"
+                                size={20}
+                              />
                               <div>
                                 <p className="text-blue-300 text-sm leading-relaxed">
-                                  Your study plan will include <span className="font-semibold text-blue-200">{prepDays} days</span> with <span className="font-semibold text-blue-200">{hoursPerDay} hours</span> of focused preparation each day.
+                                  Your study plan will include{" "}
+                                  <span className="font-semibold text-blue-200">
+                                    {prepDays} days
+                                  </span>{" "}
+                                  with{" "}
+                                  <span className="font-semibold text-blue-200">
+                                    {hoursPerDay} hours
+                                  </span>{" "}
+                                  of focused preparation each day.
                                   {skillsToImprove.length > 0 && (
                                     <>
                                       <br />
                                       <span className="font-semibold mt-2 inline-block text-orange-300">
-                                        Skills to focus on: {skillsToImprove.join(", ")}
+                                        Skills to focus on:{" "}
+                                        {skillsToImprove.join(", ")}
                                       </span>
                                     </>
                                   )}
@@ -1255,7 +1376,7 @@ export default function InterviewPrepApp() {
                         <motion.button
                           whileHover="hover"
                           whileTap="tap"
-                          variants={buttonVariants}
+                          variants={buttonVariants as any}
                           onClick={prevStep}
                           className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white rounded-xl font-semibold border border-gray-700 hover:border-gray-600 transition-all duration-200"
                         >
@@ -1268,7 +1389,7 @@ export default function InterviewPrepApp() {
                         whileHover={isLoading ? {} : "hover"}
                         whileTap={isLoading ? {} : "tap"}
                         animate={isLoading ? "loading" : "initial"}
-                        variants={buttonVariants}
+                        variants={buttonVariants as any}
                         onClick={nextStep}
                         disabled={isLoading}
                         className={`px-8 py-3 rounded-xl font-semibold flex items-center gap-3 transition-all duration-200 ${
@@ -1279,7 +1400,7 @@ export default function InterviewPrepApp() {
                       >
                         {isLoading ? (
                           <motion.div
-                            variants={loaderVariants}
+                            variants={loaderVariants as any}
                             animate="animate"
                           >
                             <Loader2 size={20} />
@@ -1708,7 +1829,7 @@ export default function InterviewPrepApp() {
 
                                 {/* Enhanced navigation controls */}
                               </div>
-                              <HorizontalScrollButtons />
+                              {/* <HorizontalScrollButtons /> */}
                             </motion.div>
                           </div>
                         </div>
@@ -1719,8 +1840,7 @@ export default function InterviewPrepApp() {
               )}
             </AnimatePresence>
 
-            {/* Upcoming Interviews Section */}
-            {/* <UpcomingInterviews /> */}
+        
           </div>
         </div>
       </motion.div>

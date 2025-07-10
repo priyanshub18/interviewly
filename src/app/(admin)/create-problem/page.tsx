@@ -15,7 +15,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "../../../../convex/_generated/api";
 import LoaderUI from "@/components/LoaderUI";
-import ProfessionalLoader from "../_components/Loader2";
+import ProfessionalLoader from "@/components/Loader2";
 
 interface Example {
   input: string;
@@ -143,11 +143,11 @@ export default function LeetCodeProblemFetcher() {
       //console.log(data);
       setFetching(false);
       setProblem(data);
-    }  catch (e) {
+    } catch (e) {
       setFetching(false);
       toast.error("Failed to fetch problem. Please try again.");
       return;
-    } 
+    }
   };
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

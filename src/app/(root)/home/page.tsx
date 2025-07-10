@@ -1,6 +1,6 @@
 "use client";
 
-import ActionCard from "@/app/(root)/_components/ActionCard";
+import ActionCard from "@/components/ActionCard";
 import { QUICK_ACTIONS } from "@/constants";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import React, { useState, useMemo } from "react";

@@ -26,10 +26,10 @@ import {
   PlusCircleIcon,
 } from "lucide-react";
 import { format } from "date-fns";
-import CommentDialog from "../_components/CommentDialog";
+import CommentDialog from "./_components/CommentDialog";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import ActionCard from "../../(root)/_components/ActionCard";
+import ActionCard from "@/components/ActionCard";
 import MeetingModal from "../../(root)/meeting/_components/MeetingModal";
 import { QUICK_ACTIONS } from "@/constants";
 import { useRouter } from "next/navigation";

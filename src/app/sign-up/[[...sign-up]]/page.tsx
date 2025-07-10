@@ -73,7 +73,7 @@ export default function SignUpPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-4xl mx-auto">
-        {/* Header styled like flashcard page */}
+     
         <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
           {/* Premium Badge */}
           {/* <motion.div

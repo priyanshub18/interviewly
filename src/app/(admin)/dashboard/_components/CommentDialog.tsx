@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "../../../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import toast from "react-hot-toast";
 import { MessageSquareIcon, StarIcon, SendIcon } from "lucide-react";
 import {
@@ -11,22 +11,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
-import { Button } from "../../../components/ui/button";
-import { Badge } from "../../../components/ui/badge";
-import { ScrollArea } from "../../../components/ui/scroll-area";
+} from "../../../../components/ui/dialog";
+import { Button } from "../../../../components/ui/button";
+import { Badge } from "../../../../components/ui/badge";
+import { ScrollArea } from "../../../../components/ui/scroll-area";
 import { getInterviewerInfo } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../../../components/ui/avatar";
 import { format } from "date-fns";
-import { Label } from "../../../components/ui/label";
+import { Label } from "../../../../components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui/select";
-import { Textarea } from "../../../components/ui/textarea";
+} from "../../../../components/ui/select";
+import { Textarea } from "../../../../components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 
@@ -179,7 +183,7 @@ function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
                       return (
                         <motion.div
                           key={index}
-                          variants={commentItemVariants}
+                          variants={commentItemVariants as any}
                           initial="hidden"
                           animate="visible"
                           exit="exit"

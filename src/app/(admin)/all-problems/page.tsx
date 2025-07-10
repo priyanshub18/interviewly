@@ -20,18 +20,6 @@ interface CodeSnippet {
   code: string;
 }
 
-interface LeetCodeProblem {
-  id: string;
-  q_id: string;
-  number: number;
-  title: string;
-  description: string;
-  difficulty: "Easy" | "Medium" | "Hard";
-  examples: Example[];
-  constraints: string[];
-  starterCode: CodeSnippet[];
-}
-
 const sampleProblems = [
   {
     q_id: "two-sum",
@@ -251,7 +239,9 @@ export default function ProblemViewer() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-10"
         >
-          <div className={`bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800 rounded-2xl shadow-lg px-6 py-6 flex flex-col gap-4`}>
+          <div
+            className={`bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800 rounded-2xl shadow-lg px-6 py-6 flex flex-col gap-4`}
+          >
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="w-full md:w-1/2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -287,8 +277,8 @@ export default function ProblemViewer() {
                     difficultyFilter === level
                       ? "bg-blue-600 text-white shadow-md shadow-indigo-500/20"
                       : theme === "light"
-                      ? "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
-                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        ? "bg-white text-gray-700 hover:bg-indigo-50 border border-gray-200"
+                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -298,7 +288,15 @@ export default function ProblemViewer() {
               ))}
             </div>
             {/* Results counter */}
-            <p className={`${theme === "light" ? "text-blue-600" : "text-blue-200"} text-sm pt-2 border-t border-blue-100 dark:border-blue-900`}>Showing {filteredProblems.length} problems{difficultyFilter !== "All" ? ` of ${difficultyFilter} difficulty` : null}{searchQuery ? ` matching "${searchQuery}"` : null}</p>
+            <p
+              className={`${theme === "light" ? "text-blue-600" : "text-blue-200"} text-sm pt-2 border-t border-blue-100 dark:border-blue-900`}
+            >
+              Showing {filteredProblems.length} problems
+              {difficultyFilter !== "All"
+                ? ` of ${difficultyFilter} difficulty`
+                : null}
+              {searchQuery ? ` matching "${searchQuery}"` : null}
+            </p>
           </div>
         </motion.div>
 
@@ -574,39 +572,7 @@ export default function ProblemViewer() {
                     >
                       Starter Code
                     </motion.h3>
-                    {/* {selectedProblem.starterCode.map((starter, index) => (
-                      <motion.div
-                        key={index}
-                        className="mb-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1 + index * 0.1 }}
-                      >
-                        <div className="flex items-center gap-2 mb-2">
-                          <Code
-                            className={
-                              theme === "light"
-                                ? "text-blue-600"
-                                : "text-blue-400"
-                            }
-                          />
-                          <span
-                            className={`font-semibold ${theme === "light" ? "text-gray-900" : "text-white"}`}
-                          >
-                            {starter.lang}
-                          </span>
-                        </div>
-                        <pre
-                          className={`p-4 rounded-lg overflow-x-auto font-mono text-sm ${
-                            theme === "light"
-                              ? "bg-gray-900 text-gray-100"
-                              : "bg-gray-950 text-gray-100 border border-gray-800"
-                          }`}
-                        >
-                          {starter.code}
-                        </pre>
-                      </motion.div>
-                    ))} */}
+
                     <div className="w-full rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
                       {/* Tab Navigation */}
                       <div className="flex overflow-x-auto bg-gray-100 dark:bg-gray-900">

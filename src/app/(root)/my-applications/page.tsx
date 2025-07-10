@@ -1,17 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -19,21 +10,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import theme2 from "@/constants/theme";
+import { useMutation, useQuery } from "convex/react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  MapPin,
+  ArrowLeft,
+  Briefcase,
   Building,
   Calendar,
   Clock,
-  FileText,
-  ArrowLeft,
-  Sparkles,
-  Briefcase,
   Eye,
+  FileText,
+  MapPin,
+  Sparkles,
 } from "lucide-react";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { api } from "../../../../convex/_generated/api";
 
 export default function MyApplicationsPage() {
   const [offset, setOffset] = useState(0);
@@ -52,56 +47,7 @@ export default function MyApplicationsPage() {
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
 
   // theme2 configuration matching flashcard page
-  const theme2 = {
-    dark: {
-      bg: "",
-      card: {
-        front:
-          "bg-gradient-to-br from-blue-700 to-indigo-800 shadow-lg shadow-blue-500/30",
-        back: "bg-gradient-to-br from-slate-900 to-blue-950 border border-blue-500/40 shadow-lg shadow-blue-500/10",
-        textFront: "text-white",
-        textBack: "text-blue-100",
-        accent: "text-blue-300",
-      },
-      button: {
-        primary:
-          "bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30",
-        secondary:
-          "bg-slate-800 hover:bg-slate-700 text-white border border-slate-700",
-      },
-      text: {
-        primary: "text-white",
-        secondary: "text-blue-200",
-      },
-      input:
-        "bg-slate-900 border-slate-700 text-blue-200 focus:border-blue-500 focus:ring-blue-500",
-      modal: "bg-slate-900 border border-blue-800",
-    },
-    light: {
-      bg: "",
-      card: {
-        front:
-          "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl shadow-blue-200",
-        back: "bg-white border border-blue-200 shadow-xl shadow-blue-100/50",
-        textFront: "text-white",
-        textBack: "text-gray-900",
-        accent: "text-blue-600",
-      },
-      button: {
-        primary:
-          "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200",
-        secondary:
-          "bg-white hover:bg-gray-50 text-blue-800 border border-blue-200 shadow-sm",
-      },
-      text: {
-        primary: "text-gray-900",
-        secondary: "text-blue-600",
-      },
-      input:
-        "bg-white border-blue-300 text-blue-800 focus:border-blue-500 focus:ring-blue-500",
-      modal: "bg-white border border-blue-200",
-    },
-  };
+
   const currenttheme2 = theme === "dark" ? theme2.dark : theme2.light;
 
   const formatDate = (timestamp: number) => {
@@ -170,7 +116,6 @@ export default function MyApplicationsPage() {
   return (
     <div className={`mt-16 ${currenttheme2.bg} transition-colors duration-500`}>
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Header styled like flashcard page */}
         <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
           {/* Premium Badge */}
           <motion.div
@@ -454,10 +399,13 @@ export default function MyApplicationsPage() {
 
                         {/* Remark for Shortlisted */}
                         {application.status === "Shortlisted" && (
-                          <div className={`p-3 rounded-md ${theme === "dark" ? "bg-blue-900/30 text-blue-200" : "bg-blue-50 text-blue-700"} flex items-center gap-2`}>
+                          <div
+                            className={`p-3 rounded-md ${theme === "dark" ? "bg-blue-900/30 text-blue-200" : "bg-blue-50 text-blue-700"} flex items-center gap-2`}
+                          >
                             <Sparkles className="h-4 w-4 text-blue-400" />
                             <span>
-                              You might get to have an interview soon. Keep checking your emails.
+                              You might get to have an interview soon. Keep
+                              checking your emails.
                             </span>
                           </div>
                         )}

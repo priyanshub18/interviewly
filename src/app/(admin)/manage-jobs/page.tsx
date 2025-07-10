@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -14,151 +15,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation, useQuery } from "convex/react";
+import { motion } from "framer-motion";
 import {
-  MapPin,
   Building,
-  Users,
   Calendar,
-  Edit,
-  Trash2,
-  Eye,
-  Plus,
-  ArrowLeft,
-  Sparkles,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  X,
   ChevronDown,
-  ChevronUp,
+  Edit,
+  Eye,
+  MapPin,
+  Plus,
+  Sparkles,
+  Trash2,
+  Users,
   Video,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-
-// Custom Card Component with fixed size
-const CustomCard = ({ children, className = "", ...props }: any) => (
-  <div
-    className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 backdrop-blur-xl border border-blue-600/20 shadow-2xl shadow-blue-600/10 transition-all duration-500 hover:scale-[1.02] hover:border-blue-600/40 group h-[500px] flex flex-col ${className}`}
-    {...props}
-  >
-    {/* Animated border gradient */}
-    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-500/20 to-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
-    <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 rounded-2xl" />
-
-    <div className="relative z-10 p-6 flex flex-col h-full justify-between">{children}</div>
-  </div>
-);
-
-// Custom Modal Component (consistent with other pages)
-const CustomModal = ({
-  isOpen,
-  onClose,
-  children,
-  className = "",
-  title = "",
-}: any) => (
-  <Dialog open={isOpen} onOpenChange={onClose}>
-    <DialogContent
-      className={`max-w-4xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-blue-600/30 rounded-3xl shadow-2xl shadow-blue-600/20 ${className}`}
-    >
-      <DialogHeader>
-        <DialogTitle className="text-2xl font-bold text-white">
-          {title}
-        </DialogTitle>
-      </DialogHeader>
-      <div className="max-h-[70vh] overflow-y-auto">{children}</div>
-    </DialogContent>
-  </Dialog>
-);
-
-// Custom Badge Component
-const CustomBadge = ({
-  children,
-  variant = "default",
-  className = "",
-  onClick,
-  ...props
-}: any) => {
-  const variants = {
-    default: "bg-blue-600/20 text-blue-300 border-blue-600/30",
-    success: "bg-emerald-500/20 text-emerald-300 border-emerald-400/30",
-    warning: "bg-yellow-500/20 text-yellow-300 border-yellow-400/30",
-    danger: "bg-red-500/20 text-red-300 border-red-400/30",
-    info: "bg-slate-500/20 text-slate-300 border-slate-400/30",
-  };
-
-  const Component = onClick ? 'button' : 'span';
-
-  return (
-    <Component
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border backdrop-blur-sm transition-all duration-300 hover:scale-105 ${variants[variant]} ${className}`}
-      onClick={onClick}
-      {...props}
-    >
-      {children}
-    </Component>
-  );
-};
-
-// Expandable Content Component
-const ExpandableContent = ({
-  content,
-  maxLines = 4,
-  title = "Content",
-}: any) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  // Calculate if content should be truncated (similar to flashcard logic)
-  const shouldTruncate = content.length > 120; // Show first 120 characters
-  const displayContent = shouldTruncate ? `${content.substring(0, 120)}...` : content;
-
-  return (
-    <>
-      <div className="relative">
-        <p className="text-sm text-blue-200/80 leading-relaxed">
-          {displayContent}
-        </p>
-
-        {shouldTruncate && (
-          <div className="mt-2">
-            <Button
-              variant="link"
-              size="sm"
-              className="p-0 h-auto text-blue-600 hover:text-blue-300 flex items-center gap-1 text-sm"
-              onClick={() => setIsModalOpen(true)}
-            >
-              See More
-              <ChevronDown className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Full Content Modal */}
-      <CustomModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={title}
-      >
-        <div className="bg-blue-600/10 rounded-xl p-6 backdrop-blur-sm border border-blue-600/20">
-          <p className="text-sm text-blue-200/80 leading-relaxed whitespace-pre-wrap">
-            {content}
-          </p>
-        </div>
-      </CustomModal>
-    </>
-  );
-};
+import { api } from "../../../../convex/_generated/api";
+import ExpandableContent from "./_components/ExpandableContent";
+import CustomModal from "./_components/CustomModal";
+import CustomCard from "./_components/CustomCard";
+import CustomBadge from "./_components/CustomBadge";
 
 export default function ManageJobsPage() {
   const router = useRouter();
@@ -171,13 +52,10 @@ export default function ManageJobsPage() {
 
   // Loading states
   const [isUpdatingJobStatus, setIsUpdatingJobStatus] = useState(false);
-  const [isUpdatingApplicationStatus, setIsUpdatingApplicationStatus] = useState(false);
+  const [isUpdatingApplicationStatus, setIsUpdatingApplicationStatus] =
+    useState(false);
   const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
 
-  // Modal states
-  const [isCoverLetterModalOpen, setIsCoverLetterModalOpen] = useState(false);
-  const [selectedCoverLetter, setSelectedCoverLetter] = useState("");
-  const [jobToDelete, setJobToDelete] = useState<any>(null);
   const [isSkillsModalOpen, setIsSkillsModalOpen] = useState(false);
 
   const jobs = useQuery(api.jobs.getJobsByPoster, {});
@@ -319,19 +197,22 @@ export default function ManageJobsPage() {
       jobDescription: job.description,
       timestamp: Date.now(),
     };
-    
-    localStorage.setItem('scheduledInterviewData', JSON.stringify(interviewData));
-    
+
+    localStorage.setItem(
+      "scheduledInterviewData",
+      JSON.stringify(interviewData),
+    );
+
     // Redirect to the meeting page
-    router.push('/schedule');
-    
-    toast.success('Redirecting to schedule interview...');
+    router.push("/schedule");
+
+    toast.success("Redirecting to schedule interview...");
   };
 
   return (
     <div className="min-h-screen pt-16 bg-black text-white py-8">
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header styled like flashcard page */}
+     
         <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
           {/* Premium Badge */}
           <motion.div
@@ -452,26 +333,28 @@ export default function ManageJobsPage() {
                       </div>
                     </div>
 
-                                      {/* Skills */}
-                  <div className="h-16 flex items-center">
-                    <div className="flex items-center gap-2">
-                      {job.skills.length > 0 && (
-                        <CustomBadge
-                          variant="default"
-                          className="text-xs cursor-pointer hover:bg-blue-600/30 transition-colors"
-                          onClick={() => {
-                            setSelectedJob(job);
-                            setIsSkillsModalOpen(true);
-                          }}
-                        >
-                          {job.skills[0]}
-                          {job.skills.length > 1 && (
-                            <span className="ml-1 text-blue-300">+{job.skills.length - 1}</span>
-                          )}
-                        </CustomBadge>
-                      )}
+                    {/* Skills */}
+                    <div className="h-16 flex items-center">
+                      <div className="flex items-center gap-2">
+                        {job.skills.length > 0 && (
+                          <CustomBadge
+                            variant="default"
+                            className="text-xs cursor-pointer hover:bg-blue-600/30 transition-colors"
+                            onClick={() => {
+                              setSelectedJob(job);
+                              setIsSkillsModalOpen(true);
+                            }}
+                          >
+                            {job.skills[0]}
+                            {job.skills.length > 1 && (
+                              <span className="ml-1 text-blue-300">
+                                +{job.skills.length - 1}
+                              </span>
+                            )}
+                          </CustomBadge>
+                        )}
+                      </div>
                     </div>
-                  </div>
                   </div>
 
                   {/* Bottom Section - Actions */}
@@ -509,9 +392,24 @@ export default function ManageJobsPage() {
                       {deletingJobId === job._id ? (
                         <>
                           <span className="animate-spin mr-2 inline-block align-middle">
-                            <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            <svg
+                              className="h-4 w-4 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8z"
+                              ></path>
                             </svg>
                           </span>
                           Deleting...
@@ -614,13 +512,15 @@ export default function ManageJobsPage() {
                           <Edit className="h-4 w-4 mr-1" />
                           Update Status
                         </Button>
-                        
+
                         {/* Schedule Interview Button - Only show for Shortlisted candidates */}
                         {application.status === "Shortlisted" && (
                           <Button
                             size="sm"
                             className="bg-gradient-to-r from-green-600/80 to-green-700/80 hover:from-green-600 hover:to-green-700 text-white border-0 transition-all backdrop-blur-sm hover:shadow-lg hover:shadow-green-600/20 rounded-xl"
-                            onClick={() => handleScheduleInterview(application, selectedJob)}
+                            onClick={() =>
+                              handleScheduleInterview(application, selectedJob)
+                            }
                           >
                             <Video className="h-4 w-4 mr-1" />
                             Schedule Interview
@@ -767,7 +667,11 @@ export default function ManageJobsPage() {
                 >
                   Status
                 </Label>
-                <Select value={newStatus} onValueChange={setNewStatus} disabled={isUpdatingJobStatus || isUpdatingApplicationStatus}>
+                <Select
+                  value={newStatus}
+                  onValueChange={setNewStatus}
+                  disabled={isUpdatingJobStatus || isUpdatingApplicationStatus}
+                >
                   <SelectTrigger className="bg-slate-800/80 border-blue-500/20 text-white backdrop-blur-sm hover:bg-slate-800 transition-all rounded-xl">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
@@ -856,7 +760,8 @@ export default function ManageJobsPage() {
                   variant="outline"
                   className="border-blue-500/20 text-blue-300 hover:bg-blue-500/20 backdrop-blur-sm transition-all rounded-xl"
                   onClick={() => {
-                    if (isUpdatingJobStatus || isUpdatingApplicationStatus) return;
+                    if (isUpdatingJobStatus || isUpdatingApplicationStatus)
+                      return;
                     setIsUpdateStatusOpen(false);
                     setNewStatus("");
                     setNotes("");
@@ -873,20 +778,39 @@ export default function ManageJobsPage() {
                       ? handleUpdateApplicationStatus
                       : handleUpdateJobStatus
                   }
-                  disabled={!newStatus || isUpdatingJobStatus || isUpdatingApplicationStatus}
+                  disabled={
+                    !newStatus ||
+                    isUpdatingJobStatus ||
+                    isUpdatingApplicationStatus
+                  }
                 >
-                  {(isUpdatingJobStatus || isUpdatingApplicationStatus) ? (
+                  {isUpdatingJobStatus || isUpdatingApplicationStatus ? (
                     <span className="flex items-center">
                       <span className="animate-spin mr-2 inline-block align-middle">
-                        <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        <svg
+                          className="h-4 w-4 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8z"
+                          ></path>
                         </svg>
                       </span>
                       Updating...
                     </span>
                   ) : (
-                    'Update Status'
+                    "Update Status"
                   )}
                 </Button>
               </div>
@@ -921,7 +845,8 @@ export default function ManageJobsPage() {
 
             <div className="text-center">
               <p className="text-blue-300/60 text-sm">
-                {selectedJob?.skills?.length} skill{selectedJob?.skills?.length !== 1 ? 's' : ''} required
+                {selectedJob?.skills?.length} skill
+                {selectedJob?.skills?.length !== 1 ? "s" : ""} required
               </p>
             </div>
           </div>

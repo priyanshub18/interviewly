@@ -1,20 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { X, Plus, ArrowLeft, Sparkles, Briefcase, MapPin, Calendar, DollarSign, Users, Target } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation } from "convex/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, Briefcase, Calendar, DollarSign, MapPin, Plus, Sparkles, Target, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { api } from "../../../../convex/_generated/api";
 
 export default function PostJobPage() {
   const router = useRouter();
@@ -122,7 +121,7 @@ export default function PostJobPage() {
           </Link>
         </motion.div>
 
-        {/* Header styled like flashcard page */}
+     
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

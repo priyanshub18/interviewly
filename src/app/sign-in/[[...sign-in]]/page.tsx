@@ -60,7 +60,7 @@ export default function SignInPage() {
       {/* Main Content */}
       <div className="relative z-10 pt-16 pb-8 px-4 min-h-screen flex items-center justify-center">
         <div className="w-full max-w-4xl mx-auto">
-          {/* Header styled like flashcard page */}
+       
           <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
             {/* Premium Badge */}
             {/* <motion.div

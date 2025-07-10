@@ -1,4 +1,4 @@
-import GlassmorphicNavbar from "@/app/(root)/_components/Navbar";
+import GlassmorphicNavbar from "@/components/navbar/Navbar";
 import ConvexClerkProvider from "@/components/providers/ConvexClerkProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "@stream-io/video-react-sdk/dist/css/styles.css";

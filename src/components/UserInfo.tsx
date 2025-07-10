@@ -32,8 +32,6 @@ function UserInfo({
     lg: "h-6 w-6",
   };
 
-  // Get role display text and color
-
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Avatar className={cn(avatarSizes[avatarSize], "ring-2 ring-background")}>
