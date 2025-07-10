@@ -22,6 +22,7 @@ import type * as interviews from "../interviews.js";
 import type * as jobs from "../jobs.js";
 import type * as questions from "../questions.js";
 import type * as quizzes from "../quizzes.js";
+import type * as studyPlans from "../studyPlans.js";
 import type * as users from "../users.js";
 
 /**
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   jobs: typeof jobs;
   questions: typeof questions;
   quizzes: typeof quizzes;
+  studyPlans: typeof studyPlans;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

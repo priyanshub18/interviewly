@@ -229,4 +229,37 @@ export default defineSchema({
     .index("by_is_read", ["isRead"])
     .index("by_job_id", ["jobId"])
     .index("by_application_id", ["applicationId"]),
+
+  // Study plans table for storing user study plans
+  studyPlans: defineTable({
+    userId: v.string(), // clerkId of the user
+    jobTitle: v.string(),
+    companyName: v.string(),
+    jobLevel: v.string(),
+    userSkills: v.array(v.string()),
+    requiredSkills: v.array(v.string()),
+    prepDays: v.number(),
+    hoursPerDay: v.number(),
+    studyPlan: v.array(
+      v.object({
+        day: v.number(),
+        topics: v.optional(
+          v.array(
+            v.object({
+              topic: v.string(),
+              hours_allocated: v.number(),
+              focus_area: v.string(),
+              notes: v.optional(v.string()),
+            })
+          )
+        ),
+        notes: v.optional(v.string()),
+      })
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user_id", ["userId"])
+    .index("by_created_at", ["createdAt"])
+    .index("by_updated_at", ["updatedAt"]),
 });
