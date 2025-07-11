@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion , AnimatePresence } from "framer-motion";
 import {
   ChevronRight,
   BookOpen,
@@ -24,6 +24,10 @@ import {
   AlertCircle,
   PlusCircle,
   User,
+  Sparkles,
+  Target,
+  Settings,
+  FileText,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
@@ -37,6 +41,8 @@ import { api } from "../../../../../convex/_generated/api";
 import { useSavingToast } from "./_components/useSavingToast";
 import { useRouter } from "next/navigation";
 
+import ResultsScreen from "./_components/ResultsScreen";
+
 export default function QuizUI() {
   const { user } = useUser();
   const [answerTrackingData, setAnswerTrackingData] = useState([]);
@@ -48,6 +54,8 @@ export default function QuizUI() {
     questionType: "",
     numberOfQuestions: 5,
     timePerQuestion: 45,
+    description: "",
+    tags: [],
   });
   const [quizStarted, setQuizStarted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -77,6 +85,7 @@ export default function QuizUI() {
       correct: 2,
     },
   ]);
+
   // Add this function to calculate time spent
   const calculateTimeSpent = () => {
     const endTime = Date.now();
@@ -174,7 +183,7 @@ export default function QuizUI() {
         totalQuestions: req_body.totalQuestions,
         totalTime: quizResults.totalTime,
         badges,
-        questions : demoQuestions,
+        questions: demoQuestions,
         strongAreas,
         weakAreas,
         attempts: 1,
@@ -327,7 +336,7 @@ export default function QuizUI() {
     }
   };
   const handleNextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 2) {
       setCurrentStep(currentStep + 1);
     } else {
       // Validate all fields before generating quiz
@@ -451,6 +460,8 @@ export default function QuizUI() {
       questionType: "multiple-choice",
       numberOfQuestions: 5,
       timePerQuestion: 45,
+      description: "",
+      tags: [],
     });
   };
 
@@ -478,625 +489,412 @@ export default function QuizUI() {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
       },
     },
   };
 
-  // Setup screens
   const setupSteps = [
     {
-      title: "Choose Topic",
-      icon: <BookOpen className="w-6 h-6" />,
+      title: "Quiz Details",
+      icon: <FileText className="w-6 h-6" />,
       content: (
-        <div className="space-y-4">
-          <label
-            className={`block ${darkMode ? "text-gray-200" : "text-gray-700"} font-medium mb-2`}
+        <div className="space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
           >
-            Quiz Topic
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              name="topic"
-              value={quizConfig.topic}
-              onChange={handleChange}
-              placeholder="e.g. Javascript, Python, Promises"
-              className={`w-full p-4 pl-12 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ${
-                darkMode
-                  ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                  : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm"
-              } border`}
-            />
-            <BookOpen
-              className={`absolute left-4 top-4 w-5 h-5 ${darkMode ? "text-blue-400" : "text-blue-500"}`}
-            />
-          </div>
-          <p
-            className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"} italic mt-2`}
+            <label className="block text-white font-semibold mb-4 text-lg">
+              Quiz Topic
+            </label>
+            <div className="relative group">
+              <input
+                type="text"
+                name="topic"
+                value={quizConfig.topic}
+                onChange={handleChange}
+                placeholder="e.g. JavaScript Promises, Python Data Structures, React Hooks"
+                className="w-full p-5 pl-14 rounded-2xl bg-gray-900/50 border border-gray-800 text-white placeholder-gray-400 text-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-300 backdrop-blur-sm hover:bg-gray-900/70"
+              />
+              <BookOpen className="absolute left-5 top-5 w-6 h-6 text-blue-600 group-focus-within:text-blue-400 transition-colors" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+            </div>
+            <p className="text-gray-400 mt-3 text-sm">
+              Be specific for better questions (e.g. "JavaScript Promises"
+              instead of just "JavaScript")
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            Tip: Be specific for better questions (e.g. "Ancient Egypt" instead
-            of just "History")
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: "Select Difficulty",
-      icon: <Award className="w-6 h-6" />,
-      content: (
-        <div className="space-y-4">
-          <label
-            className={`block ${darkMode ? "text-gray-200" : "text-gray-700"} font-medium mb-2`}
+            <label className="block text-white font-semibold mb-4 text-lg">
+              Description{" "}
+              <span className="text-gray-400 font-normal">(Optional)</span>
+            </label>
+            <div className="relative group">
+              <textarea
+                name="description"
+                value={quizConfig.description}
+                onChange={handleChange}
+                placeholder="Add a brief description of what this quiz will cover..."
+                rows={4}
+                className="w-full p-5 rounded-2xl bg-gray-900/50 border border-gray-800 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-300 backdrop-blur-sm hover:bg-gray-900/70"
+              />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
           >
-            Difficulty Level
-          </label>
-          <div className="grid grid-cols-3 gap-4">
-            {difficulties.map((diff) => (
-              <motion.button
-                key={diff}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className={`p-4 rounded-xl font-medium transition-all duration-200 ${
-                  quizConfig.difficulty === diff
-                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg"
-                    : darkMode
-                      ? "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600"
-                      : "bg-white text-gray-700 border border-gray-200 shadow-sm hover:shadow"
-                }`}
-                onClick={() =>
-                  setQuizConfig({ ...quizConfig, difficulty: diff })
-                }
-              >
-                <div className="flex flex-col items-center">
-                  {diff === "easy" && <Smile className="w-5 h-5 mb-2" />}
-                  {diff === "medium" && <LineChart className="w-5 h-5 mb-2" />}
-                  {diff === "hard" && <Zap className="w-5 h-5 mb-2" />}
-                  {diff.charAt(0).toUpperCase() + diff.slice(1)}
-                </div>
-              </motion.button>
-            ))}
-          </div>
-          <p
-            className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"} italic mt-2`}
-          >
-            Tip: Medium difficulty offers a balanced challenge with 45 seconds
-            per question
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: "Question Type",
-      icon: <AlignLeft className="w-6 h-6" />,
-      content: (
-        <div className="space-y-4">
-          <label
-            className={`block ${darkMode ? "text-gray-200" : "text-gray-700"} font-medium mb-2`}
-          >
-            Question Format
-          </label>
-          <div className=" flex  items-center justify-center gap-8">
-            {questionTypes.map((type) => (
-              <motion.button
-                key={type}
-                whileHover={{ scale: 1.02, translateY: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className={`w-full p-4 rounded-xl font-medium text-left flex items-center transition-all duration-300 ${
-                  quizConfig.questionType === type
-                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg ring-2 ring-blue-300"
-                    : darkMode
-                      ? "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600 hover:border-blue-400"
-                      : "bg-white text-gray-700 border border-gray-200 shadow-sm hover:shadow hover:border-blue-300"
-                }`}
-                onClick={() =>
-                  setQuizConfig({ ...quizConfig, questionType: type })
-                }
-              >
-                <div
-                  className={`w-6 h-6 mr-4 rounded-full border-2 flex items-center justify-center ${
-                    quizConfig.questionType === type
-                      ? "border-white"
-                      : darkMode
-                        ? "border-gray-500"
-                        : "border-gray-400"
-                  }`}
-                >
-                  {quizConfig.questionType === type && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="w-3 h-3 rounded-full bg-white"
-                    ></motion.div>
-                  )}
-                </div>
-                <div>
-                  <div
-                    className={
-                      quizConfig.questionType === type ? "font-bold" : ""
-                    }
-                  >
-                    {type
-                      .split("-")
-                      .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1),
-                      )
-                      .join(" ")}
-                  </div>
-                  <div
-                    className={`text-xs mt-1 ${
-                      quizConfig.questionType === type
-                        ? "text-blue-100"
-                        : darkMode
-                          ? "text-gray-400"
-                          : "text-gray-500"
+            <label className="block text-white font-semibold mb-4 text-lg">
+              Tags <span className="text-gray-400 font-normal">(Optional)</span>
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {["Beginner", "Advanced", "Interview", "Practice", "Theory"].map(
+                (tag) => (
+                  <motion.button
+                    key={tag}
+                    type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      const newTags = quizConfig.tags.includes(tag)
+                        ? quizConfig.tags.filter((t) => t !== tag)
+                        : [...quizConfig.tags, tag];
+                      setQuizConfig({ ...quizConfig, tags: newTags });
+                    }}
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+                      quizConfig.tags.includes(tag)
+                        ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
+                        : "bg-gray-900/50 text-gray-300 border border-gray-800 hover:bg-gray-800 hover:border-gray-700"
                     }`}
                   >
-                    {type === "multiple-choice" &&
-                      "Select the correct answer from given options"}
-                    {type === "true-false" &&
-                      "Determine whether statements are true or false"}
-                  </div>
-                </div>
-              </motion.button>
-            ))}
-          </div>
+                    {tag}
+                  </motion.button>
+                ),
+              )}
+            </div>
+          </motion.div>
         </div>
       ),
     },
     {
-      title: "Number of Questions",
-      icon: <Timer className="w-6 h-6" />,
+      title: "Difficulty & Type",
+      icon: <Target className="w-6 h-6" />,
       content: (
-        <div className="space-y-6">
-          <label
-            className={`block ${darkMode ? "text-gray-200" : "text-gray-700"} font-medium mb-2`}
+        <div className="space-y-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
           >
-            Questions ({quizConfig.numberOfQuestions})
-          </label>
+            <label className="block text-white font-semibold mb-6 text-lg">
+              Difficulty Level
+            </label>
+            <div className="grid grid-cols-3 gap-6">
+              {difficulties.map((diff, index) => (
+                <motion.button
+                  key={diff}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + index * 0.1 }}
+                  className={`p-8 rounded-2xl font-medium transition-all duration-300 relative overflow-hidden ${
+                    quizConfig.difficulty === diff
+                      ? "bg-blue-600 text-white shadow-2xl shadow-blue-600/30"
+                      : "bg-gray-900/50 text-gray-300 border border-gray-800 hover:bg-gray-800 hover:border-gray-700"
+                  }`}
+                  onClick={() =>
+                    setQuizConfig({ ...quizConfig, difficulty: diff })
+                  }
+                >
+                  <div className="flex flex-col items-center relative z-10">
+                    {diff === "easy" && <Smile className="w-8 h-8 mb-3" />}
+                    {diff === "medium" && (
+                      <LineChart className="w-8 h-8 mb-3" />
+                    )}
+                    {diff === "hard" && <Zap className="w-8 h-8 mb-3" />}
+                    <span className="text-xl font-bold capitalize">{diff}</span>
+                    <span className="text-sm opacity-80 mt-1">
+                      {diff === "easy" && "15s per question"}
+                      {diff === "medium" && "25s per question"}
+                      {diff === "hard" && "35s per question"}
+                    </span>
+                  </div>
+                  {quizConfig.difficulty === diff && (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl -z-10"
+                    />
+                  )}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
 
-          <div className="p-1 rounded-lg">
-            <input
-              type="range"
-              name="numberOfQuestions"
-              min="3"
-              max="20"
-              value={quizConfig.numberOfQuestions}
-              onChange={handleChange}
-              className={`w-full h-2 rounded-full appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                darkMode ? "bg-gray-700" : "bg-gray-200"
-              }`}
-              style={{
-                background: `linear-gradient(to right, ${
-                  darkMode ? "#3B82F6" : "#3B82F6"
-                } 0%, ${
-                  darkMode ? "#3B82F6" : "#3B82F6"
-                } ${(quizConfig.numberOfQuestions - 3) * (100 / 17)}%, ${
-                  darkMode ? "#374151" : "#E5E7EB"
-                } ${(quizConfig.numberOfQuestions - 3) * (100 / 17)}%, ${
-                  darkMode ? "#374151" : "#E5E7EB"
-                } 100%)`,
-                WebkitAppearance: "none",
-                height: "8px",
-              }}
-            />
-          </div>
-
-          <div
-            className={`flex justify-between ${darkMode ? "text-gray-300" : "text-gray-600"} text-sm font-medium`}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
           >
-            <span>3</span>
-            <span>10</span>
-            <span>20</span>
-          </div>
+            <label className="block text-white font-semibold mb-6 text-lg">
+              Question Format
+            </label>
+            <div className="space-y-4">
+              {questionTypes.map((type, index) => (
+                <motion.button
+                  key={type}
+                  whileHover={{ scale: 1.02, x: 10 }}
+                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                  className={`w-full p-6 rounded-2xl font-medium text-left flex items-center transition-all duration-300 relative overflow-hidden ${
+                    quizConfig.questionType === type
+                      ? "bg-blue-600 text-white shadow-xl shadow-blue-600/20"
+                      : "bg-gray-900/50 text-gray-300 border border-gray-800 hover:bg-gray-800 hover:border-gray-700"
+                  }`}
+                  onClick={() =>
+                    setQuizConfig({ ...quizConfig, questionType: type })
+                  }
+                >
+                  <div
+                    className={`w-6 h-6 mr-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                      quizConfig.questionType === type
+                        ? "border-white"
+                        : "border-gray-600"
+                    }`}
+                  >
+                    <AnimatePresence>
+                      {quizConfig.questionType === type && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="w-3 h-3 rounded-full bg-white"
+                        />
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-xl font-bold mb-1">
+                      {type
+                        .split("-")
+                        .map(
+                          (word) =>
+                            word.charAt(0).toUpperCase() + word.slice(1),
+                        )
+                        .join(" ")}
+                    </div>
+                    <div
+                      className={`text-sm ${
+                        quizConfig.questionType === type
+                          ? "text-blue-100"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {type === "multiple-choice" &&
+                        "Select the correct answer from given options"}
+                      {type === "true-false" &&
+                        "Determine whether statements are true or false"}
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      ),
+    },
+    {
+      title: "Quiz Settings",
+      icon: <Settings className="w-6 h-6" />,
+      content: (
+        <div className="space-y-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <label className="block text-white font-semibold mb-6 text-lg">
+              Number of Questions
+              <span className="text-blue-400 font-bold ml-2">
+                ({quizConfig.numberOfQuestions})
+              </span>
+            </label>
 
-          <div className="grid grid-cols-3 gap-4 mt-4">
-            <div
-              className={`p-4 rounded-xl ${
-                quizConfig.numberOfQuestions <= 5
-                  ? darkMode
-                    ? "bg-blue-800 border-blue-700"
-                    : "bg-blue-50 border-blue-200"
-                  : darkMode
-                    ? "bg-gray-700 border-gray-600"
-                    : "bg-white border-gray-200"
-              } border shadow-sm flex flex-col items-center transition-colors`}
-            >
-              <Clock
-                className={`w-5 h-5 mb-2 ${quizConfig.numberOfQuestions <= 5 ? "text-blue-400" : darkMode ? "text-blue-400" : "text-blue-500"}`}
+            <div className="relative p-6 rounded-2xl bg-gray-900/50 border border-gray-800">
+              <input
+                type="range"
+                name="numberOfQuestions"
+                min="3"
+                max="20"
+                value={quizConfig.numberOfQuestions}
+                onChange={handleChange}
+                className="w-full h-4 rounded-full appearance-none cursor-pointer focus:outline-none slider"
+                style={{
+                  background: `linear-gradient(to right, #2563eb 0%, #2563eb ${(quizConfig.numberOfQuestions - 3) * (100 / 17)}%, #374151 ${(quizConfig.numberOfQuestions - 3) * (100 / 17)}%, #374151 100%)`,
+                }}
               />
-              <span
-                className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-              >
-                Quick
-              </span>
-              <span
-                className={`font-medium ${quizConfig.numberOfQuestions <= 5 ? (darkMode ? "text-blue-200" : "text-blue-700") : darkMode ? "text-gray-200" : "text-gray-700"}`}
-              >
-                3-5
-              </span>
+              <div className="flex justify-between text-gray-400 text-sm font-medium mt-4">
+                <span>3</span>
+                <span>10</span>
+                <span>20</span>
+              </div>
             </div>
 
-            <div
-              className={`p-4 rounded-xl ${
-                quizConfig.numberOfQuestions > 5 &&
-                quizConfig.numberOfQuestions <= 12
-                  ? darkMode
-                    ? "bg-blue-800 border-blue-700"
-                    : "bg-blue-50 border-blue-200"
-                  : darkMode
-                    ? "bg-gray-700 border-gray-600"
-                    : "bg-white border-gray-200"
-              } border shadow-sm flex flex-col items-center transition-colors`}
-            >
-              <Clock
-                className={`w-5 h-5 mb-2 ${quizConfig.numberOfQuestions > 5 && quizConfig.numberOfQuestions <= 12 ? "text-blue-400" : darkMode ? "text-blue-400" : "text-blue-500"}`}
-              />
-              <span
-                className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-              >
-                Standard
-              </span>
-              <span
-                className={`font-medium ${quizConfig.numberOfQuestions > 5 && quizConfig.numberOfQuestions <= 12 ? (darkMode ? "text-blue-200" : "text-blue-700") : darkMode ? "text-gray-200" : "text-gray-700"}`}
-              >
-                6-12
-              </span>
+            <div className="grid grid-cols-3 gap-6 mt-8">
+              {[
+                {
+                  label: "Quick",
+                  range: "3-5",
+                  active: quizConfig.numberOfQuestions <= 5,
+                },
+                {
+                  label: "Standard",
+                  range: "6-12",
+                  active:
+                    quizConfig.numberOfQuestions > 5 &&
+                    quizConfig.numberOfQuestions <= 12,
+                },
+                {
+                  label: "Extended",
+                  range: "13-20",
+                  active: quizConfig.numberOfQuestions > 12,
+                },
+              ].map((item, index) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + index * 0.1 }}
+                  className={`p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center ${
+                    item.active
+                      ? "bg-blue-600 border-blue-500 shadow-lg shadow-blue-600/25"
+                      : "bg-gray-900/50 border-gray-800"
+                  }`}
+                >
+                  <Clock
+                    className={`w-8 h-8 mb-3 ${item.active ? "text-white" : "text-blue-400"}`}
+                  />
+                  <span
+                    className={`text-sm font-medium ${item.active ? "text-blue-100" : "text-gray-400"}`}
+                  >
+                    {item.label}
+                  </span>
+                  <span
+                    className={`font-bold text-lg ${item.active ? "text-white" : "text-gray-200"}`}
+                  >
+                    {item.range}
+                  </span>
+                </motion.div>
+              ))}
             </div>
 
-            <div
-              className={`p-4 rounded-xl ${
-                quizConfig.numberOfQuestions > 12
-                  ? darkMode
-                    ? "bg-blue-800 border-blue-700"
-                    : "bg-blue-50 border-blue-200"
-                  : darkMode
-                    ? "bg-gray-700 border-gray-600"
-                    : "bg-white border-gray-200"
-              } border shadow-sm flex flex-col items-center transition-colors`}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-6 p-4 rounded-xl bg-blue-600/10 border border-blue-600/20"
             >
-              <Clock
-                className={`w-5 h-5 mb-2 ${quizConfig.numberOfQuestions > 12 ? "text-blue-400" : darkMode ? "text-blue-400" : "text-blue-500"}`}
-              />
-              <span
-                className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-              >
-                Extended
-              </span>
-              <span
-                className={`font-medium ${quizConfig.numberOfQuestions > 12 ? (darkMode ? "text-blue-200" : "text-blue-700") : darkMode ? "text-gray-200" : "text-gray-700"}`}
-              >
-                13-20
-              </span>
-            </div>
-          </div>
-
-          <p
-            className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"} italic mt-2`}
-          >
-            Tip: 10 questions takes about 5-7 minutes to complete
-          </p>
+              <p className="text-blue-200 text-sm text-center">
+                <Clock className="w-4 h-4 inline mr-2" />
+                Estimated time:{" "}
+                {Math.round(
+                  quizConfig.numberOfQuestions *
+                    (quizConfig.difficulty === "easy"
+                      ? 0.25
+                      : quizConfig.difficulty === "medium"
+                        ? 0.42
+                        : 0.58),
+                )}{" "}
+                minutes
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
       ),
     },
   ];
 
-  // Results Screen
-  const ResultsScreen = () => {
-    const correctAnswers = quizResults.answers.filter(
-      (ans) => ans && ans.isCorrect,
-    ).length;
-    const totalQuestions = demoQuestions.length;
-    const scorePercentage = Math.round((correctAnswers / totalQuestions) * 100);
-
-    const fastestQuestion = [...quizResults.questionTimes].sort(
-      (a, b) => a - b,
-    )[0];
-    const slowestQuestion = [...quizResults.questionTimes].sort(
-      (a, b) => b - a,
-    )[0];
-
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="max-w-3xl mx-auto mt-8"
-      >
-        <div className="text-center mb-8">
-          <div className="inline-block mb-4">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
-              className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mx-auto"
-            >
-              <BarChart className="w-10 h-10 text-white" />
-            </motion.div>
-          </div>
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 mb-2">
-            Quiz Complete!
-          </h1>
-          <p
-            className={`text-lg ${darkMode ? "text-gray-300" : "text-gray-600"}`}
-          >
-            You scored {correctAnswers} out of {totalQuestions} (
-            {scorePercentage}%)
-          </p>
-        </div>
-
-        {/* Results Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`${
-            darkMode
-              ? "bg-gray-800 shadow-md shadow-gray-900/60"
-              : "bg-white shadow-xl"
-          } rounded-xl p-6 mb-8`}
-        >
-          <h3
-            className={`text-xl font-bold ${darkMode ? "text-gray-100" : "text-gray-800"} mb-6`}
-          >
-            Performance Summary
-          </h3>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div
-              className={`p-4 rounded-xl ${darkMode ? "bg-gray-700" : "bg-blue-50"} flex flex-col items-center`}
-            >
-              <Clock
-                className={`w-6 h-6 mb-2 ${darkMode ? "text-blue-400" : "text-blue-600"}`}
-              />
-              <span
-                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-              >
-                Total Time
-              </span>
-              <span
-                className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-800"}`}
-              >
-                {formatTime(quizResults.totalTime)}
-              </span>
-            </div>
-
-            <div
-              className={`p-4 rounded-xl ${darkMode ? "bg-gray-700" : "bg-blue-50"} flex flex-col items-center`}
-            >
-              <Zap
-                className={`w-6 h-6 mb-2 ${darkMode ? "text-yellow-400" : "text-yellow-500"}`}
-              />
-              <span
-                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-              >
-                Avg. Time per Question
-              </span>
-              <span
-                className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-800"}`}
-              >
-                {formatTime(
-                  Math.round(quizResults.totalTime / demoQuestions.length),
-                )}
-              </span>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h4
-              className={`font-medium mb-3 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
-            >
-              Question Performance
-            </h4>
-            <div className={`rounded-lg ${darkMode ? "bg-gray-700" : ""} p-4`}>
-              <div className="space-y-3">
-                {quizResults.answers.map((answer, index) => (
-                  <div
-                    key={index}
-                    className={`p-3 rounded-lg flex justify-between items-center ${
-                      answer && answer.isCorrect
-                        ? darkMode
-                          ? "bg-green-900/30 border border-green-800"
-                          : "bg-green-50 border border-green-200"
-                        : darkMode
-                          ? "bg-red-900/30 border border-red-800"
-                          : "bg-red-50 border border-red-200"
-                    }`}
-                  >
-                    <div className="flex items-center">
-                      {answer && answer.isCorrect ? (
-                        <CheckCircle
-                          className={`w-4 h-4 mr-2 ${darkMode ? "text-green-400" : "text-green-500"}`}
-                        />
-                      ) : (
-                        <XCircle
-                          className={`w-4 h-4 mr-2 ${darkMode ? "text-red-400" : "text-red-500"}`}
-                        />
-                      )}
-                      <span
-                        className={darkMode ? "text-gray-300" : "text-gray-700"}
-                      >
-                        Question {index + 1}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <Timer
-                        className={`w-4 h-4 mr-1 ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-                      />
-                      <span
-                        className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-                      >
-                        {formatTime(answer ? answer.timeTaken : 0)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div
-              className={`p-4 rounded-xl ${darkMode ? "bg-gray-700" : ""} flex flex-col`}
-            >
-              <div className="flex items-center mb-2">
-                <Zap
-                  className={`w-5 h-5 mr-2 ${darkMode ? "text-blue-400" : "text-blue-500"}`}
-                />
-                <span
-                  className={`${darkMode ? "text-gray-300" : "text-gray-700"} font-medium`}
-                >
-                  Fastest Answer
-                </span>
-              </div>
-              <span
-                className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-800"}`}
-              >
-                {formatTime(fastestQuestion || 0)}
-              </span>
-            </div>
-
-            <div
-              className={`p-4 rounded-xl ${darkMode ? "bg-gray-700" : ""} flex flex-col`}
-            >
-              <div className="flex items-center mb-2">
-                <Clock
-                  className={`w-5 h-5 mr-2 ${darkMode ? "text-blue-400" : "text-blue-500"}`}
-                />
-                <span
-                  className={`${darkMode ? "text-gray-300" : "text-gray-700"} font-medium`}
-                >
-                  Slowest Answer
-                </span>
-              </div>
-              <span
-                className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-800"}`}
-              >
-                {formatTime(slowestQuestion || 0)}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-8 gap-6">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={resetQuiz}
-              className="px-8 py-3 rounded-xl font-medium bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg"
-            >
-              Try Another Quiz
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                router.push("/quiz/view");
-              }}
-              className="px-8  flex items-center 
-              py-3 rounded-xl font-medium bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg"
-            >
-              <ChevronLeft className="w-5 h-5 mr-1" />
-              Back to Quizzes
-            </motion.button>
-
-            {!saveSuccess && (
-              <button
-                onClick={() => saveQuizToDB()}
-                disabled={isSaving}
-                className="group relative px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-gray-100 font-medium rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-70"
-              >
-                <div className="flex items-center justify-center">
-                  {isSaving ? (
-                    <div className="mr-2 animate-spin rounded-full h-4 w-4 border-2 border-gray-100 border-t-transparent"></div>
-                  ) : (
-                    <svg
-                      className="mr-2 w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      ></path>
-                    </svg>
-                  )}
-                  Try Again
-                </div>
-                <div className="absolute inset-0 scale-0 group-hover:scale-100 rounded-lg bg-opacity-20 bg-white transition-all duration-300"></div>
-              </button>
-            )}
-          </div>
-        </motion.div>
-      </motion.div>
-    );
-  };
-
   if (quizFinished) {
     return (
       <div
-        className={`min-h-screen py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${darkMode ? "" : ""} mt-16`}
+        className={`min-h-screen  px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${darkMode ? "" : ""} mt-16`}
       >
-        <ResultsScreen />
+        <ResultsScreen
+          quizResults={quizResults}
+          demoQuestions={demoQuestions}
+          resetQuiz={resetQuiz}
+          saveSuccess={saveSuccess}
+          isSaving={isSaving}
+          saveQuizToDB={saveQuizToDB}
+        />
       </div>
     );
   }
 
   if (!quizStarted && !isLoading) {
     return (
-      <div
-        className={`min-h-screen py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${darkMode ? "" : ""} mt-16`}
-      >
+      <div className={`min-h-screen transition-colors duration-300 mt-16`}>
         {/* Theme toggle */}
-        <div className="fixed top-6 right-6">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={toggleTheme}
-            className={`p-2 rounded-full ${
-              darkMode
-                ? "bg-gray-800 text-gray-400 hover:text-yellow-400"
-                : "bg-white text-gray-600 hover:text-blue-500 shadow-md"
-            }`}
-          >
-            {darkMode ? (
-              <Sun className="w-5 h-5" />
-            ) : (
-              <Moon className="w-5 h-5" />
-            )}
-          </motion.button>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="text-center mb-8"
-          >
-            <div className="inline-block mb-4">
-              <div
-                className={`w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mx-auto`}
-              >
-                <Brain className="w-8 h-8 text-white" />
+       
+        <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+          {/* Header styled like flashcard page */}
+          <div className="relative flex flex-col items-center justify-center mb-12 mt-4">
+            {/* Premium Badge */}
+            <motion.div
+              className="inline-flex items-center gap-3 bg-black/80 border border-blue-600/40 rounded-full px-6 py-3 mb-6 backdrop-blur-xl shadow-lg shadow-blue-600/10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.6 }}
+            >
+              <div className="relative">
+                <Sparkles size={18} className="text-blue-400" />
+                <div className="absolute inset-0 animate-ping">
+                  <Sparkles size={18} className="text-blue-400 opacity-20" />
+                </div>
               </div>
-            </div>
-            <h1
-              className={`text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 mb-2`}
+              <span className="text-sm text-blue-300 font-semibold tracking-wide">
+                AI-Powered Quiz Creation
+              </span>
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
+            </motion.div>
+
+            {/* Premium Title */}
+            <motion.h1
+              className="text-4xl md:text-7xl font-black bg-gradient-to-r from-white via-blue-400 to-blue-600 bg-clip-text text-transparent mb-4 leading-tight tracking-tight text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
             >
-              Quick Quiz
-            </h1>
-            <p
-              className={`text-lg ${
-                darkMode ? "text-gray-300" : "text-gray-600"
-              }`}
+              Create Your{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
+                Perfect Quiz
+              </span>
+            </motion.h1>
+
+            {/* Subtitle */}
+            <motion.p
+              className="text-lg md:text-xl text-blue-300 mb-2 leading-relaxed max-w-2xl text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
             >
-              Test your knowledge with customized quizzes.
-            </p>
-          </motion.div>
+              Generate customized quizzes with AI to test your knowledge and
+              prepare for interviews.
+            </motion.p>
+          </div>
 
           {/* Setup timeline */}
           <motion.div
@@ -1113,7 +911,7 @@ export default function QuizUI() {
                   variants={timelineStepVariants}
                 >
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
                       index <= currentStep
                         ? "bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md"
                         : darkMode
@@ -1134,7 +932,7 @@ export default function QuizUI() {
                     </div>
                   </div>
                   <span
-                    className={`text-xs mt-2 font-medium ${
+                    className={`text-sm mt-2 font-medium ${
                       index <= currentStep
                         ? darkMode
                           ? "text-blue-400"
@@ -1151,12 +949,12 @@ export default function QuizUI() {
 
               {/* Progress line */}
               <div
-                className={`absolute top-5 left-0 h-0.5 ${
+                className={`absolute top-6 left-0 h-0.5 ${
                   darkMode ? "bg-gray-700" : "bg-gray-200"
                 } w-full -z-10`}
               ></div>
               <div
-                className={`absolute top-5 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 -z-10 transition-all duration-300`}
+                className={`absolute top-6 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 -z-10 transition-all duration-300`}
                 style={{
                   width: `${(currentStep / (setupSteps.length - 1)) * 100}%`,
                 }}
@@ -1175,9 +973,9 @@ export default function QuizUI() {
           >
             <motion.div
               variants={cardVariants}
-              className={`rounded-2xl p-6 ${
+              className={`rounded-2xl p-8 ${
                 darkMode
-                  ? "bg-gray-800 shadow-md shadow-gray-900/60"
+                  ? "bg-black "
                   : "bg-white shadow-xl"
               }`}
             >
@@ -1192,17 +990,17 @@ export default function QuizUI() {
               whileTap={{ scale: 0.97 }}
               onClick={handlePrevStep}
               disabled={currentStep === 0}
-              className={`px-4 py-2 rounded-xl flex items-center font-medium ${
+              className={`px-6 py-3 rounded-xl flex items-center font-medium ${
                 currentStep === 0
                   ? darkMode
                     ? "bg-gray-800 text-gray-600 cursor-not-allowed"
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                   : darkMode
                     ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    : "bg-white text-gray-700 border border-gray-200 shadow-sm hover:"
+                    : "bg-white text-gray-700 border border-gray-200 shadow-sm hover:shadow"
               }`}
             >
-              <ChevronLeft className="w-5 h-5 mr-1" />
+              <ChevronLeft className="w-5 h-5 mr-2" />
               Back
             </motion.button>
 
@@ -1210,14 +1008,14 @@ export default function QuizUI() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={handleNextStep}
-              className={`px-6 py-2 rounded-xl flex items-center font-medium ${
+              className={`px-8 py-3 rounded-xl flex items-center font-medium ${
                 currentStep === setupSteps.length - 1
                   ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
                   : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
               }`}
             >
-              {currentStep === setupSteps.length - 1 ? "Start Quiz" : "Next"}
-              <ChevronRight className="w-5 h-5 ml-1" />
+              {currentStep === setupSteps.length - 1 ? "Generate Quiz" : "Next"}
+              <ChevronRight className="w-5 h-5 ml-2" />
             </motion.button>
           </div>
         </div>
@@ -1226,6 +1024,7 @@ export default function QuizUI() {
   }
   if (isLoading) return <QuizLoader />;
   // Quiz in progress
+
   return (
     <div
       className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${
