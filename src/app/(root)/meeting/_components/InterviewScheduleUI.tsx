@@ -1,19 +1,18 @@
-import { useUser } from "@clerk/nextjs";
-import { useStreamVideoClient } from "@stream-io/video-react-sdk";
-import { useMutation, useQuery } from "convex/react";
-import { useEffect, useState } from "react";
-import { api } from "../../../../../convex/_generated/api";
-import toast from "react-hot-toast";
+import MeetingCard from "@/components/MeetingCard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
   DialogContent,
+  DialogHeader
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -21,41 +20,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import UserInfo from "../../../../components/UserInfo";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Loader2Icon,
-  // CalendarIcon,
-  XIcon,
-  PlusCircleIcon,
-  ArrowUpRight,
-} from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { TIME_SLOTS } from "@/constants";
-import MeetingCard from "@/components/MeetingCard";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import ProblemSelection from "./ProblemPicker";
-import { sendScheduledEmail } from "@/lib/SendVerificationMail";
-import axios from "axios";
-import { useMutation as useConvexMutation } from "convex/react";
-import { api as convexApi } from "../../../../../convex/_generated/api";
-import { getTargetForType } from "../../../../../convex/activities";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
+  cn,
   getCandidateInfo,
   getInterviewerInfo,
   groupInterviews,
 } from "@/lib/utils";
-import { useTheme } from "next-themes";
-import { Badge } from "@/components/ui/badge";
-import { Clock, Calendar as CalendarIcon } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { useUser } from "@clerk/nextjs";
+import { useStreamVideoClient } from "@stream-io/video-react-sdk";
+import axios from "axios";
+import { useMutation as useConvexMutation, useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
+import {
+  ArrowUpRight,
+  Calendar as CalendarIcon,
+  Clock,
+  Loader2Icon,
+  PlusCircleIcon,
+  // CalendarIcon,
+  XIcon,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { api, api as convexApi } from "../../../../../convex/_generated/api";
+import { getTargetForType } from "../../../../../convex/activities";
+import UserInfo from "../../../../components/UserInfo";
 
 // Component to display problem info
 const ProblemInfo = ({ problem }) => (

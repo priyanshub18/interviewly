@@ -1,117 +1,63 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import {
-  User,
   Briefcase,
-  GraduationCap,
   Code,
-  Award,
-  FolderOpen,
-  Sparkles,
-  RefreshCw,
-  Plus,
-  Mail,
-  Phone,
-  MapPin,
-  Globe,
-  Download,
-  X,
   Eye,
-  Save,
+  FolderOpen,
+  GraduationCap,
+  RefreshCw,
+  Sparkles,
+  User,
   Wand2,
 } from "lucide-react";
-import { motion } from "framer-motion";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import AIEnhancement from "./_components/AIEnhancement";
+import Education from "./_components/Education";
+import Experience from "./_components/Experience";
+import PersonalInfo from "./_components/PersonalInfo";
+import PreviewModal from "./_components/PreviewModal";
+import Projects from "./_components/Projects";
+import SkillsCertification from "./_components/SkillsCertification";
+
+// TypeScript interfaces
+interface EnhancedResumeSections {
+  summary?: string;
+  experience?: Array<{ description: string }>;
+  education?: Array<{ details: string }>;
+  projects?: Array<{ description: string }>;
+}
+
 const ResumeBuilder = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isEnhancingAll, setIsEnhancingAll] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [enhancementResults, setEnhancementResults] = useState(null);
   const [formData, setFormData] = useState({
     personal: {
-      name: "Jane Doe",
-      title: "Full Stack Developer",
-      email: "jane.doe@email.com",
-      phone: "+1 (555) 987-6543",
-      location: "New York, NY",
-      portfolio: "https://janedoe.dev",
-      summary:
-        "Passionate developer with 5+ years of experience building scalable web applications. Adept at collaborating in fast-paced teams and delivering high-quality solutions. Strong background in JavaScript, React, Node.js, and cloud technologies.",
+      name: "",
+      title: "",
+      email: "",
+      phone: "",
+      location: "",
+      portfolio: "",
+      linkedin: "",
+      targetIndustry: "",
+      summary: "",
     },
-    experience: [
-      {
-        company: "Tech Solutions Inc.",
-        position: "Senior Software Engineer",
-        duration: "Feb 2021 - Present",
-        description:
-          "Lead a team of 6 engineers to develop a SaaS analytics platform using React, Node.js, and AWS. Improved system performance by 30% and mentored junior developers.",
-      },
-      {
-        company: "Webify Labs",
-        position: "Frontend Developer",
-        duration: "Jun 2018 - Jan 2021",
-        description:
-          "Built and maintained responsive web applications for e-commerce clients. Collaborated with designers to create engaging user experiences using React and Redux.",
-      },
-    ],
-    education: [
-      {
-        institution: "Massachusetts Institute of Technology",
-        degree: "B.Sc. in Computer Science",
-        year: "2018",
-        details:
-          "GPA: 3.9/4.0, Dean's List, Relevant coursework: Algorithms, Databases, Cloud Computing",
-      },
-    ],
+    experience: [],
+    education: [],
     skills: {
-      technical: [
-        "JavaScript",
-        "TypeScript",
-        "React",
-        "Node.js",
-        "Express",
-        "MongoDB",
-        "AWS",
-        "Docker",
-        "GraphQL",
-      ],
-      languages: [
-        "English (Native)",
-        "Spanish (Fluent)",
-        "French (Intermediate)",
-      ],
+      technical: [],
+      languages: [],
     },
-    certifications: [
-      {
-        name: "AWS Certified Developer – Associate",
-        issuer: "Amazon Web Services",
-        year: "2022",
-      },
-      {
-        name: "Certified ScrumMaster (CSM)",
-        issuer: "Scrum Alliance",
-        year: "2021",
-      },
-    ],
-    projects: [
-      {
-        name: "Open Source Portfolio Website",
-        description:
-          "Designed and developed a customizable portfolio template used by 500+ developers. Implemented dark mode, blog integration, and deployment scripts.",
-        technologies: "React, Next.js, Tailwind CSS, Vercel",
-        link: "https://github.com/janedoe/portfolio",
-      },
-      {
-        name: "Real-Time Chat App",
-        description:
-          "Created a real-time chat application with group messaging, file sharing, and notifications. Deployed on AWS with CI/CD pipelines.",
-        technologies: "Node.js, Socket.io, MongoDB, AWS EC2",
-        link: "https://github.com/janedoe/chat-app",
-      },
-    ],
+    certifications: [],
+    projects: [],
   });
   useEffect(() => {
     const savedResume = localStorage.getItem("resume");
@@ -123,9 +69,13 @@ const ResumeBuilder = () => {
     { id: "personal", label: "Personal Info", icon: User },
     { id: "experience", label: "Experience", icon: Briefcase },
     { id: "education", label: "Education", icon: GraduationCap },
-    { id: "skills", label: "Skills & Languages", icon: Code },
-    { id: "certifications", label: "Certifications", icon: Award },
+    {
+      id: "skills_certification",
+      label: "Skills & Certifications",
+      icon: Code,
+    },
     { id: "projects", label: "Projects", icon: FolderOpen },
+    { id: "ai-enhancement", label: "AI Enhancement", icon: Sparkles },
   ];
 
   const handleInputChange = (section, field, value, index = null) => {
@@ -159,59 +109,293 @@ const ResumeBuilder = () => {
   };
 
   const enhanceSummary = async () => {
+    if (!formData.personal.summary.trim()) {
+      toast.error("Please add a summary first");
+      return;
+    }
+
     setIsEnhancing(true);
-    // Simulate AI processing
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const response = await fetch("/api/enhance-resume", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resume_content: formData.personal.summary,
+          target_role: formData.personal.title,
+          target_industry: formData.personal.targetIndustry,
+        }),
+      });
 
-    const enhancedSummary = `${formData.personal.summary} Enhanced with AI: Results-driven professional with proven expertise in driving innovation and delivering exceptional outcomes. Skilled in strategic problem-solving and collaborative leadership.`;
+      const data = await response.json();
 
-    handleInputChange("personal", "summary", enhancedSummary);
-    setIsEnhancing(false);
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      handleInputChange("personal", "summary", data.enhanced_content);
+      toast.success("Summary enhanced successfully!");
+
+      // Store enhancement results for display
+      setEnhancementResults({
+        improvements_made: data.improvements_made,
+        suggestions: data.suggestions,
+        word_count: data.word_count,
+        readability_score: data.readability_score,
+        type: "summary",
+      });
+
+      // Show improvements in console for debugging
+      console.log("Improvements made:", data.improvements_made);
+      console.log("Suggestions:", data.suggestions);
+    } catch (error) {
+      console.error("Error enhancing summary:", error);
+      toast.error("Failed to enhance summary");
+    } finally {
+      setIsEnhancing(false);
+    }
   };
 
   const enhanceEntireResume = async () => {
+    // Convert form data to a text format for enhancement
+    const resumeText = `
+PERSONAL SUMMARY
+${formData.personal.summary}
+
+EXPERIENCE
+${formData.experience
+  .map(
+    (exp) => `
+${exp.position} at ${exp.company}
+Duration: ${exp.duration}
+${exp.description}
+`,
+  )
+  .join("\n")}
+
+EDUCATION
+${formData.education
+  .map(
+    (edu) => `
+${edu.degree} from ${edu.institution}
+Year: ${edu.year}
+${edu.details || ""}
+`,
+  )
+  .join("\n")}
+
+SKILLS
+Technical: ${formData.skills.technical.join(", ")}
+Languages: ${formData.skills.languages.join(", ")}
+
+CERTIFICATIONS
+${formData.certifications
+  .map(
+    (cert) => `
+${cert.name} - ${cert.issuer} (${cert.year})
+`,
+  )
+  .join("\n")}
+
+PROJECTS
+${formData.projects
+  .map(
+    (proj) => `
+${proj.name}
+${proj.description}
+Technologies: ${proj.technologies}
+${proj.link ? `Link: ${proj.link}` : ""}
+`,
+  )
+  .join("\n")}
+    `.trim();
+
+    if (!resumeText.trim()) {
+      toast.error("Please add some content to your resume first");
+      return;
+    }
+
     setIsEnhancingAll(true);
     setIsEnhancing(true); // disables summary enhance too
-    await new Promise((resolve) => setTimeout(resolve, 2200));
-    setFormData((prev) => ({
-      ...prev,
-      personal: {
-        ...prev.personal,
-        summary:
-          prev.personal.summary +
-          '\n\n[AI Enhanced] Dynamic and results-driven professional with a proven track record in delivering innovative solutions, leading teams, and exceeding business goals. Recognized for exceptional problem-solving, adaptability, and a passion for continuous learning.'
-      },
-      experience: prev.experience.map((exp, i) => ({
-        ...exp,
-        description:
-          exp.description +
-          ' [AI Enhanced] Demonstrated impact through leadership, technical expertise, and a commitment to excellence.'
-      })),
-      education: prev.education.map((edu) => ({
-        ...edu,
-        details:
-          (edu.details || '') +
-          ' [AI Enhanced] Graduated with distinction, actively participated in extracurriculars, and pursued advanced coursework.'
-      })),
-      projects: prev.projects.map((proj) => ({
-        ...proj,
-        description:
-          proj.description +
-          ' [AI Enhanced] Project showcased innovation, teamwork, and technical mastery.'
-      })),
-      skills: {
-        ...prev.skills,
-        technical: Array.from(new Set([...prev.skills.technical, 'Leadership', 'Problem Solving', 'Collaboration', 'AI Tools'])),
-        languages: Array.from(new Set([...prev.skills.languages, 'German (Basic)'])),
-      },
-      certifications: prev.certifications.map((cert) => ({
-        ...cert,
-        name: cert.name + ' [AI Enhanced]'
-      })),
-    }));
-    setIsEnhancingAll(false);
-    setIsEnhancing(false);
-    toast.success('Entire resume enhanced with AI!');
+
+    try {
+      const response = await fetch("/api/enhance-resume", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resume_content: resumeText,
+          target_role: formData.personal.title,
+          target_industry: formData.personal.targetIndustry,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      // Parse the enhanced content and update form data
+      const enhancedContent = data.enhanced_content;
+
+      // Try to parse sections from the enhanced content
+      try {
+        const sections = parseEnhancedResume(enhancedContent);
+
+        // Update each section if we can parse it
+        if (sections.summary) {
+          handleInputChange("personal", "summary", sections.summary);
+        }
+
+        if (sections.experience && sections.experience.length > 0) {
+          // Update experience entries
+          sections.experience.forEach((exp, index) => {
+            if (formData.experience[index]) {
+              if (exp.description) {
+                handleInputChange(
+                  "experience",
+                  "description",
+                  exp.description,
+                  index,
+                );
+              }
+            }
+          });
+        }
+
+        if (sections.education && sections.education.length > 0) {
+          // Update education entries
+          sections.education.forEach((edu, index) => {
+            if (formData.education[index]) {
+              if (edu.details) {
+                handleInputChange("education", "details", edu.details, index);
+              }
+            }
+          });
+        }
+
+        if (sections.projects && sections.projects.length > 0) {
+          // Update project descriptions
+          sections.projects.forEach((proj, index) => {
+            if (formData.projects[index]) {
+              if (proj.description) {
+                handleInputChange(
+                  "projects",
+                  "description",
+                  proj.description,
+                  index,
+                );
+              }
+            }
+          });
+        }
+      } catch (parseError) {
+        console.warn(
+          "Could not parse enhanced content, updating summary only:",
+          parseError,
+        );
+        // Fallback: just update the summary
+        handleInputChange("personal", "summary", enhancedContent);
+      }
+
+      toast.success("Resume enhanced with AI! Check the improvements.");
+
+      // Store enhancement results for display
+      setEnhancementResults({
+        improvements_made: data.improvements_made,
+        suggestions: data.suggestions,
+        word_count: data.word_count,
+        readability_score: data.readability_score,
+        type: "full",
+      });
+
+      // Show improvements in console for debugging
+      console.log("Improvements made:", data.improvements_made);
+      console.log("Suggestions:", data.suggestions);
+      console.log("Word count:", data.word_count);
+      console.log("Readability score:", data.readability_score);
+    } catch (error) {
+      console.error("Error enhancing resume:", error);
+      toast.error("Failed to enhance resume");
+    } finally {
+      setIsEnhancingAll(false);
+      setIsEnhancing(false);
+    }
+  };
+
+  // Helper function to parse enhanced resume content
+  const parseEnhancedResume = (content: string) => {
+    const sections: EnhancedResumeSections = {};
+
+    // Extract summary
+    const summaryMatch = content.match(
+      /PERSONAL SUMMARY\s*\n([\s\S]*?)(?=\n\w+:|$)/i,
+    );
+    if (summaryMatch) {
+      sections.summary = summaryMatch[1].trim();
+    }
+
+    // Extract experience
+    const experienceMatch = content.match(
+      /EXPERIENCE\s*\n([\s\S]*?)(?=\n\w+:|$)/i,
+    );
+    if (experienceMatch) {
+      const experienceText = experienceMatch[1];
+      const experienceEntries = experienceText
+        .split(/(?=\w+ at \w+)/)
+        .filter((entry) => entry.trim());
+      sections.experience = experienceEntries.map((entry) => {
+        const descriptionMatch = entry.match(/(?:.*\n){2,}([\s\S]*)/);
+        return {
+          description: descriptionMatch
+            ? descriptionMatch[1].trim()
+            : entry.trim(),
+        };
+      });
+    }
+
+    // Extract education
+    const educationMatch = content.match(
+      /EDUCATION\s*\n([\s\S]*?)(?=\n\w+:|$)/i,
+    );
+    if (educationMatch) {
+      const educationText = educationMatch[1];
+      const educationEntries = educationText
+        .split(/(?=\w+ from \w+)/)
+        .filter((entry) => entry.trim());
+      sections.education = educationEntries.map((entry) => {
+        const detailsMatch = entry.match(/(?:.*\n){2,}([\s\S]*)/);
+        return {
+          details: detailsMatch ? detailsMatch[1].trim() : entry.trim(),
+        };
+      });
+    }
+
+    // Extract projects
+    const projectsMatch = content.match(/PROJECTS\s*\n([\s\S]*?)(?=\n\w+:|$)/i);
+    if (projectsMatch) {
+      const projectsText = projectsMatch[1];
+      const projectEntries = projectsText
+        .split(/(?=\n\w+\n)/)
+        .filter((entry) => entry.trim());
+      sections.projects = projectEntries.map((entry) => {
+        const descriptionMatch = entry.match(
+          /(?:.*\n){1,}([\s\S]*?)(?=\nTechnologies:|$)/,
+        );
+        return {
+          description: descriptionMatch
+            ? descriptionMatch[1].trim()
+            : entry.trim(),
+        };
+      });
+    }
+
+    return sections;
   };
 
   const downloadPDF = () => {
@@ -242,491 +426,73 @@ const ResumeBuilder = () => {
     });
   };
 
-  const renderPersonalInfo = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-            <User className="w-4 h-4" />
-            Full Name
-          </label>
-          <input
-            type="text"
-            value={formData.personal.name}
-            onChange={e => handleInputChange("personal", "name", e.target.value)}
-            placeholder="John Doe"
-            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-            <Briefcase className="w-4 h-4" />
-            Professional Title
-          </label>
-          <input
-            type="text"
-            value={formData.personal.title}
-            onChange={e => handleInputChange("personal", "title", e.target.value)}
-            placeholder="Senior Software Engineer"
-            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-            <Mail className="w-4 h-4" />
-            Email
-          </label>
-          <input
-            type="email"
-            value={formData.personal.email}
-            onChange={e => handleInputChange("personal", "email", e.target.value)}
-            placeholder="john.doe@email.com"
-            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-            <Phone className="w-4 h-4" />
-            Phone
-          </label>
-          <input
-            type="tel"
-            value={formData.personal.phone}
-            onChange={e => handleInputChange("personal", "phone", e.target.value)}
-            placeholder="+1 (555) 123-4567"
-            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            Location
-          </label>
-          <input
-            type="text"
-            value={formData.personal.location}
-            onChange={e => handleInputChange("personal", "location", e.target.value)}
-            placeholder="San Francisco, CA"
-            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            Portfolio/Website
-          </label>
-          <input
-            type="text"
-            value={formData.personal.portfolio}
-            onChange={e => handleInputChange("personal", "portfolio", e.target.value)}
-            placeholder="https://johndoe.dev"
-            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-          />
-        </div>
-      </div>
-      <div className="relative">
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-gray-300">
-            Professional Summary
-          </label>
-          <button
-            onClick={enhanceSummary}
-            disabled={isEnhancing}
-            className="group relative px-4 py-2 bg-blue-600/20 border border-blue-600/40 rounded-lg text-blue-400 hover:bg-blue-600 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm font-medium hover:shadow-lg hover:shadow-blue-600/25"
-            title="Improve this summary using AI assistance"
-          >
-            {isEnhancing ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <Sparkles className="w-4 h-4" />
-            )}
-            {isEnhancing ? "Enhancing..." : "Enhance with AI"}
-          </button>
-        </div>
-        <textarea
-          value={formData.personal.summary}
-          onChange={e => handleInputChange("personal", "summary", e.target.value)}
-          placeholder="Write a compelling professional summary that highlights your key achievements and expertise..."
-          rows={4}
-          className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50 resize-none"
-        />
-      </div>
-    </div>
-  );
-
-  const renderExperience = () => (
-    <div className="space-y-6">
-      {formData.experience.map((exp, index) => (
-        <div
-          key={index}
-          className="p-6 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg space-y-4 relative"
-        >
-          <button
-            type="button"
-            className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors"
-            onClick={() => deleteArrayItem("experience", index)}
-            title="Delete Experience"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Briefcase className="w-4 h-4" />
-                Company
-              </label>
-              <input
-                type="text"
-                value={exp.company}
-                onChange={e => handleInputChange("experience", "company", e.target.value, index)}
-                placeholder="Google Inc."
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <User className="w-4 h-4" />
-                Position
-              </label>
-              <input
-                type="text"
-                value={exp.position}
-                onChange={e => handleInputChange("experience", "position", e.target.value, index)}
-                placeholder="Senior Software Engineer"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Award className="w-4 h-4" />
-                Duration
-              </label>
-              <input
-                type="text"
-                value={exp.duration}
-                onChange={e => handleInputChange("experience", "duration", e.target.value, index)}
-                placeholder="Jan 2020 - Present"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Description</label>
-            <textarea
-              value={exp.description}
-              onChange={e => handleInputChange("experience", "description", e.target.value, index)}
-              placeholder="Describe your responsibilities and achievements..."
-              rows={3}
-              className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50 resize-none"
-            />
-          </div>
-        </div>
-      ))}
-      <button
-        onClick={() =>
-          addArrayItem("experience", {
-            company: "",
-            position: "",
-            duration: "",
-            description: "",
-          })
-        }
-        className="w-full py-3 bg-blue-600/20 border border-blue-600/40 rounded-lg text-blue-400 hover:bg-blue-600 hover:text-white transition-all duration-200 flex items-center justify-center gap-2 font-medium"
-      >
-        <Plus className="w-4 h-4" />
-        Add Experience
-      </button>
-    </div>
-  );
-
-  const renderEducation = () => (
-    <div className="space-y-6">
-      {formData.education.map((edu, index) => (
-        <div
-          key={index}
-          className="p-6 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg space-y-4 relative"
-        >
-          <button
-            type="button"
-            className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors"
-            onClick={() => deleteArrayItem("education", index)}
-            title="Delete Education"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <GraduationCap className="w-4 h-4" />
-                Institution
-              </label>
-              <input
-                type="text"
-                value={edu.institution}
-                onChange={e => handleInputChange("education", "institution", e.target.value, index)}
-                placeholder="Stanford University"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Award className="w-4 h-4" />
-                Degree
-              </label>
-              <input
-                type="text"
-                value={edu.degree}
-                onChange={e => handleInputChange("education", "degree", e.target.value, index)}
-                placeholder="Bachelor of Science in Computer Science"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Award className="w-4 h-4" />
-                Year
-              </label>
-              <input
-                type="text"
-                value={edu.year}
-                onChange={e => handleInputChange("education", "year", e.target.value, index)}
-                placeholder="2018"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Details</label>
-            <textarea
-              value={edu.details}
-              onChange={e => handleInputChange("education", "details", e.target.value, index)}
-              placeholder="GPA, relevant coursework, honors..."
-              rows={2}
-              className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50 resize-none"
-            />
-          </div>
-        </div>
-      ))}
-      <button
-        onClick={() =>
-          addArrayItem("education", {
-            institution: "",
-            degree: "",
-            year: "",
-            details: "",
-          })
-        }
-        className="w-full py-3 bg-blue-600/20 border border-blue-600/40 rounded-lg text-blue-400 hover:bg-blue-600 hover:text-white transition-all duration-200 flex items-center justify-center gap-2 font-medium"
-      >
-        <Plus className="w-4 h-4" />
-        Add Education
-      </button>
-    </div>
-  );
-
-  const renderSkills = () => (
-    <div className="space-y-6">
-      <div className="p-6 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg">
-        <h3 className="text-lg font-semibold text-white mb-4">
-          Technical Skills
-        </h3>
-        <textarea
-          value={formData.skills.technical.join(", ")}
-          onChange={e =>
-            handleInputChange(
-              "skills",
-              "technical",
-              e.target.value.split(",").map(s => s.trim())
-            )
-          }
-          placeholder="JavaScript, React, Node.js, Python, AWS, Docker..."
-          rows={3}
-          className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50 resize-none"
-        />
-      </div>
-
-      <div className="p-6 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg">
-        <h3 className="text-lg font-semibold text-white mb-4">Languages</h3>
-        <textarea
-          value={formData.skills.languages.join(", ")}
-          onChange={e =>
-            handleInputChange(
-              "skills",
-              "languages",
-              e.target.value.split(",").map(s => s.trim())
-            )
-          }
-          placeholder="English (Native), Spanish (Fluent), French (Intermediate)..."
-          rows={3}
-          className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50 resize-none"
-        />
-      </div>
-    </div>
-  );
-
-  const renderCertifications = () => (
-    <div className="space-y-6">
-      {formData.certifications.map((cert, index) => (
-        <div
-          key={index}
-          className="p-6 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg space-y-4"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Award className="w-4 h-4" />
-                Certification Name
-              </label>
-              <input
-                type="text"
-                value={cert.name}
-                onChange={e => handleInputChange("certifications", "name", e.target.value, index)}
-                placeholder="AWS Certified Solutions Architect"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Briefcase className="w-4 h-4" />
-                Issuer
-              </label>
-              <input
-                type="text"
-                value={cert.issuer}
-                onChange={e => handleInputChange("certifications", "issuer", e.target.value, index)}
-                placeholder="Amazon Web Services"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Award className="w-4 h-4" />
-                Year
-              </label>
-              <input
-                type="text"
-                value={cert.year}
-                onChange={e => handleInputChange("certifications", "year", e.target.value, index)}
-                placeholder="2023"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-          </div>
-        </div>
-      ))}
-      <button
-        onClick={() =>
-          addArrayItem("certifications", { name: "", issuer: "", year: "" })
-        }
-        className="w-full py-3 bg-blue-600/20 border border-blue-600/40 rounded-lg text-blue-400 hover:bg-blue-600 hover:text-white transition-all duration-200 flex items-center justify-center gap-2 font-medium"
-      >
-        <Plus className="w-4 h-4" />
-        Add Certification
-      </button>
-    </div>
-  );
-
-  const renderProjects = () => (
-    <div className="space-y-6">
-      {formData.projects.map((project, index) => (
-        <div
-          key={index}
-          className="p-6 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg space-y-4 relative"
-        >
-          <button
-            type="button"
-            className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors"
-            onClick={() => deleteArrayItem("projects", index)}
-            title="Delete Project"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <FolderOpen className="w-4 h-4" />
-                Project Name
-              </label>
-              <input
-                type="text"
-                value={project.name}
-                onChange={e => handleInputChange("projects", "name", e.target.value, index)}
-                placeholder="E-commerce Platform"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Code className="w-4 h-4" />
-                Technologies
-              </label>
-              <input
-                type="text"
-                value={project.technologies}
-                onChange={e => handleInputChange("projects", "technologies", e.target.value, index)}
-                placeholder="React, Node.js, MongoDB"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Globe className="w-4 h-4" />
-                Link
-              </label>
-              <input
-                type="text"
-                value={project.link}
-                onChange={e => handleInputChange("projects", "link", e.target.value, index)}
-                placeholder="https://github.com/username/project"
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Description</label>
-            <textarea
-              value={project.description}
-              onChange={e => handleInputChange("projects", "description", e.target.value, index)}
-              placeholder="Describe the project, your role, and key achievements..."
-              rows={3}
-              className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-blue-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all duration-200 hover:border-blue-600/50 resize-none"
-            />
-          </div>
-        </div>
-      ))}
-      <button
-        onClick={() =>
-          addArrayItem("projects", {
-            name: "",
-            description: "",
-            technologies: "",
-            link: "",
-          })
-        }
-        className="w-full py-3 bg-blue-600/20 border border-blue-600/40 rounded-lg text-blue-400 hover:bg-blue-600 hover:text-white transition-all duration-200 flex items-center justify-center gap-2 font-medium"
-      >
-        <Plus className="w-4 h-4" />
-        Add Project
-      </button>
-    </div>
-  );
-
   const renderTabContent = () => {
     switch (activeTab) {
       case "personal":
-        return renderPersonalInfo();
+        return (
+          <PersonalInfo
+            formData={formData}
+            handleInputChange={handleInputChange}
+            enhanceSummary={enhanceSummary}
+            isEnhancing={isEnhancing}
+          />
+        );
       case "experience":
-        return renderExperience();
+        return (
+          <Experience
+            formData={formData}
+            handleInputChange={handleInputChange}
+            deleteArrayItem={deleteArrayItem}
+            addArrayItem={addArrayItem}
+          />
+        );
       case "education":
-        return renderEducation();
-      case "skills":
-        return renderSkills();
-      case "certifications":
-        return renderCertifications();
+        return (
+          <Education
+            formData={formData}
+            handleInputChange={handleInputChange}
+            deleteArrayItem={deleteArrayItem}
+            addArrayItem={addArrayItem}
+          />
+        );
+      case "skills_certification":
+        return (
+          <SkillsCertification
+            formData={formData}
+            handleInputChange={handleInputChange}
+            deleteArrayItem={deleteArrayItem}
+            addArrayItem={addArrayItem}
+            setFormData={setFormData}
+          />
+        );
       case "projects":
-        return renderProjects();
+        return (
+          <Projects
+            formData={formData}
+            handleInputChange={handleInputChange}
+            deleteArrayItem={deleteArrayItem}
+            addArrayItem={addArrayItem}
+          />
+        );
+      case "ai-enhancement":
+        return (
+          <AIEnhancement
+            enhanceSummary={enhanceSummary}
+            enhanceEntireResume={enhanceEntireResume}
+            isEnhancing={isEnhancing}
+            isEnhancingAll={isEnhancingAll}
+            enhancementResults={enhancementResults}
+          />
+        );
       default:
-        return renderPersonalInfo();
+        return (
+          <PersonalInfo
+            formData={formData}
+            handleInputChange={handleInputChange}
+            enhanceSummary={enhanceSummary}
+            isEnhancing={isEnhancing}
+          />
+        );
     }
   };
 
@@ -827,7 +593,7 @@ const ResumeBuilder = () => {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-6 border border-blue-600/20">
+        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-6 mt-10 border border-blue-600/20">
           {renderTabContent()}
         </div>
 
@@ -941,279 +707,11 @@ const ResumeBuilder = () => {
           </motion.button>
         </div>
         {showPreviewModal && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowPreviewModal(false)}
-          >
-            <motion.div
-              className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-gray-200"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="sticky top-0 z-10 flex justify-between items-center p-5 border-b bg-white/90 backdrop-blur-md">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Resume Preview
-                </h3>
-                <div className="flex items-center gap-3">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={downloadPDF}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
-                  >
-                    <Download size={18} /> Download PDF
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowPreviewModal(false)}
-                    className="flex items-center justify-center h-9 w-9 bg-gray-100 rounded-lg text-gray-600 hover:bg-gray-200"
-                  >
-                    <X size={18} />
-                  </motion.button>
-                </div>
-              </div>
-              <div className="p-8" id="resume-preview-content">
-                {/* Resume Header */}
-                <div className="mb-8 text-center">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-1">
-                    {formData.personal.name}
-                  </h1>
-                  <p className="text-xl text-blue-600 mb-3">
-                    {formData.personal.title}
-                  </p>
-                  <div className="flex justify-center items-center gap-6 text-sm text-gray-700 flex-wrap">
-                    {formData.personal.email && (
-                      <span className="flex items-center gap-1.5">
-                        <Mail size={14} /> {formData.personal.email}
-                      </span>
-                    )}
-                    {formData.personal.phone && (
-                      <span className="flex items-center gap-1.5">
-                        <Phone size={14} /> {formData.personal.phone}
-                      </span>
-                    )}
-                    {formData.personal.location && (
-                      <span className="flex items-center gap-1.5">
-                        <MapPin size={14} /> {formData.personal.location}
-                      </span>
-                    )}
-                    {formData.personal.portfolio && (
-                      <span className="flex items-center gap-1.5">
-                        <Globe size={14} /> {formData.personal.portfolio}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                {/* Summary Section */}
-                {formData.personal.summary && (
-                  <div className="mb-6">
-                    <h2 className="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">
-                      SUMMARY
-                    </h2>
-                    <p className="text-gray-700 whitespace-pre-line">
-                      {formData.personal.summary}
-                    </p>
-                  </div>
-                )}
-                {/* Experience Section */}
-                {formData.experience &&
-                  formData.experience.length > 0 &&
-                  formData.experience.some(
-                    (exp) =>
-                      exp.company ||
-                      exp.position ||
-                      exp.duration ||
-                      exp.description,
-                  ) && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">
-                        EXPERIENCE
-                      </h2>
-                      {formData.experience.map(
-                        (exp, idx) =>
-                          (exp.company ||
-                            exp.position ||
-                            exp.duration ||
-                            exp.description) && (
-                            <div key={idx} className="mb-4">
-                              <div className="flex justify-between flex-wrap">
-                                <h3 className="font-bold text-gray-900">
-                                  {exp.position}
-                                </h3>
-                                <span className="text-gray-600">
-                                  {exp.duration}
-                                </span>
-                              </div>
-                              <p className="text-blue-600 mb-1">
-                                {exp.company}
-                              </p>
-                              <p className="text-gray-700">{exp.description}</p>
-                            </div>
-                          ),
-                      )}
-                    </div>
-                  )}
-                {/* Education Section */}
-                {formData.education &&
-                  formData.education.length > 0 &&
-                  formData.education.some(
-                    (edu) =>
-                      edu.institution || edu.degree || edu.year || edu.details,
-                  ) && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">
-                        EDUCATION
-                      </h2>
-                      {formData.education.map(
-                        (edu, idx) =>
-                          (edu.institution ||
-                            edu.degree ||
-                            edu.year ||
-                            edu.details) && (
-                            <div key={idx} className="mb-3">
-                              <div className="flex justify-between flex-wrap">
-                                <h3 className="font-bold text-gray-900">
-                                  {edu.degree}
-                                </h3>
-                                <span className="text-gray-600">
-                                  {edu.year}
-                                </span>
-                              </div>
-                              <p className="text-blue-600">{edu.institution}</p>
-                              {edu.details && (
-                                <p className="text-gray-700">{edu.details}</p>
-                              )}
-                            </div>
-                          ),
-                      )}
-                    </div>
-                  )}
-                {/* Projects Section */}
-                {formData.projects &&
-                  formData.projects.length > 0 &&
-                  formData.projects.some(
-                    (proj) =>
-                      proj.name ||
-                      proj.description ||
-                      proj.technologies ||
-                      proj.link,
-                  ) && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">
-                        PROJECTS
-                      </h2>
-                      {formData.projects.map(
-                        (proj, idx) =>
-                          (proj.name ||
-                            proj.description ||
-                            proj.technologies ||
-                            proj.link) && (
-                            <div key={idx} className="mb-4">
-                              <div className="flex justify-between items-center flex-wrap">
-                                <h3 className="font-bold text-gray-900">
-                                  {proj.name}
-                                </h3>
-                                {proj.link && (
-                                  <a
-                                    href={proj.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 underline text-sm"
-                                  >
-                                    {proj.link}
-                                  </a>
-                                )}
-                              </div>
-                              {proj.technologies && (
-                                <p className="text-xs text-blue-500 mb-1">
-                                  {proj.technologies}
-                                </p>
-                              )}
-                              <p className="text-gray-700">
-                                {proj.description}
-                              </p>
-                            </div>
-                          ),
-                      )}
-                    </div>
-                  )}
-                {/* Skills Section */}
-                {(formData.skills.technical.length > 0 ||
-                  formData.skills.languages.length > 0 ||
-                  (formData.certifications &&
-                    formData.certifications.length > 0)) && (
-                  <div className="mb-6">
-                    <h2 className="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">
-                      SKILLS & MORE
-                    </h2>
-                    {formData.skills.technical.length > 0 && (
-                      <div className="mb-2">
-                        <h3 className="font-bold text-gray-900 mb-1 text-sm">
-                          Technical Skills
-                        </h3>
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          {formData.skills.technical.map((skill, idx) => (
-                            <span
-                              key={idx}
-                              className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {formData.skills.languages.length > 0 && (
-                      <div className="mb-2">
-                        <h3 className="font-bold text-gray-900 mb-1 text-sm">
-                          Languages
-                        </h3>
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          {formData.skills.languages.map((lang, idx) => (
-                            <span
-                              key={idx}
-                              className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm"
-                            >
-                              {lang}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {formData.certifications &&
-                      formData.certifications.length > 0 &&
-                      formData.certifications.some((cert) => cert.name) && (
-                        <div className="mb-2">
-                          <h3 className="font-bold text-gray-900 mb-1 text-sm">
-                            Certifications
-                          </h3>
-                          <div className="flex flex-wrap gap-2 mb-2">
-                            {formData.certifications
-                              .filter((cert) => cert.name)
-                              .map((cert, idx) => (
-                                <span
-                                  key={idx}
-                                  className="bg-green-50 text-green-700 px-2 py-1 rounded text-sm"
-                                >
-                                  {cert.name}
-                                  {cert.issuer ? ` (${cert.issuer})` : ""}
-                                  {cert.year ? `, ${cert.year}` : ""}
-                                </span>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
+          <PreviewModal
+            formData={formData}
+            setShowPreviewModal={setShowPreviewModal}
+            downloadPDF={downloadPDF}
+          />
         )}
       </div>
     </div>

@@ -425,7 +425,7 @@ function CodeEditor({ questions }: { questions: any }) {
             </div>
           )}
 
-          <motion.div
+          {/* <motion.div
             className="absolute bottom-4 right-4"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -453,7 +453,7 @@ function CodeEditor({ questions }: { questions: any }) {
               <CheckIcon className="h-4 w-4" />
               {isCandidate ? "Submit Solution" : "View Notes"}
             </motion.button>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
       </ResizablePanel>
     </ResizablePanelGroup>
