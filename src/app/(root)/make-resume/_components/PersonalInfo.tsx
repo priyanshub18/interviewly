@@ -1,5 +1,6 @@
 import React from "react";
-import { User, Briefcase, Mail, Phone, MapPin, Globe, Loader2, Sparkles } from "lucide-react";
+import { User, Briefcase, Mail, Phone, MapPin, Globe, Sparkles } from "lucide-react";
+import ProfessionalLoader from "@/components/Loader2";
 
 const PersonalInfo = ({
   formData,
@@ -147,7 +148,7 @@ const PersonalInfo = ({
           title="Improve this summary using AI assistance"
         >
           {isEnhancing ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <ProfessionalLoader size="sm" text="" showText={false} />
           ) : (
             <Sparkles className="w-4 h-4" />
           )}

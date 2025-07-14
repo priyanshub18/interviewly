@@ -40,6 +40,7 @@ import ExpandableContent from "./_components/ExpandableContent";
 import CustomModal from "./_components/CustomModal";
 import CustomCard from "./_components/CustomCard";
 import CustomBadge from "./_components/CustomBadge";
+import ProfessionalLoader from "@/components/Loader2";
 
 export default function ManageJobsPage() {
   const router = useRouter();
@@ -66,6 +67,19 @@ export default function ManageJobsPage() {
   const updateJobStatus = useMutation(api.jobs.updateJobStatus);
   const updateApplicationStatus = useMutation(api.jobs.updateApplicationStatus);
   const deleteJob = useMutation(api.jobs.deleteJob);
+
+  // Show loading state while data is being fetched
+  if (!jobs) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading job management..." 
+          variant="spiral" 
+        />
+      </div>
+    );
+  }
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString();

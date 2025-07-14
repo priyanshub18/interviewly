@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CallRecording } from "@stream-io/video-react-sdk";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VideoIcon } from "lucide-react";
-import LoaderUI from "@/components/LoaderUI";
+import ProfessionalLoader from "@/components/Loader2";
 import RecordingCard from "./_components/RecordingCard";
 import useGetCalls from "../../../hooks/useGetCalls";
 
@@ -29,7 +29,17 @@ function RecordingsPage() {
     fetchRecordings();
   }, [calls]);
 
-  if (isLoading) return <LoaderUI />;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading recordings..." 
+          variant="wave" 
+        />
+      </div>
+    );
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },

@@ -33,6 +33,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import ProfessionalLoader from "@/components/Loader2";
 
 export default function ActivitiesPage() {
   const [offset, setOffset] = useState(0);
@@ -54,6 +55,19 @@ export default function ActivitiesPage() {
   const markAsRead = useMutation(api.activities.markActivityAsRead);
   const markAllAsRead = useMutation(api.activities.markAllActivitiesAsRead);
   const deleteActivity = useMutation(api.activities.deleteActivity);
+
+  // Show loading state while data is being fetched
+  if (!activitiesQuery || !unreadCountQuery) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading your activities..." 
+          variant="pulse" 
+        />
+      </div>
+    );
+  }
 
   // theme2 configuration matching other pages
   const theme2 = {

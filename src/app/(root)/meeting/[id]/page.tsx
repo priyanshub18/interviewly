@@ -1,6 +1,6 @@
 "use client";
 
-import LoaderUI from "@/components/LoaderUI";
+import ProfessionalLoader from "@/components/Loader2";
 import MeetingRoom from "../_components/MeetingRoom";
 import MeetingSetup from "../_components/MeetingSetup";
 import useGetCallById from "../../../../hooks/useGetCallById";
@@ -27,7 +27,7 @@ function MeetingPage() {
   }, [codeId]);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
 
-  if (!isLoaded || isCallLoading) return <LoaderUI />;
+  if (!isLoaded || isCallLoading) return <ProfessionalLoader text="Loading meeting..." variant="rings" size="lg" className="min-h-screen" />;
 
   if (!call) {
     return (

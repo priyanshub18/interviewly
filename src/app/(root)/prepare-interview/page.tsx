@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Timeline } from "./_components/Timeline";
+import ProfessionalLoader from "@/components/Loader2";
 
 interface StudyPlanDay {
   day: number;
@@ -730,20 +731,11 @@ export default function InterviewPrepApp() {
                     {/* Loading indicator */}
                     {isLoading ? (
                       <div className="flex flex-col items-center justify-center py-20">
-                        <motion.div
-                          animate={{
-                            rotate: 360,
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            ease: "linear",
-                          }}
-                          className="w-10 h-10 border-4 border-blue-200 dark:border-blue-900 border-t-blue-500 dark:border-t-blue-600 rounded-full mb-4"
+                        <ProfessionalLoader 
+                          size="lg" 
+                          text="Creating your personalized study plan..." 
+                          variant="spiral" 
                         />
-                        <p className="text-gray-600 dark:text-gray-400">
-                          Creating your personalized study plan...
-                        </p>
                       </div>
                     ) : (
                       <PreparedPlan

@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import EndCallButton from "../_components/EndCallButton";
 import CodeEditor from "../_components/CodeEditor";
 import { useUserRoles } from "../../../../hooks/useUserRoles";
+import ProfessionalLoader from "@/components/Loader2";
 // import CodeEditor from "./CodeEditor";
 
 function MeetingRoom({ questions }: { questions: any }) {
@@ -43,16 +44,13 @@ function MeetingRoom({ questions }: { questions: any }) {
 
   if (callingState !== CallingState.JOINED) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="container max-w-7xl mx-auto mt-24 flex items-center my-20 justify-center h-64"
-      >
-        <div className="flex flex-col items-center space-y-4">
-          <div className="h-12 w-12 border-4 border-t-blue-600 border-b-blue-500 border-l-blue-400 border-r-blue-300 rounded-full animate-spin"></div>
-          <p className="text-muted-foreground">Joining the call...</p>
-        </div>
-      </motion.div>
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Joining the call..." 
+          variant="pulse" 
+        />
+      </div>
     );
   }
 

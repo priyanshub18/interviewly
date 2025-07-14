@@ -29,6 +29,7 @@ import {
   groupInterviews,
 } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
+import ProfessionalLoader  from "@/components/Loader2";
 import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import axios from "axios";
 import { useMutation as useConvexMutation, useMutation, useQuery } from "convex/react";
@@ -38,11 +39,11 @@ import {
   ArrowUpRight,
   Calendar as CalendarIcon,
   Clock,
-  Loader2Icon,
   PlusCircleIcon,
   // CalendarIcon,
   XIcon,
 } from "lucide-react";
+ 
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -905,8 +906,8 @@ function InterviewScheduleUI() {
                   >
                     {isCreating ? (
                       <>
-                        <Loader2Icon className="mr-2 size-4 animate-spin" />
-                        Scheduling...
+                        <ProfessionalLoader size="sm" text="Scheduling interview..." className="mr-2" variant="pulse" />
+                        
                       </>
                     ) : (
                       "Schedule Interview"

@@ -3,6 +3,7 @@
 import ActionCard from "@/components/ActionCard";
 import { QUICK_ACTIONS } from "@/constants";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import ProfessionalLoader from "@/components/Loader2";
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQueries, useQuery } from "convex/react";
@@ -136,8 +137,8 @@ const Home = () => {
     return (
       <div className="container max-w-7xl mx-auto mt-24 flex items-center my-20 justify-center h-64">
         <div className="flex flex-col items-center space-y-4">
-          <div className="h-12 w-12 border-4 border-t-blue-600 border-b-blue-500 border-l-blue-400 border-r-blue-300 rounded-full animate-spin"></div>
-          <p className="text-muted-foreground">Loading your dashboard...</p>
+          <ProfessionalLoader size="lg" text="Loading your dashboard..." variant="pulse" />
+          {/* <p className="text-muted-foreground">Loading your dashboard...</p> */}
         </div>
       </div>
     );

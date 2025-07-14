@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { PlusCircle } from "react-feather";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import ProfessionalLoader from "@/components/Loader2";
 
 interface Example {
   input: string;
@@ -123,6 +124,19 @@ export default function ProblemViewer() {
   const [activeTab, setActiveTab] = useState(0);
   // Use sample problems if fetched problems are not available yet
   const allProblems = fetchedProblems || sampleProblems;
+
+  // Show loading state while data is being fetched
+  if (!fetchedProblems) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading coding problems..." 
+          variant="dots" 
+        />
+      </div>
+    );
+  }
 
   // Apply theme class to document
   useEffect(() => {

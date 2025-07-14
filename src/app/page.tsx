@@ -2,18 +2,13 @@
 
 import CTA from "@/components/landing/CTA";
 import InterviewlyFeatures from "@/components/landing/Features";
+import Footer from "@/components/landing/Footer";
 import HeroSection from "@/components/landing/HeroSection";
 import HowInterviewlyWorks from "@/components/landing/HowItWorks";
 import LandingPart from "@/components/landing/LandingPart";
 import TestimonialSection from "@/components/landing/Testimonials";
-import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs";
-import { Shield, Star } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import TrustedCompanies from "../components/landing/TrustedCompanies";
-import Footer from "@/components/landing/Footer";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -42,6 +37,7 @@ export default function Home() {
 
       {/* Enhanced Hero Section */}
       <div className="relative z-10 bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm min-h-screen  ">
+        {/* <LoaderDemo/> */}
         <LandingPart />
 
         <TrustedCompanies />

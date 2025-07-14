@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { LoaderCircle, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import ProfessionalLoader from "@/components/Loader2";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -687,7 +688,7 @@ export default function FlashcardManagement() {
                           ></path>
                         </svg>
                       ) : (
-                        <LoaderCircle className="animate-spin h-4 w-4 mr-2" />
+                        <ProfessionalLoader size="sm" text="Generating..." variant="dots" className="mr-2" />
                       )}
                       Generate with AI
                     </motion.button>

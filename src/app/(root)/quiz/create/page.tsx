@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
-import QuizLoader from "./_components/QuizLoader";
+import ProfessionalLoader from "@/components/Loader2";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
@@ -1022,7 +1022,7 @@ export default function QuizUI() {
       </div>
     );
   }
-  if (isLoading) return <QuizLoader />;
+  if (isLoading) return <ProfessionalLoader text="Preparing your quiz..." variant="dots" size="lg" className="min-h-screen" />;
   // Quiz in progress
 
   return (

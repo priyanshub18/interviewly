@@ -14,7 +14,6 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "../../../../convex/_generated/api";
-import LoaderUI from "@/components/LoaderUI";
 import ProfessionalLoader from "@/components/Loader2";
 
 interface Example {
@@ -278,7 +277,7 @@ export default function LeetCodeProblemFetcher() {
             </div>
           </div>
         </motion.div>
-        {fetching && <ProfessionalLoader />}
+        {fetching && <ProfessionalLoader text="Saving problem..." variant="spiral" size="md" />}
         {/* Problem Display Section */}
         <AnimatePresence>
           {problem && (

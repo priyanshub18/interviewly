@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import toast from "react-hot-toast";
-import LoaderUI from "@/components/LoaderUI";
+import ProfessionalLoader from "@/components/Loader2";
 import { getCandidateInfo, groupInterviews } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -138,7 +138,7 @@ function DashboardPage() {
     tap: { scale: 0.95 },
   };
 
-  if (!interviews || !users) return <LoaderUI />;
+  if (!interviews || !users) return <ProfessionalLoader text="Loading dashboard..." variant="rings" size="lg" className="min-h-screen" />;
 
   const groupedInterviews = customGroupInterviews(interviews);
 

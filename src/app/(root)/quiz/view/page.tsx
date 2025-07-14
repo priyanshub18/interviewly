@@ -18,6 +18,7 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import ProfessionalLoader from "@/components/Loader2";
 
 export default function QuizHistory() {
   const router = useRouter();
@@ -389,10 +390,11 @@ export default function QuizHistory() {
         {/* Loading State */}
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader className="w-12 h-12 text-blue-500 animate-spin mb-4" />
-            <p className={`${currentTheme.text.secondary} text-lg`}>
-              Loading your quiz history...
-            </p>
+            <ProfessionalLoader 
+              size="lg" 
+              text="Loading your quiz history..." 
+              variant="rings" 
+            />
           </div>
         )}
         {/* Error State for Convex Query */}

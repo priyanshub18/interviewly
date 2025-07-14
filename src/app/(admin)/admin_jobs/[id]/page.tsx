@@ -27,17 +27,16 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { api } from "../../../../../convex/_generated/api";
 export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
   const jobId = params.id as string;
 
-  const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [resumeUrl, setResumeUrl] = useState("");
-  const [isApplying, setIsApplying] = useState(false);
+
+
+
+
   const [darkMode, setDarkMode] = useState(false);
   const { theme } = useTheme();
 
@@ -114,7 +113,7 @@ export default function JobDetailPage() {
   if (!job) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <ProfessionalLoader />
+        <ProfessionalLoader text="Loading job details..." variant="pulse" size="lg" />
       </div>
     );
   }

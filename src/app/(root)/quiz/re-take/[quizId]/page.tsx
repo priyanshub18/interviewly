@@ -26,20 +26,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import { useSavingToast } from "../../create/_components/useSavingToast";
 
-// Quiz Loader Component
-const QuizLoader = () => {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
-      <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
-        Loading Quiz...
-      </h2>
-      <p className="text-gray-500 dark:text-gray-400 mt-2">
-        Please wait while we prepare your questions
-      </p>
-    </div>
-  );
-};
+import ProfessionalLoader from "@/components/Loader2";
 
 export default function QuizPage() {
   const params = useParams();
@@ -484,9 +471,17 @@ export default function QuizPage() {
     });
   };
 
-  // Loading screen
+  // Show loading state while data is being fetched
   if (isLoading) {
-    return <QuizLoader />;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading quiz..." 
+          variant="dots" 
+        />
+      </div>
+    );
   }
 
   // Safety check - make sure quiz has questions

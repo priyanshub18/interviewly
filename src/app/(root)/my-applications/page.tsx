@@ -29,6 +29,7 @@ import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "../../../../convex/_generated/api";
+import ProfessionalLoader from "@/components/Loader2";
 
 export default function MyApplicationsPage() {
   const [offset, setOffset] = useState(0);
@@ -45,6 +46,19 @@ export default function MyApplicationsPage() {
   });
   const withdrawApplication = useMutation(api.jobs.withdrawApplication);
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
+
+  // Show loading state while data is being fetched
+  if (!applicationsQuery) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading your applications..." 
+          variant="dots" 
+        />
+      </div>
+    );
+  }
 
   // theme2 configuration matching flashcard page
 

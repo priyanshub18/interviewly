@@ -12,6 +12,7 @@ import { Search, MapPin, Building, Clock, DollarSign, Users, Sparkles, Briefcase
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
+import ProfessionalLoader from "@/components/Loader2";
 
 export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +38,19 @@ export default function JobsPage() {
 
   const displayJobs = searchQuery ? searchResults?.jobs : jobs?.jobs;
   const hasMore = searchQuery ? searchResults?.hasMore : jobs?.hasMore;
+
+  // Show loading state while data is being fetched
+  if (!jobs || !searchResults) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading job opportunities..." 
+          variant="rings" 
+        />
+      </div>
+    );
+  }
 
   useEffect(() => {
     // Check system preference on initial load

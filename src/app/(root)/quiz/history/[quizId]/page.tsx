@@ -31,6 +31,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import ProgressChart from "./_components/ProgressChart";
 import toast from "react-hot-toast";
+import ProfessionalLoader from "@/components/Loader2";
 
 export default function QuizDetail({ params }) {
   const { quizId } = params;
@@ -589,12 +590,11 @@ export default function QuizDetail({ params }) {
   if (isLoading || !quizData) {
     return (
       <div className="min-h-screen flex justify-center items-center">
-        <div className="text-center">
-          <Loader className="w-12 h-12 animate-spin mx-auto text-blue-500" />
-          <p className="mt-4 text-slate-500 dark:text-slate-400">
-            Loading quiz results...
-          </p>
-        </div>
+        <ProfessionalLoader 
+          size="lg" 
+          text="Loading quiz results..." 
+          variant="pulse" 
+        />
       </div>
     );
   }
