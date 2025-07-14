@@ -18,6 +18,12 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const jetbrainsMono = localFont({
+  src: "./fonts/JetBrainsMono-Regular.woff2",
+  variable: "--font-jetbrains-mono",
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Interviewly",
   description: "All-In one for Technical Interviews",
@@ -42,7 +48,7 @@ export default function RootLayout({
           <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} antialiased`}
         >
           <ThemeProvider
             attribute="class"

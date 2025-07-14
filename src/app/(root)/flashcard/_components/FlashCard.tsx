@@ -5,6 +5,104 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 
+// Utility function to detect code patterns
+const detectCodePatterns = (text) => {
+  // Only check for backticks - single or triple
+  const tripleBacktickPattern = /```[\s\S]*?```/g;
+  const singleBacktickPattern = /`([^`]+)`/g;
+  
+  return tripleBacktickPattern.test(text) || singleBacktickPattern.test(text);
+};
+
+// Component to render text with code styling
+const TextWithCode = ({ text, className = "", maxLength = null }) => {
+  const displayText = maxLength && text.length > maxLength 
+    ? `${text.substring(0, maxLength)}...` 
+    : text;
+
+  // Check if the text contains code patterns
+  const hasCode = detectCodePatterns(displayText);
+
+  if (!hasCode) {
+    return <p className={className}>{displayText}</p>;
+  }
+
+  // Split text into code and non-code segments
+  const segments = [];
+  let currentText = displayText;
+  
+  // Only handle backticks - prioritize triple backticks
+  const codePatterns = [
+    { pattern: /```[\s\S]*?```/g, type: 'codeblock' },
+    { pattern: /`([^`]+)`/g, type: 'inline' },
+  ];
+
+  let lastIndex = 0;
+  const matches = [];
+
+  // Collect all matches
+  codePatterns.forEach(({ pattern, type }) => {
+    let match;
+    while ((match = pattern.exec(displayText)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        text: match[0],
+        type
+      });
+    }
+  });
+
+  // Sort matches by start position
+  matches.sort((a, b) => a.start - b.start);
+
+  // Build segments
+  matches.forEach(match => {
+    // Add text before match
+    if (match.start > lastIndex) {
+      segments.push({
+        text: displayText.substring(lastIndex, match.start),
+        type: 'text'
+      });
+    }
+    
+    // Add the match
+    segments.push({
+      text: match.text,
+      type: match.type
+    });
+    
+    lastIndex = match.end;
+  });
+
+  // Add remaining text
+  if (lastIndex < displayText.length) {
+    segments.push({
+      text: displayText.substring(lastIndex),
+      type: 'text'
+    });
+  }
+
+  return (
+    <p className={className}>
+      {segments.map((segment, index) => {
+        if (segment.type === 'text') {
+          return <span key={index}>{segment.text}</span>;
+        }
+        
+        return (
+          <code
+            key={index}
+            className="font-mono text-sm text-blue-400 dark:text-cyan-300 font-semibold"
+          >
+            {segment.text}
+          </code>
+        );
+      })}
+    </p>
+  );
+};
+
 function Flashcard({ card, index, theme2, onDelete, onEdit }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -282,13 +380,11 @@ function Flashcard({ card, index, theme2, onDelete, onEdit }) {
                     d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   ></path>
                 </svg>
-                <p className="text-lg">
-                  {isExpanded
-                    ? card.question
-                    : card.question.length > 100
-                      ? `${card.question.substring(0, 100)}...`
-                      : card.question}
-                </p>
+                <TextWithCode 
+                  text={card.question}
+                  className="text-lg"
+                  maxLength={isExpanded ? null : 100}
+                />
               </div>
             </div>
 
@@ -418,13 +514,11 @@ function Flashcard({ card, index, theme2, onDelete, onEdit }) {
               </div>
 
               <div className="bg-indigo-500/5 rounded-xl p-4 border border-indigo-500/10 overflow-auto flex-grow h-12">
-                <p className="text-lg">
-                  {isExpanded
-                    ? card.answer
-                    : card.answer.length > 80
-                      ? `${card.answer.substring(0, 80)}...`
-                      : card.answer}
-                </p>
+                <TextWithCode 
+                  text={card.answer}
+                  className="text-lg"
+                  maxLength={isExpanded ? null : 80}
+                />
               </div>
             </div>
 
@@ -544,7 +638,10 @@ function Flashcard({ card, index, theme2, onDelete, onEdit }) {
                   </span>
                 </div>
                 <div className="bg-indigo-500/5 rounded-xl p-4 border border-indigo-500/10 overflow-auto flex-grow max-h-96">
-                  <p className="text-lg whitespace-pre-line">{card.answer}</p>
+                  <TextWithCode 
+                    text={card.answer}
+                    className="text-lg whitespace-pre-line"
+                  />
                 </div>
                 <div className="flex justify-end mt-4">
                   <span className="text-xs text-indigo-300/80">#{card.id}</span>
@@ -694,8 +791,8 @@ function Flashcard({ card, index, theme2, onDelete, onEdit }) {
                       <div className="text-xs text-gray-600 dark:text-gray-400">
                         <p><strong>Title:</strong> {editForm.title || 'No title'}</p>
                         <p><strong>Category:</strong> {editForm.category || 'No category'}</p>
-                        <p><strong>Question:</strong> {editForm.question ? (editForm.question.length > 50 ? editForm.question.substring(0, 50) + '...' : editForm.question) : 'No question'}</p>
-                        <p><strong>Answer:</strong> {editForm.answer ? (editForm.answer.length > 50 ? editForm.answer.substring(0, 50) + '...' : editForm.answer) : 'No answer'}</p>
+                        <p><strong>Question:</strong> <TextWithCode text={editForm.question ? (editForm.question.length > 50 ? editForm.question.substring(0, 50) + '...' : editForm.question) : 'No question'} className="inline" /></p>
+                        <p><strong>Answer:</strong> <TextWithCode text={editForm.answer ? (editForm.answer.length > 50 ? editForm.answer.substring(0, 50) + '...' : editForm.answer) : 'No answer'} className="inline" /></p>
                       </div>
                     </div>
                   </div>
