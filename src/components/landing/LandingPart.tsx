@@ -168,12 +168,18 @@ const LandingPart = () => {
                 variant="outline"
                 size="lg"
                 className="rounded-2xl px-8 py-4 border-2 border-blue-600/40 text-blue-300 hover:bg-blue-600/10 hover:border-blue-600 hover:text-white transition-all duration-300 group backdrop-blur-sm text-lg font-semibold"
+                onClick={() => {
+                  const featuresSection = document.getElementById('features');
+                  if (featuresSection) {
+                    featuresSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
               >
                 <Play
                   size={20}
                   className="mr-3 group-hover:text-blue-400 transition-colors duration-300"
                 />
-                Watch Demo
+                See Features
               </Button>
             </motion.div>
 

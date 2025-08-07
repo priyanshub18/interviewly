@@ -18,9 +18,40 @@ export default function PublicNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path: string) => {
     setIsMobileMenuOpen(false);
-    router.push(path);
+    
+    // Check if the path contains a hash for section navigation
+    if (path.includes('#')) {
+      const [basePath, sectionId] = path.split('#');
+      
+      // If we're not on the home page, first navigate to it
+      if (window.location.pathname !== '/') {
+        router.push('/').then(() => {
+          // After navigation, try to scroll to the section
+          setTimeout(() => {
+            const element = document.getElementById(sectionId);
+            if (element) {
+              element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }
+          }, 100); // Small delay to ensure the page has loaded
+        });
+      } else {
+        // If we're already on the home page, just scroll
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }
+    } else {
+      router.push(path);
+    }
   };
 
   return (
@@ -64,10 +95,7 @@ export default function PublicNavbar() {
                 text="Testimonials"
                 onClick={() => handleNavigation("/#testimonials")}
               />
-              <GlassNavLink
-                text="Pricing"
-                onClick={() => handleNavigation("/#pricing")}
-              />
+
             </div>
 
             {/* Right Side Actions */}
@@ -111,10 +139,7 @@ export default function PublicNavbar() {
                 text="Testimonials"
                 onClick={() => handleNavigation("/#testimonials")}
               />
-              <MobileNavLink
-                text="Pricing"
-                onClick={() => handleNavigation("/#pricing")}
-              />
+
               <div className="pt-4 border-t border-slate-800/50 flex flex-col gap-2">
                 <button
                   onClick={() => handleNavigation("/sign-in")}

@@ -69,7 +69,7 @@ const HowInterviewlyWorks = () => {
   ];
 
   return (
-    <section className="relative min-h-screen bg-black py-20 px-4 overflow-hidden">
+    <section id="how-it-works" className="relative min-h-screen bg-black py-20 px-4 overflow-hidden">
       {/* Matrix Background */}
       <MatrixBackground />
 

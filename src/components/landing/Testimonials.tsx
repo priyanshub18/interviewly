@@ -175,7 +175,7 @@ const TestimonialSection = () => {
   );
 
   return (
-    <section className="relative min-h-screen bg-black overflow-hidden py-20">
+    <section id="testimonials" className="relative min-h-screen bg-black overflow-hidden py-20">
       {/* Simplified Grid Background */}
       <div className="absolute inset-0">
         <div
